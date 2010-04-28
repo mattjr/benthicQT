@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     using namespace ews::app::widget;
 
 #if defined(QT_DEBUG)                
-   // osg::setNotifyLevel(osg::INFO);
+    osg::setNotifyLevel(osg::INFO);
 #endif                
     
     // To see Qt object dumps on macos, run with the environment variable

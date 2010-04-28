@@ -343,6 +343,12 @@ set(QT_PLUGIN_DEST "bin/plugins")
 if(APPLE)
     set(QT_PLUGIN_DEST "${EXE_TARGET_NAME}.app/Contents/MacOS/plugins")  
     set(QT_CONF_DEST "${EXE_TARGET_NAME}.app/Contents/Resources")  
+    set(OSG_PLUGINS_DIR "/usr/local/lib/osgPlugins-${OPENSCENEGRAPH_VERSION}")
+    set(OSG_INSTALLED_PLUGINS "${OSG_PLUGINS_DIR}/osgdb_ive.so")
+    INSTALL(FILES "${OSG_PLUGINS_DIR}/osgdb_ive.so"
+    DESTINATION
+    "${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
+
 elseif(WIN32)
 
 endif()
