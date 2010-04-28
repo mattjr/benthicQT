@@ -52,8 +52,8 @@ namespace ews {
                 lSource->setLight(light.get());
                 lSource->setReferenceFrame(LightSource::ABSOLUTE_RF );
                 addChild(lSource.get());
-              //  osg::ref_ptr<osg::Node> Cow = osgDB::readNodeFile("/home/mattjr/11_elephant_rock/final.ive");
-                //addChild(Cow.get());
+                osg::ref_ptr<osg::Node> Cow = osgDB::readNodeFile("/home/mattjr/11_elephant_rock/final.ive");
+                addChild(Cow.get());
                 addEventCallback(new PickHandler);
             }
             

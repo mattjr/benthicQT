@@ -29,7 +29,7 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/MatrixTransform>
 
-#include "CameraController.h"
+#include "WWManipulator.hpp"
 #include "BQTDebug.h"
 
 namespace ews {
@@ -57,8 +57,13 @@ namespace ews {
                 c->setClearColor(osg::Vec4(0.7f, 0.7f, 0.7f, 1.0f));
                 
                 setThreadingModel(osgViewer::Viewer::SingleThreaded);
-                
-                setCameraManipulator(new ews::app::drawable::CameraController);
+                osg::Matrixd *mat=NULL;
+                bool inverseMouse=false;
+                WorldWindManipulatorNew *wwManip = new WorldWindManipulatorNew(this,
+                                                                       NULL,
+                                                                       inverseMouse,
+                                                                       mat);
+                setCameraManipulator(wwManip);//new ws::app::drawable::CameraController);
                 
 #if defined(QT_DEBUG)                      
                 addEventHandler(new osgViewer::StatsHandler);
@@ -140,11 +145,15 @@ namespace ews {
             }
             
             void QOSGWidget::computeHomePosition() {
-                using ews::app::drawable::CameraController;
+                //using ews::app::drawable::CameraController;
                 
                 osgGA::MatrixManipulator* mat = getCameraManipulator();
-                CameraController* ctrl;
+               /* CameraController* ctrl;
                 if(ctrl = dynamic_cast<CameraController*> (mat)) {
+                    ctrl->computeHomePosition();
+                }*/
+                WorldWindManipulatorNew *ctrl;
+                 if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
                     ctrl->computeHomePosition();
                 }
             }

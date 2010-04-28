@@ -22,7 +22,7 @@
 
 #include "DrawableFactory.h"
 
-#include "ui_EWSMainWindow.h"
+#include "ui_BQTMainWindow.h"
 #include <QMessageBox>
 #include <QDesktopServices>
 #include "BQTUtils.h"
