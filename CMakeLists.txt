@@ -139,6 +139,39 @@ include( ${QT_USE_FILE} )
 
 
 #--------------------------------------------------------------------------------
+# Use qt menu nib stuff
+ IF (APPLE)
+ #   IF (BPC_BUNDLE_ICON)
+ #     GET_FILENAME_COMPONENT(bundle_icon_file "${BQT_ICON_MAC}" NAME)
+  #    SET(apple_bundle_sources ${bundle_icon_file})
+  #    SET_SOURCE_FILES_PROPERTIES(
+  #      ${BQT_ICON_MAC}
+  #      PROPERTIES
+  #      MACOSX_PACKAGE_LOCATION Resources
+  #    )
+      IF(QT_MAC_USE_COCOA)
+        GET_FILENAME_COMPONENT(qt_menu_nib
+          "@QT_QTGUI_LIBRARY_RELEASE@/Resources/qt_menu.nib"
+          REALPATH)
+
+        set(qt_menu_nib_sources
+          "${qt_menu_nib}/classes.nib"
+          "${qt_menu_nib}/info.nib"
+          "${qt_menu_nib}/keyedobjects.nib"
+          )
+        SET_SOURCE_FILES_PROPERTIES(
+          ${qt_menu_nib_sources}
+          PROPERTIES
+          MACOSX_PACKAGE_LOCATION Resources/qt_menu.nib
+        )
+      ELSE(QT_MAC_USE_COCOA)
+        set(qt_menu_nib_sources)
+      ENDIF(QT_MAC_USE_COCOA)
+   # ENDIF (BPC_BUNDLE_ICON)
+    SET(MAKE_BUNDLE MACOSX_BUNDLE)
+  ENDIF (APPLE)
+
+#--------------------------------------------------------------------------------
 # Find plotting library.
 #find_package(Qwt5 REQUIRED)
 #include_directories(${Qwt5_INCLUDE_DIR})
@@ -278,8 +311,10 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
   ${WIN_RC}
   ${BQT_MOC_HDRS}
   ${BQT_HDRS}
+  ${apple_bundle_sources}
+  ${qt_menu_nib_sources}
 )
-
+message("ASDASD : ${qt_menu_nib_sources}")
 #--------------------------------------------------------------------------------
 # Tell CMake which libraries we need to link our executable against.
 set(ALL_QT_OSG_LIBS     
