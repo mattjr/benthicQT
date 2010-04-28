@@ -67,7 +67,6 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
-    <addaction name="actionPause"/>
     <addaction name="separator"/>
     <addaction name="actionReset"/>
     <addaction name="separator"/>
@@ -75,12 +74,12 @@
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuItems">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Items</string>
     </property>
-    <addaction name="actionToggleDripSource1"/>
-    <addaction name="actionToggleDripSource2"/>
-    <addaction name="separator"/>
     <addaction name="actionAddBarrier"/>
     <addaction name="actionRemoveBarrier"/>
     <addaction name="separator"/>
@@ -122,16 +121,21 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpen"/>
-   <addaction name="actionPause"/>
    <addaction name="separator"/>
    <addaction name="actionReset"/>
   </widget>
   <widget class="QDockWidget" name="barrierControls">
+   <property name="minimumSize">
+    <size>
+     <width>56</width>
+     <height>56</height>
+    </size>
+   </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>Barriers</string>
+    <string>Tools</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -151,8 +155,8 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>225</width>
-         <height>300</height>
+         <width>1</width>
+         <height>1</height>
         </size>
        </property>
       </widget>
@@ -176,25 +180,10 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset>
-     <normaloff>:/images/images/media-playback-start.png</normaloff>:/images/images/media-playback-start.png</iconset>
+     <normaloff>:/images/images/file-open-green.png</normaloff>:/images/images/file-open-green.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
-   </property>
-  </action>
-  <action name="actionPause">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/images/media-playback-pause.png</normaloff>:/images/images/media-playback-pause.png</iconset>
-   </property>
-   <property name="text">
-    <string>Pause</string>
-   </property>
-   <property name="toolTip">
-    <string>Pause simulation</string>
-   </property>
-   <property name="shortcut">
-    <string>Meta+P</string>
    </property>
   </action>
   <action name="actionReset">
@@ -268,6 +257,9 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
@@ -335,22 +327,6 @@
    <signal>triggered()</signal>
    <receiver>EWSMainWindowForm</receiver>
    <slot>start()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>577</x>
-     <y>380</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionPause</sender>
-   <signal>triggered()</signal>
-   <receiver>EWSMainWindowForm</receiver>
-   <slot>stop()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

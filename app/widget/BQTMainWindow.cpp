@@ -44,7 +44,7 @@ namespace ews {
                 _ui->setupUi(this);
                 
                 // Config actions
-                _ui->actionPause->setEnabled(false);
+                //_ui->actionPause->setEnabled(false);
                 _ui->actionOpen->setEnabled(true);
                 
 

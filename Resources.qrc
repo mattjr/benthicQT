@@ -1,23 +1,21 @@
 <RCC>
-  <qresource prefix="images">
-    <!-- Application icons. -->
-    <file alias="splash">images/bqt-icon.png</file>
-    <file alias="appicon">images/bqt-icon.ico</file>
-    <file alias="appicon.mac">images/bqt-icon.icns</file>
-    <file alias="mseedsoft">images/MustardSeedLogo-250.png</file>
-    <!-- Button icons. -->
-    <file>images/media-record.png</file>
-    <file>images/list-add.png</file>
-    <file>images/list-remove.png</file>
-    <file>images/view-refresh.png</file>
-    <file>images/edit-undo.png</file>
-    <file>images/media-playback-start.png</file>
-    <file>images/media-playback-pause.png</file>
-  </qresource>
-  <qresource prefix="text">
-    <!-- Text resources. -->
-    <file alias="waves.vs">app/drawable/waves.vs</file>
-    <file alias="waves.fs">app/drawable/waves.fs</file>
-    <file alias="about">app/widget/about.html</file>
-  </qresource>
+    <qresource prefix="/images" >
+        <file alias="splash" >images/bqt-icon.png</file>
+        <file alias="appicon" >images/bqt-icon.ico</file>
+        <file alias="appicon.mac" >images/bqt-icon.icns</file>
+        <file alias="mseedsoft" >images/MustardSeedLogo-250.png</file>
+        <file>images/media-record.png</file>
+        <file>images/list-add.png</file>
+        <file>images/list-remove.png</file>
+        <file>images/view-refresh.png</file>
+        <file>images/edit-undo.png</file>
+        <file>images/media-playback-start.png</file>
+        <file>images/media-playback-pause.png</file>
+        <file>images/file-open-green.png</file>
+    </qresource>
+    <qresource prefix="/text" >
+        <file alias="waves.vs" >app/drawable/waves.vs</file>
+        <file alias="waves.fs" >app/drawable/waves.fs</file>
+        <file alias="about" >app/widget/about.html</file>
+    </qresource>
 </RCC>

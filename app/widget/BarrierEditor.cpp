@@ -51,14 +51,14 @@ namespace ews {
                 if(b) {
                     blockSignals(true);
                     
-                    _ui->zeroSlits->setChecked(b->getNumSlits() == Barrier::ZERO_SLITS);
+                    /*_ui->zeroSlits->setChecked(b->getNumSlits() == Barrier::ZERO_SLITS);
                     _ui->oneSlit->setChecked(b->getNumSlits() == Barrier::ONE_SLIT);
                     _ui->twoSlits->setChecked(b->getNumSlits() == Barrier::TWO_SLITS);
                     
                     
                     _ui->slitWidth->setValue(b->getSlitWidth());
                     _ui->slitSeparation->setValue(b->getSlitSeparation());
-                    
+                    */
                     blockSignals(false);
                 }
             }
@@ -155,7 +155,7 @@ namespace ews {
             }
             
             Barrier::NumSlits BarrierEditor::numSlitsSelected() const {
-                if(_ui->zeroSlits->isChecked()) {
+                /*if(_ui->zeroSlits->isChecked()) {
                     return Barrier::ZERO_SLITS;
                 }
                 else if(_ui->oneSlit->isChecked()) {
@@ -164,7 +164,7 @@ namespace ews {
                 else if(_ui->twoSlits->isChecked()) {
                     return Barrier::TWO_SLITS;
                 }
-                return Barrier::ZERO_SLITS;
+                return Barrier::ZERO_SLITS;*/
             }
             
             /** Update the enabled state of all the widgets. */
@@ -185,18 +185,18 @@ namespace ews {
                 bool canAdd = _dataModel != NULL && !_dataModel->isFull();
                 _ui->addBarrier->setEnabled(canAdd);
 
-                _ui->slitNumSelect->setEnabled(canEdit);
+                /*_ui->slitNumSelect->setEnabled(canEdit);
                 
                 Barrier::NumSlits num = numSlitsSelected();
                  
                 const bool canEditSlit = canEdit && num != Barrier::ZERO_SLITS;
                 _ui->slitWidth->setEnabled(canEditSlit);
                 const bool canEditSlitSep = canEdit && num == Barrier::TWO_SLITS;
-                _ui->slitSeparation->setEnabled(canEditSlitSep);
+                _ui->slitSeparation->setEnabled(canEditSlitSep);*/
             }
             
             void BarrierEditor::updateNumSlits() {
-                Barrier* b = selectedBarrier();
+              /*  Barrier* b = selectedBarrier();
                 if(b) {
                     QObject* sender = QObject::sender();
                     if(sender) {
@@ -212,7 +212,7 @@ namespace ews {
                     }
 
                     updateEnabled();
-                }
+                }*/
             }
             
             void BarrierEditor::updateSlitWidth(int width) {
