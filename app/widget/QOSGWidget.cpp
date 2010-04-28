@@ -207,6 +207,34 @@ namespace ews {
                 }
                 _gw->getEventQueue()->mouseButtonPress(event->x(), event->y(), button);
             }
+            void QOSGWidget::setKeyboardModifiers( QInputEvent* event ){
+                unsigned int mask = 0;
+
+                // extracts the input key modifiers
+                int modkey = event->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier);
+
+                // masks the SHIFT key with a bitwise OR
+                if (modkey & Qt::ShiftModifier)
+                   mask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
+
+               // masks the CTRL key with a bitwise OR
+               if (modkey & Qt::ControlModifier)
+                   mask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
+
+               // masks the ALT key with a bitwise OR
+               if (modkey & Qt::AltModifier)
+                   mask |= osgGA::GUIEventAdapter::MODKEY_ALT;
+
+               // returns the viewers event queue and placing the event on the back of the event queue
+               _gw->getEventQueue()->getCurrentEventState()->setModKeyMask( mask);
+            }
+            void QOSGWidget::wheelEvent(QWheelEvent* event){
+                 // translates the keyboard modifiers for osg
+                   setKeyboardModifiers( event );
+
+            // returns the viewers event queue and placing the event on the back of the event queue
+            _gw->getEventQueue()->mouseScroll(event->delta()>0 ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN );
+            }
             
             void QOSGWidget::mouseReleaseEvent( QMouseEvent* event ) {
                 int button = 0;
