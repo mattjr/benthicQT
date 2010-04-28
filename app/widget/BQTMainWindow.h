@@ -61,6 +61,8 @@ namespace ews {
                 Uint getInterFrameDelay() const;
 
             public slots:
+                /** Open file */
+                void openModel();
                 /** Start the simulation. */
                 void start();
                 /** Stop/pause the simulation. */

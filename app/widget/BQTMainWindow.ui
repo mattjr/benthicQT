@@ -64,9 +64,9 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Simulation</string>
+     <string>File</string>
     </property>
-    <addaction name="actionRun"/>
+    <addaction name="actionOpen"/>
     <addaction name="actionPause"/>
     <addaction name="separator"/>
     <addaction name="actionReset"/>
@@ -121,7 +121,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionRun"/>
+   <addaction name="actionOpen"/>
    <addaction name="actionPause"/>
    <addaction name="separator"/>
    <addaction name="actionReset"/>
@@ -173,16 +173,13 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionRun">
+  <action name="actionOpen">
    <property name="icon">
     <iconset>
      <normaloff>:/images/images/media-playback-start.png</normaloff>:/images/images/media-playback-start.png</iconset>
    </property>
    <property name="text">
-    <string>Run</string>
-   </property>
-   <property name="shortcut">
-    <string>Meta+R</string>
+    <string>Open</string>
    </property>
   </action>
   <action name="actionPause">
@@ -334,7 +331,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>actionRun</sender>
+   <sender>actionOpen</sender>
    <signal>triggered()</signal>
    <receiver>EWSMainWindowForm</receiver>
    <slot>start()</slot>
@@ -392,8 +389,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1167</x>
-     <y>253</y>
+     <x>1011</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>
@@ -408,8 +405,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1167</x>
-     <y>253</y>
+     <x>1011</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>

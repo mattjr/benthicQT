@@ -31,7 +31,7 @@
 //#include "AmplitudePlot.h"
 //#include "PointSampler.h"
 #include "Preferences.h"
-
+#include <iostream>
 namespace ews {
     namespace app {
         namespace widget {
@@ -45,7 +45,7 @@ namespace ews {
                 
                 // Config actions
                 _ui->actionPause->setEnabled(false);
-                _ui->actionRun->setEnabled(true);
+                _ui->actionOpen->setEnabled(true);
                 
 
                 
@@ -62,7 +62,7 @@ namespace ews {
                 // Setup sync between model and renderer.
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
-                
+                QObject::connect(_ui->actionOpen, SIGNAL(triggered()), this, SLOT(openModel()));
                 // Setup sync between samplers and plot.
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerAdded(int,PointSampler*)), 
                   //               _ui->amplitudePlot, SLOT(addSampleSource(int, PointSampler*)));
@@ -95,15 +95,15 @@ namespace ews {
 
             void EWSMainWindow::start() {
                 _state->setPaused(false);
-                _ui->actionPause->setEnabled(true);
-                _ui->actionRun->setEnabled(false);
+                //_ui->actionPause->setEnabled(true);
+                //_ui->actionRun->setEnabled(false);
                 
             }
             
             void EWSMainWindow::stop() {
                 _state->setPaused(true);
-                _ui->actionPause->setEnabled(false);
-                _ui->actionRun->setEnabled(true);
+                //_ui->actionPause->setEnabled(false);
+               // _ui->actionRun->setEnabled(true);
             }
             
             void EWSMainWindow::reset() {
@@ -117,7 +117,7 @@ namespace ews {
                 // with the default state (and update the button enabled state).
 
                 if(_state->isPaused()) {
-                    _ui->actionRun->trigger();
+                    //_ui->actionRun->trigger();
                 }
                 
                 updateMenusEnabledState();       
@@ -165,6 +165,19 @@ namespace ews {
                 qDebug() << "Opening" << url;
                 QDesktopServices::openUrl(url);
             }
+
+            void EWSMainWindow::openModel(){
+                QStringList files = QFileDialog::getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)");
+                if (files.isEmpty())
+                    return;
+                QStringList list = files;
+                QStringList::Iterator it = list.begin();
+                while( it != list.end() ) {
+                    qDebug() << "Opening" <<*it;
+                    ++it;
+                }
+            }
+
 
         }
     }
