@@ -176,6 +176,9 @@ namespace ews {
                     qDebug() << "Opening" <<*it;
                     ++it;
                 }
+
+                _state->getMeshFiles().setFileNames(files);
+                _state->emitSignalsForLoad();
             }
 
 

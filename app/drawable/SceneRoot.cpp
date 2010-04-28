@@ -36,7 +36,7 @@ namespace ews {
             : QObject(parent), osg::MatrixTransform(), _drawables() {
                 // Set up some basic lighting.
                 
-                osg::StateSet* state = getOrCreateStateSet(); 
+                /*osg::StateSet* state = getOrCreateStateSet();
                 state->setMode( GL_LIGHTING, osg::StateAttribute::ON ); 
                 
                 state->setMode( GL_LIGHT0, osg::StateAttribute::ON );
@@ -51,9 +51,9 @@ namespace ews {
                 ref_ptr<LightSource> lSource = new LightSource;
                 lSource->setLight(light.get());
                 lSource->setReferenceFrame(LightSource::ABSOLUTE_RF );
-                addChild(lSource.get());
-                osg::ref_ptr<osg::Node> Cow = osgDB::readNodeFile("/home/mattjr/11_elephant_rock/final.ive");
-                addChild(Cow.get());
+                addChild(lSource.get());*/
+            //    osg::ref_ptr<osg::Node> Cow = osgDB::readNodeFile("/home/mattjr/11_elephant_rock/final.ive");
+             //  addChild(Cow.get());
                 addEventCallback(new PickHandler);
             }
             

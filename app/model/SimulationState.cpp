@@ -34,7 +34,9 @@ namespace ews {
                 connect(&_barriers, SIGNAL(barrierRemoved(int,Barrier*)),
                         SLOT(forwardBarrierSetRemoval(int, Barrier*)));
 
-                
+          //      connect(&_mesh_files, SIGNAL(loadNewMeshes(MeshFile *)),
+            //            SLOT(forwardMeshLoad( MeshFile* meshfile)));
+
 
                 setPaused(true);
             }
@@ -54,7 +56,9 @@ namespace ews {
                 emit objectRemoved(*barrier);
             }
             
-
+            void SimulationState::forwardMeshLoad(MeshFile *mesh) {
+                emit objectAdded(*mesh);
+            }
             
             void SimulationState::reset() {
 

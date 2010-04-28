@@ -21,6 +21,8 @@
 
 #include "Barrier.h"
 #include "BarrierGeom.h"
+#include "MeshFile.h"
+#include "MeshGeom.h"
 
 #include "BQTDebug.h"
 
@@ -48,7 +50,13 @@ namespace ews {
                     Barrier* barrier = qobject_cast<Barrier*>(&data);
                     BarrierGeom* geom = new BarrierGeom(*barrier);
                     retval = geom;
-                }                                    
+                } else if(data.inherits(MeshFile::staticMetaObject.className())) {
+                    MeshFile* mesh = qobject_cast<MeshFile*>(&data);
+                    MeshGeom* geom = new MeshGeom(*mesh);
+                    retval = geom;
+                }
+
+
 
                 
                 if(!retval) {

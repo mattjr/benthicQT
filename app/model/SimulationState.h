@@ -22,9 +22,9 @@
 #include <QtCore>
 #include <QList>
 
-
+#include "MeshFile.h"
 #include "BarrierSet.h"
-
+#include "Barrier.h"
 namespace ews {
     namespace app {
         namespace model {
@@ -81,13 +81,21 @@ namespace ews {
                     emit objectAdded(getDripSource1());
                     emit objectAdded(getDripSource2());*/
                 }
+                   void emitSignalsForLoad() {
+                    emit objectAdded(getMeshFiles());
+
+                }
+                   MeshFile &getMeshFiles(void){
+                        return _mesh_files;
+                    }
                 
             public slots:
                 /** Pause the simulation, whereby the wave propagation is stopped. */
                 void setPaused(bool);
                 /** Reset the simulation and view to the default view. */
                 void reset();
-                
+
+                void forwardMeshLoad(MeshFile* meshfile);
                 /** Due to an "impedence mismatch" between the signal fired
                  * by the BarrierSet class and our objectAdded() signal, 
                  * a conversion/mapping slot is is used to fire objectAdded()
@@ -96,12 +104,15 @@ namespace ews {
                 void forwardBarrierSetAddition(int index, Barrier* barrier);
                 /** See forwardBarrierSetAddition(int, Barrier*) */
                 void forwardBarrierSetRemoval(int index, Barrier* barrier);
-                
+                /** See forwardBarrierSetAddition(int, Barrier*) */
+
+
 
 
             private:
                 Q_DISABLE_COPY(SimulationState)          
                 BarrierSet _barriers;
+                MeshFile _mesh_files;
 
             };
         }
