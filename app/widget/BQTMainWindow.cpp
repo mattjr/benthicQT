@@ -158,7 +158,11 @@ namespace ews {
                 using ews::util::loadTextResource;
                 QMessageBox::about(this, "About...", loadTextResource(":/text/about"));
             }
-            
+            /** Show reset view. */
+            void EWSMainWindow::resetView   () {
+                qDebug()<<"MadeIT";
+               _ui->renderer->computeHomePosition();
+            }
             /** Request the OS open the configured project site. */
             void EWSMainWindow::projectWebsite() {
                 QUrl url(EWS_WEBSITE,QUrl::TolerantMode);
@@ -179,6 +183,7 @@ namespace ews {
 
                 _state->getMeshFiles().setFileNames(files);
                 _state->emitSignalsForLoad();
+                _ui->renderer->computeHomePosition();
             }
 
 

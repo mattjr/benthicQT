@@ -87,7 +87,6 @@ namespace ews {
             }
             
             void MeshGeom::updateGeom() {
-qDebug() << "update Geom";
                 _meshGeom->removeChildren(0, _meshGeom->getNumChildren());
                 QStringList list=_dataModel.getFileNames();
                 QStringList::Iterator it = list.begin();

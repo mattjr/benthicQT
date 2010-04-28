@@ -68,7 +68,6 @@ namespace ews {
                  */
                 void objectRemoved(QObject& removed);
                 
-                
             public:
                 /**
                  * This is a convenience method for the setup phase when

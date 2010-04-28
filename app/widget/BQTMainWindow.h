@@ -77,7 +77,8 @@ namespace ews {
                 void projectWebsite();
                 /** Set the inter-frame delay in milli-seconds. */
                 void setInterFrameDelay(Uint delay);
-                
+                /** Show the preferences dialog. */
+                void resetView();
             private slots:
                 /** Do any final connecting of components after rest of application is connected.*/
                 void init();
