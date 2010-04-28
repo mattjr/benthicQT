@@ -17,6 +17,7 @@
  */
 
 #include "SceneRoot.h"
+#include <osg/ShapeDrawable>
 
 #include <osg/Light>
 #include <osg/LightSource>
@@ -54,6 +55,12 @@ namespace ews {
                 addChild(lSource.get());*/
             //    osg::ref_ptr<osg::Node> Cow = osgDB::readNodeFile("/home/mattjr/11_elephant_rock/final.ive");
              //  addChild(Cow.get());
+                osg::ref_ptr<osg::Geode> geode = new osg::Geode();
+
+                osg::ref_ptr<osg::Box> box = new osg::Box(osg::Vec3(0,0,0), 1.5f, 1.5f, 4.0f);
+                osg::ref_ptr<osg::ShapeDrawable> drawable = new osg::ShapeDrawable(box.get());
+                geode->addDrawable(drawable.get());
+                addChild(geode);
                 addEventCallback(new PickHandler);
             }
             
