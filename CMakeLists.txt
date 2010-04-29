@@ -345,9 +345,9 @@ if(APPLE)
     get_filename_component(OSG_LIBRARY_DIR ${OSG_LIBRARY} PATH)
     set(OSG_PLUGINS_DIR "${OSG_LIBRARY_DIR}/osgPlugins-${OPENSCENEGRAPH_VERSION}")
     set(OSG_INSTALLED_PLUGINS "${OSG_PLUGINS_DIR}/osgdb_ive.so")
-    INSTALL(FILES "${OSG_PLUGINS_DIR}/osgdb_ive.so"
-    DESTINATION
-    "${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
+    #INSTALL(FILES "${OSG_PLUGINS_DIR}/osgdb_ive.so"
+    #DESTINATION
+    # "${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
 
 elseif(WIN32)
 
