@@ -91,13 +91,7 @@ namespace ews {
                 }
                 
 
-                void updatePos(osg::Vec3 v) {
-                    bbox_map_info *bbmi=find_closet_img_idx(_tree,v);
-                    if(bbmi){
-                        qDebug()<< bbmi->leftname.c_str();
-                    }
-                    emit posChanged(v);
-                }
+                void updatePos(osg::Vec3 v);
 
 
             signals:
@@ -110,6 +104,7 @@ namespace ews {
                  * set has changed. Parameter is the new number of items.
                  */
                 void posChanged(osg::Vec3);
+                void imgLabelChanged(QString);
 
             private slots:
               //  void generatePotential();

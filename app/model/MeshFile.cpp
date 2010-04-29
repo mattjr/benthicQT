@@ -49,6 +49,24 @@ namespace ews {
             }
             MeshFile::~MeshFile() {
             }
+
+            void MeshFile::updatePos(osg::Vec3 v)
+            {
+               bbox_map_info info;
+               if(find_closet_img_idx(_tree,v,info)){
+                   QString s;
+                   s=(string("Img:")+info.leftname).c_str();
+                   emit imgLabelChanged(s);
+                   // qDebug()<< info.leftname.c_str();
+                }else{
+                    QString s;
+                    s=string("Img:\nN/A").c_str();
+                    emit imgLabelChanged(s);
+                    //qDebug()<<"No img at " << v[0] << " " << v[1] << " "<<v[2];
+                }
+
+                emit posChanged(v);
+            }
             
 
         }

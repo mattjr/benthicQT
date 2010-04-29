@@ -32,10 +32,10 @@ RTree *loadBBox(const char *str){
             eof2 = fscanf(bboxfp,"\n");
             bbox_map_info info;
             info.leftname=lname;
-            info.leftname=rname;
+            info.rightname=rname;
             info.count=count;
             info.time=time;
-
+            double zepi=2.0;
             BoundingBox bb;
 
             bb.edges[0].first  = x1;
@@ -44,9 +44,13 @@ RTree *loadBBox(const char *str){
             bb.edges[1].first  = y1;
             bb.edges[1].second = y2;
 
-            bb.edges[2].first  = z1;
-            bb.edges[2].second = z2;
+            bb.edges[2].first  = z1-zepi;
+            bb.edges[2].second = z2+zepi;
 
+            /*printf("\n%.1f -- %.1f\n",x1,x2);
+            printf("%.1f -- %.1f\n",y1,y2);
+            printf("%.1f -- %.1f\n\n",z1,z2);
+*/
             bboxTree->Insert(info,bb);
             frame_count++;
 
@@ -63,28 +67,33 @@ RTree *loadBBox(const char *str){
 }
 
 
-bbox_map_info * find_closet_img_idx(RTree *tree,osg::Vec3 pt){
- 
-  
-  if(!tree)
-    return NULL;
+bool find_closet_img_idx(RTree *tree,osg::Vec3 pt,bbox_map_info &boxinfo){
 
-   double epi=0.1;
-   BoundingBox bb;
 
-            bb.edges[0].first  = pt[2];
-            bb.edges[0].second = pt[2]+epi;
+    if(!tree)
+        return false;
 
-            bb.edges[1].first  = pt[0];
-            bb.edges[1].second = pt[0]+epi;
+    double epi=0.5;
+    BoundingBox bb;
 
-            bb.edges[2].first  = pt[1];
-            bb.edges[2].second = pt[1]+epi;
+    bb.edges[0].first  = pt[2];
+    bb.edges[0].second = pt[2]+epi;
 
-        Visitor x= tree->Query(RTree::AcceptOverlapping(bb), Visitor());
-        std::cout << "Visited " << x.count << " nodes." << std::endl;
+    bb.edges[1].first  = pt[0];
+    bb.edges[1].second = pt[0]+epi;
 
-        return NULL;
+    bb.edges[2].first  = pt[1];
+    bb.edges[2].second = pt[1]+epi;
+
+    Visitor x;
+    x.found=NULL;
+    x = tree->Query(RTree::AcceptOverlapping(bb), Visitor());
+    //std::cout << "Visited " << x.count << " nodes." << std::endl;
+    if(x.count > 0 && x.found ){
+        boxinfo=x.found->leaf;
+        return true;
+    }
+    return false;
 
   
 }

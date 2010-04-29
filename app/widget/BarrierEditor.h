@@ -68,6 +68,8 @@ namespace ews {
                 void updateOnSelection();
                 /** Update the data model to reflect the selected number of slits.*/
                 void updatePos(osg::Vec3);
+                void updateImgLabel(QString);
+
                 /** Update the data model to reflect the give slit width.*/
                 void updateSlitWidth(int);
                 /** Update the data model to reflect the give slit separation.*/
@@ -78,7 +80,7 @@ namespace ews {
                  * set has changed. Parameter is the new number of items.
                  */
                 void posChanged(osg::Vec3);
-
+                void imgLabelChanged(QString);
             private:
                 Barrier::NumSlits numSlitsSelected() const;
                 void select(Barrier* barrier);

@@ -27,7 +27,7 @@ set(BQT_ORGANIZATION_NAME "ACFR")
 # Add to search path our custom scripts
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts;${CMAKE_MODULE_PATH}")
 
-
+add_definitions("-g")
 #----------------------------------------------------------------------
 # Macro to get the current date, from:
 # http://www.cmake.org/pipermail/cmake/2009-February/027014.html

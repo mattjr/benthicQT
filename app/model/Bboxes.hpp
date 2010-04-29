@@ -20,21 +20,19 @@ typedef RTree::BoundingBox			BoundingBox;
 struct Visitor {
         int count;
         bool ContinueVisiting;
-
-        Visitor() : count(0), ContinueVisiting(true) {};
+        const RTree::Leaf *found;
+        Visitor() : count(0), ContinueVisiting(true),found(NULL) {};
 
         void operator()(const RTree::Leaf * const leaf)
         {
-                count++;
+            count++;
+            found=leaf;
+            ContinueVisiting=false;
+
         }
 };
-extern std::map<int,std::string> texture_file_names;
-//extern std::vector<GtsBBox *> bboxes_all;
-//extern std::map<int,bbox_map_info> gts_trans_map;
-bbox_map_info * find_closet_img_idx(RTree *tree,osg::Vec3 pt);
-extern RTree *g_bboxtree;
-extern bbox_map_info *cur_info;
-extern bool validTerrainMouseOver;
+
+bool find_closet_img_idx(RTree *tree,osg::Vec3 pt,bbox_map_info &boxinfo);
 RTree *loadBBox(const char *str);
 
 

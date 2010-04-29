@@ -68,6 +68,8 @@ namespace ews {
             void BarrierEditor::setDataModel(MeshFile* mf) {
                 _dataModel = mf;
                   QObject::connect(_dataModel, SIGNAL(posChanged(osg::Vec3)), this, SLOT(updatePos(osg::Vec3)));
+                 QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
+
             /*    QAbstractItemModel* model = _ui->barrierTable->model();
                 if(model) {
                     _ui->barrierTable->setModel(NULL);
@@ -205,6 +207,13 @@ namespace ews {
                     sprintf(tmp,"X: %.2f\nY: %.2f\nZ: %.2f",pos[0],pos[1],pos[2]);
                     posString=tmp;
                     _ui->label_2->setText(posString);
+
+                }
+            }
+                void BarrierEditor::updateImgLabel(QString str) {
+                QObject* sender = QObject::sender();
+                if(sender) {
+                    _ui->label->setText(str);
 
                 }
             }
