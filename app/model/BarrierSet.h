@@ -118,7 +118,7 @@ namespace ews {
                  * Signals that a barrier has been removed.
                  */
                 void barrierRemoved(int,Barrier*);
-                
+               
                 /**
                  * General signal for case when number of items in the
                  * set has changed. Parameter is the new number of items.

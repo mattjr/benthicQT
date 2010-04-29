@@ -22,8 +22,8 @@
 #include <QtGui/QWidget>
 #include <QDataWidgetMapper>
 #include "BarrierSet.h"
-
-
+#include <osg/Vec3>
+#include "MeshFile.h"
 /** Forward declaration of UI implementation class. */
 /** @cond */
 namespace Ui {
@@ -40,7 +40,7 @@ namespace ews {
             
             using ews::app::model::BarrierSet;
             using ews::app::model::Barrier;
-                
+                using ews::app::model::MeshFile;
             /**
              * Form controller for editing barriers.
              */
@@ -52,7 +52,7 @@ namespace ews {
                 ~BarrierEditor();
                 
                 /** Connect the data model instance with the editor. */
-                void setDataModel(BarrierSet* barriers);
+                void setDataModel(MeshFile* barriers);
                 
                 /** Remove all Barrier objects (e.g., to start over). */
                 void removeAllBarriers();
@@ -67,21 +67,27 @@ namespace ews {
                 /** Update UI after the table seletion changes. */
                 void updateOnSelection();
                 /** Update the data model to reflect the selected number of slits.*/
-                void updateNumSlits();
+                void updatePos(osg::Vec3);
                 /** Update the data model to reflect the give slit width.*/
                 void updateSlitWidth(int);
                 /** Update the data model to reflect the give slit separation.*/
                 void updateSlitSeparation(int);
-                
+             signals:
+               /**
+                 * General signal for case when number of items in the
+                 * set has changed. Parameter is the new number of items.
+                 */
+                void posChanged(osg::Vec3);
+
             private:
                 Barrier::NumSlits numSlitsSelected() const;
                 void select(Barrier* barrier);
                 Barrier* selectedBarrier() const;
                 void syncUI();
-                
+                QString posString;
 
                 Ui::BarrierEditorForm* _ui;
-                BarrierSet* _dataModel;
+                MeshFile* _dataModel;
             };
         }
     }

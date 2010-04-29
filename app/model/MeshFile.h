@@ -22,6 +22,8 @@
 
 #include <QtCore>
 #include <QObject>
+#include <osg/Vec3>
+
 #include <osg/Vec2>
 #include <osg/ref_ptr>
 using osg::ref_ptr;
@@ -77,11 +79,21 @@ namespace ews {
                 }
                 
 
+                void updatePos(osg::Vec3 v) {
+                    emit posChanged(v);
+                }
+
 
             signals:
                 void dataChanged();
                 //void potentialChanged();
                 void loadNewMeshes(MeshFile *);
+
+                /**
+                 * General signal for case when number of items in the
+                 * set has changed. Parameter is the new number of items.
+                 */
+                void posChanged(osg::Vec3);
 
             private slots:
               //  void generatePotential();

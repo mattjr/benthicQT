@@ -56,7 +56,7 @@ namespace ews {
                 }
                 /** Set whether barrier is visible and active. */
                 void setEnabled(bool enabled);
-
+                void updatePos(osg::Vec2);
                 
             private slots:
                 /** Recompute geometric representation to match data model. */
@@ -65,8 +65,7 @@ namespace ews {
             protected:
                 /** Protected to enforce use with ref_ptr. */
                 virtual ~MeshGeom();
-                
-                
+
             private:
                 Q_DISABLE_COPY(MeshGeom)
 

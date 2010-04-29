@@ -35,7 +35,8 @@ namespace ews {
             
             BarrierEditor::BarrierEditor(QWidget* parent) 
             : QWidget(parent), _ui(new Ui::BarrierEditorForm), _dataModel(NULL) {
-                _ui->setupUi(this);   
+                _ui->setupUi(this);
+
                 updateEnabled();
             }
             
@@ -64,10 +65,10 @@ namespace ews {
             }
 
             /** Apply datamodel to editor. */
-            void BarrierEditor::setDataModel(BarrierSet* barriers) {
-                _dataModel = barriers;
-                
-                QAbstractItemModel* model = _ui->barrierTable->model();
+            void BarrierEditor::setDataModel(MeshFile* mf) {
+                _dataModel = mf;
+                  QObject::connect(_dataModel, SIGNAL(posChanged(osg::Vec3)), this, SLOT(updatePos(osg::Vec3)));
+            /*    QAbstractItemModel* model = _ui->barrierTable->model();
                 if(model) {
                     _ui->barrierTable->setModel(NULL);
                     QItemSelectionModel* sm = _ui->barrierTable->selectionModel();
@@ -90,20 +91,20 @@ namespace ews {
                         _ui->barrierTable->setColumnHidden(c, true);
                     }
 
-                    // Register for selection changes so we can update the widgets. */
+                    // Register for selection changes so we can update the widgets.
                     connect(_ui->barrierTable->selectionModel(), 
                             SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
                             this, SLOT(updateOnSelection()));                    
                     connect(newModel, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-                            this, SLOT(updateEnabled()));                    
-                }
+                            this, SLOT(updateEnabled()));
+                }*/
                 
                 syncUI();
                 updateEnabled();
             }
             
             void BarrierEditor::select(Barrier* barrier) {
-                int i = barrier != NULL ? _dataModel->indexOf(barrier) : -1;
+                /*int i = barrier != NULL ? _dataModel->indexOf(barrier) : -1;
                 if (i >= 0) {
                     QModelIndex idx = _ui->barrierTable->model()->index(i, 0);
                     _ui->barrierTable->setCurrentIndex(idx);
@@ -111,15 +112,15 @@ namespace ews {
                 else {
                     QModelIndex idx = _ui->barrierTable->model()->index(0, 0);
                     _ui->barrierTable->selectionModel()->setCurrentIndex(idx, QItemSelectionModel::Clear);
-                }
+                }*/
 
             }
             
             Barrier* BarrierEditor::selectedBarrier() const {
-                if(!_dataModel) return NULL;
+              /*  if(!_dataModel) return NULL;
                 QModelIndex idx = _ui->barrierTable->currentIndex();
                 return idx.row() >= 0 ? _dataModel->barrierAt(idx.row()) : NULL;
-            }
+           */ }
             
             void BarrierEditor::updateOnSelection() {
                 syncUI();
@@ -127,20 +128,22 @@ namespace ews {
             }
 
             void BarrierEditor::addBarrier() {
-                Barrier* b = _dataModel->createBarrier();
+             /*   Barrier* b = _dataModel->createBarrier();
                 select(b);
                 _ui->barrierTable->resizeRowsToContents();
+            */
             }
 
             void BarrierEditor::removeAllBarriers() {
-                _dataModel->removeAllBarriers();
+            /*    _dataModel->removeAllBarriers();
                 select(NULL);
                 updateEnabled();
                 _ui->barrierTable->resizeRowsToContents();
+            */
             }
 
             void BarrierEditor::removeBarrier() {
-                Barrier* b = selectedBarrier();
+             /*   Barrier* b = selectedBarrier();
                 _dataModel->removeBarrier(b);
                 if (_dataModel->size() > 0) {
                     QModelIndex idx = _ui->barrierTable->currentIndex();
@@ -152,7 +155,7 @@ namespace ews {
                     select(NULL);
                 }
                 updateEnabled();
-            }
+            */}
             
             Barrier::NumSlits BarrierEditor::numSlitsSelected() const {
                 /*if(_ui->zeroSlits->isChecked()) {
@@ -182,8 +185,8 @@ namespace ews {
                     canEdit = b != NULL && b->isEnabled();
                 }
 
-                bool canAdd = _dataModel != NULL && !_dataModel->isFull();
-                _ui->addBarrier->setEnabled(canAdd);
+                //bool canAdd = _dataModel != NULL && !_dataModel->isFull();
+                //_ui->addBarrier->setEnabled(canAdd);
 
                 /*_ui->slitNumSelect->setEnabled(canEdit);
                 
@@ -195,24 +198,15 @@ namespace ews {
                 _ui->slitSeparation->setEnabled(canEditSlitSep);*/
             }
             
-            void BarrierEditor::updateNumSlits() {
-              /*  Barrier* b = selectedBarrier();
-                if(b) {
-                    QObject* sender = QObject::sender();
-                    if(sender) {
-                        if(sender == _ui->zeroSlits) {
-                            b->setNumSlits(Barrier::ZERO_SLITS);
-                        }
-                        else if(sender == _ui->oneSlit) {
-                            b->setNumSlits(Barrier::ONE_SLIT);
-                        }
-                        else if(sender == _ui->twoSlits) {
-                            b->setNumSlits(Barrier::TWO_SLITS);
-                        }
-                    }
+            void BarrierEditor::updatePos(osg::Vec3 pos) {
+                QObject* sender = QObject::sender();
+                if(sender) {
+                    char tmp[1024];
+                    sprintf(tmp,"X: %.2f\nY: %.2f\nZ: %.2f",pos[0],pos[1],pos[2]);
+                    posString=tmp;
+                    _ui->label_2->setText(posString);
 
-                    updateEnabled();
-                }*/
+                }
             }
             
             void BarrierEditor::updateSlitWidth(int width) {

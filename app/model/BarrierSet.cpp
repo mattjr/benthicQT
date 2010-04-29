@@ -34,6 +34,7 @@ namespace ews {
                 
                 // When barriers are added we need to recompute the PrecomputedPotential.
                 //QObject::connect(this, SIGNAL(barrierAdded(int, Barrier*)), this, SLOT(updatePotentials()));
+             //   QObject::connect(this, SIGNAL(posChanged(osg::Vec2)), this, SLOT(updatePos(osg::Vec2)));
                 
             }
             /** Dtor. */

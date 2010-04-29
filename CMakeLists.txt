@@ -95,6 +95,7 @@ unmoc(VertexHeightUpdater.h)
 unmoc(PickHandler.h)
 unmoc(Knob.h)
 unmoc(PotentialUpdater.h)
+unmoc(PositionHandler.h)
 unmoc(WaterBoundaryDragConstraint.h)
 #message("moc files: ${BQT_MOC_HDRS}")
 

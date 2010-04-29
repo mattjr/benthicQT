@@ -56,12 +56,11 @@ namespace ews {
             //    osg::ref_ptr<osg::Node> Cow = osgDB::readNodeFile("/home/mattjr/11_elephant_rock/final.ive");
              //  addChild(Cow.get());
                 osg::ref_ptr<osg::Geode> geode = new osg::Geode();
-
-                osg::ref_ptr<osg::Box> box = new osg::Box(osg::Vec3(0,0,0), 1.5f, 1.5f, 4.0f);
+                addEventCallback(new PickHandler);
+                osg::ref_ptr<osg::Box> box = new osg::Box(osg::Vec3(0,0,0), 0.1f, 0.1f, 0.1f);
                 osg::ref_ptr<osg::ShapeDrawable> drawable = new osg::ShapeDrawable(box.get());
                 geode->addDrawable(drawable.get());
                 addChild(geode);
-                addEventCallback(new PickHandler);
             }
             
             
@@ -70,9 +69,12 @@ namespace ews {
 
             
             void SceneRoot::addDrawableFor(QObject& data) {
+                removeChildren(0,getNumChildren());
                 ref_ptr<DrawableQtAdapter> drawable = DrawableFactory::instance().createDrawableFor(data);
                 if(drawable) {
                    addChild(drawable);
+                                   addEventCallback(new PickHandler);
+
                     _drawables.insert(&data, drawable);
                 }
             }
@@ -83,7 +85,7 @@ namespace ews {
                     qDebug() << "removing a drawable node" << geom <<"of type" << typeid(*geom).name();
                     removeChild(geom);
                 }
-            }
+            }            
 
         }
     }

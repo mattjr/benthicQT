@@ -41,7 +41,7 @@ namespace ews {
                 _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
                 
                 setFocusPolicy(Qt::StrongFocus);
-                
+                setMouseTracking(true);
 #if defined(GL_MULTISAMPLE_ARB)
                 QGLFormat fmt; 
                 QGLFormat::setDefaultFormat(fmt); 

@@ -24,7 +24,7 @@
 #include <osg/CullFace>
 #include <osgDB/ReadFile>
 #include <osgManipulator/Translate2DDragger>
-
+#include "PositionHandler.h"
 #include "MeshGeom.h"
 #include "PotentialUpdater.h"
 #include "BQTDebug.h"
@@ -50,6 +50,7 @@ namespace ews {
                 _switch->setNewChildDefaultValue(true);
                 addChild(_switch.get());
                 _switch->addChild(_meshGeom.get());
+                addEventCallback(new PositionHandler(&_dataModel));
 
                 
                 updateGeom();
@@ -76,7 +77,8 @@ namespace ews {
             
 
 
-            
+
+
             void MeshGeom::setEnabled(bool enabled) {
                 if(enabled) {
                     _switch->setAllChildrenOn();

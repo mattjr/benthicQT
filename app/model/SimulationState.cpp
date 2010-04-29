@@ -34,8 +34,8 @@ namespace ews {
                 connect(&_barriers, SIGNAL(barrierRemoved(int,Barrier*)),
                         SLOT(forwardBarrierSetRemoval(int, Barrier*)));
                
-          //      connect(&_mesh_files, SIGNAL(loadNewMeshes(MeshFile *)),
-            //            SLOT(forwardMeshLoad( MeshFile* meshfile)));
+              //  connect(&_mesh_files, SIGNAL(updatePos(osg::Vec3)),
+                     //   SLOT(forwardPos(osg::Vec3)));
 
 
                 setPaused(true);

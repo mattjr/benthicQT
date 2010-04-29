@@ -31,6 +31,7 @@
 //#include "AmplitudePlot.h"
 //#include "PointSampler.h"
 #include "Preferences.h"
+#include "PositionHandler.h"
 #include <iostream>
 namespace ews {
     namespace app {
@@ -50,7 +51,7 @@ namespace ews {
 
                 
                 // Config barrier editor.
-                _ui->barrierEditor->setDataModel(&state->getBarriers());
+                _ui->barrierEditor->setDataModel(&state->getMeshFiles());
                 
                 // Config detector editor.
 //                _ui->detectorEditor->setDataModel(&state->getSamplers());
@@ -59,6 +60,7 @@ namespace ews {
                 _sceneRoot = new SceneRoot(this);
                 // renderer is an instance (the only one) of QOSGWidget
                 _ui->renderer->setSceneData(_sceneRoot);
+                //_ui->renderer->addEventHandler(new PositionHandler);
                 // Setup sync between model and renderer.
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
