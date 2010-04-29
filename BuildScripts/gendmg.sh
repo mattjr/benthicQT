@@ -19,9 +19,6 @@ then
 fi
 mkdir -p tmpbuild
 cp -r ../build/benthicQT.app tmpbuild
-ls
-VERSIONER_PERL_PREFER_32_BIT=yes ./dsstore-xml.pl --file benthicQT.xml tmpbuild/
-mv tmpbuild/.DS_Store benthicQT.dsstore
 ./make-diskimage ../benthicQT.dmg tmpbuild/ benthicQT -null- benthicQT.dsstore  benthicQT.background.png
 rm -rf tmpbuild
 
