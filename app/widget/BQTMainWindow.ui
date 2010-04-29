@@ -56,11 +56,8 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
-   </property>
-   <property name="nativeMenuBar">
-    <bool>false</bool>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -179,7 +176,7 @@
   </widget>
   <action name="actionOpen">
    <property name="icon">
-    <iconset resource="../../Resources.qrc">
+    <iconset>
      <normaloff>:/images/images/file-open-green.png</normaloff>:/images/images/file-open-green.png</iconset>
    </property>
    <property name="text">
@@ -188,7 +185,7 @@
   </action>
   <action name="actionReset">
    <property name="icon">
-    <iconset resource="../../Resources.qrc">
+    <iconset>
      <normaloff>:/images/images/view-refresh.png</normaloff>:/images/images/view-refresh.png</iconset>
    </property>
    <property name="text">
@@ -203,7 +200,7 @@
   </action>
   <action name="actionAddBarrier">
    <property name="icon">
-    <iconset resource="../../Resources.qrc">
+    <iconset>
      <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
    </property>
    <property name="text">
@@ -218,7 +215,7 @@
   </action>
   <action name="actionRemoveBarrier">
    <property name="icon">
-    <iconset resource="../../Resources.qrc">
+    <iconset>
      <normaloff>:/images/images/list-remove.png</normaloff>:/images/images/list-remove.png</iconset>
    </property>
    <property name="text">
@@ -320,9 +317,7 @@
    </slots>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../Resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionOpen</sender>
