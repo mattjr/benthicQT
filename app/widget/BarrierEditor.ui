@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>220</width>
-    <height>413</height>
+    <width>240</width>
+    <height>415</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>50</width>
+    <width>240</width>
     <height>413</height>
    </size>
   </property>
@@ -37,6 +37,12 @@
        <horstretch>0</horstretch>
        <verstretch>100</verstretch>
       </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>320</width>
+       <height>0</height>
+      </size>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -115,9 +121,6 @@
       <item>
        <widget class="QWidget" name="widget_2" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="spacing">
-          <number>6</number>
-         </property>
          <property name="margin">
           <number>0</number>
          </property>
@@ -127,7 +130,7 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../../Resources.qrc">
              <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
            </property>
           </widget>
@@ -138,7 +141,7 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../../Resources.qrc">
              <normaloff>:/images/images/list-remove.png</normaloff>:/images/images/list-remove.png</iconset>
            </property>
           </widget>
@@ -231,7 +234,9 @@ Z:</string>
    <header>SizeHintableTableView.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../Resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>addBarrier</sender>
