@@ -118,11 +118,12 @@ if(APPLE)
         set(FIXUP_EXTRA_LIBS ${OSG_INSTALLED_PLUGINS};${OPENSCENEGRAPH_LIBRARIES};\${QTPLUGINS})
         include(BundleUtilities)
         message(STATUS \"About to apply bundle fixup to: \${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app\")
-        fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app\" \"\${FIXUP_EXTRA_LIBS}\" \"${FIXUP_LIBRARY_SEARCH_PATH}\")
+      #  fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app\" \"\${FIXUP_EXTRA_LIBS}\" \"${FIXUP_LIBRARY_SEARCH_PATH}\")
         " COMPONENT Runtime)
         INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/MacOS/osgdb_ive.so"
             DESTINATION
             "${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
+        INSTALL(CODE "EXECUTE_PROCESS( COMMAND ../BuildScripts/gendmg.sh)")
         
 # INSTALL(CODE "
 #    file(GLOB_RECURSE QTPLUGINS
