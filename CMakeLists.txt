@@ -97,6 +97,12 @@ unmoc(Knob.h)
 unmoc(PotentialUpdater.h)
 unmoc(PositionHandler.h)
 unmoc(WaterBoundaryDragConstraint.h)
+unmoc(RStarBoundingBox.h)
+unmoc(RStarTree.h)
+unmoc(RStarVisitor.h)
+
+unmoc(Bboxes.hpp)
+
 #message("moc files: ${BQT_MOC_HDRS}")
 
 set_source_files_properties(${BQT_HDRS} PROPERTIES HEADER_FILE_ONLY TRUE) 

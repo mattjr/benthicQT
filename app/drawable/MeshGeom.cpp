@@ -23,6 +23,7 @@
 #include <osg/Material>
 #include <osg/CullFace>
 #include <osgDB/ReadFile>
+
 #include <osgManipulator/Translate2DDragger>
 #include "PositionHandler.h"
 #include "MeshGeom.h"
@@ -96,7 +97,8 @@ namespace ews {
                     qDebug() << "Loading " << *it;
                 osg::ref_ptr<osg::Node> Node = osgDB::readNodeFile( it->toStdString());
                 _meshGeom->addChild(Node.get());
-                    ++it;
+
+                ++it;
                 }
                 setEnabled(_dataModel.isEnabled());
             }

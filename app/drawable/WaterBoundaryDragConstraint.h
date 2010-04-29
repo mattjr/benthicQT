@@ -37,7 +37,7 @@ namespace ews {
             class WaterBoundaryDragConstraint : public Constraint {
             public:
                 
-                WaterBoundaryDragConstraint(Node& refNode, const BoundingBox& bounds) 
+                WaterBoundaryDragConstraint(Node& refNode, const osg::BoundingBox& bounds)
                 : Constraint(refNode), _bounds(bounds)  {
                 }
                 
@@ -68,7 +68,7 @@ namespace ews {
                 virtual ~WaterBoundaryDragConstraint() {}
                 
             private:
-                BoundingBox _bounds;
+                osg::BoundingBox _bounds;
                 
             };
         }

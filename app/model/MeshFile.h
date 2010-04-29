@@ -29,6 +29,8 @@
 using osg::ref_ptr;
 #include "BQTDefine.h"
 #include "MathUtils.h"
+#include <osgDB/FileNameUtils>
+#include "Bboxes.hpp"
 
 namespace ews {
     namespace app {
@@ -66,10 +68,20 @@ namespace ews {
                 bool isEnabled() const {
                     return _enabled;
                 }
-                
-
+                void updateBoxes(){
+                    QStringList list=getFileNames();
+                    QStringList::Iterator it = list.begin();
+                    while( it != list.end() ) {
+                        string path=osgDB::getFilePath(it->toStdString());
+                        _tree=loadBBox(string(path+"/campath.txt").c_str());
+                        if(_tree)
+                            qDebug() << "Sucessfully loaded Tree";
+                        it++;
+                    }
+                }
                 void setFileNames(QStringList files) {
                     filenames = files;
+                    updateBoxes();
                     emit dataChanged();
                 }
 
@@ -80,6 +92,10 @@ namespace ews {
                 
 
                 void updatePos(osg::Vec3 v) {
+                    bbox_map_info *bbmi=find_closet_img_idx(_tree,v);
+                    if(bbmi){
+                        qDebug()<< bbmi->leftname.c_str();
+                    }
                     emit posChanged(v);
                 }
 
@@ -103,6 +119,7 @@ namespace ews {
 
                 bool _enabled;
                 QStringList filenames;
+                RTree *_tree;
             };
         }
     }

@@ -36,6 +36,7 @@ namespace ews {
 //            : QObject(parent)
             {
            //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));
+
             }
             
            

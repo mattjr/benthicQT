@@ -69,7 +69,7 @@ namespace ews {
                 _switch->addChild(_barrierGeom.get());
                // WaveMedium& waves = _dataModel.getBarrierSet()->getSimulationState()->getWaveMedium();
                 const Real wiggle = ALLOWABLE_OUT_OF_BOUNDS;
-                BoundingBox validArea(-wiggle, -wiggle, 0,
+                osg::BoundingBox validArea(-wiggle, -wiggle, 0,
                                       WIDTH_WATER + wiggle, HEIGHT_WATER + wiggle, 0);
                 ref_ptr<Constraint> constraint = new WaterBoundaryDragConstraint(*this, validArea);
                 
