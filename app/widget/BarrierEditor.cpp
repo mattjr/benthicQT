@@ -213,7 +213,7 @@ namespace ews {
                 void BarrierEditor::updateImgLabel(QString str) {
                 QObject* sender = QObject::sender();
                 if(sender) {
-                    _ui->label->setText(str);
+                    _ui->textBrowser->setText(str);
 
                 }
             }

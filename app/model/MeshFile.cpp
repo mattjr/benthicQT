@@ -55,12 +55,12 @@ namespace ews {
                bbox_map_info info;
                if(find_closet_img_idx(_tree,v,info)){
                    QString s;
-                   s=(string("Img:")+info.leftname).c_str();
+                   s=(info.leftname+"\n"+info.rightname).c_str();
                    emit imgLabelChanged(s);
                    // qDebug()<< info.leftname.c_str();
                 }else{
                     QString s;
-                    s=string("Img:\nN/A").c_str();
+                    s=string("N/A").c_str();
                     emit imgLabelChanged(s);
                     //qDebug()<<"No img at " << v[0] << " " << v[1] << " "<<v[2];
                 }
