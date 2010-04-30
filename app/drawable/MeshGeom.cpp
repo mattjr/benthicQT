@@ -32,6 +32,7 @@
 #include "BarrierSet.h"
 #include "SimulationState.h"
 #include "ProgressBar.h"
+#include "UniformCallback.hpp"
 
 namespace ews {
     namespace app {
@@ -49,15 +50,14 @@ namespace ews {
        {
                 
 
-                
                 _switch->setNewChildDefaultValue(true);
                 addChild(_switch.get());
                 _switch->addChild(_meshGeom.get());
-                addEventCallback(new PositionHandler(&_dataModel));
 
+                addEventCallback(new PositionHandler(&_dataModel));
                 
-                updateGeom();
-                
+              updateGeom();
+                qDebug() << "In contstrt mesh gerom";
                 // Callback to detect when we've been moved
                 // and update the databmodel.
          //       setUpdateCallback(new PotentialUpdater);
@@ -71,7 +71,7 @@ namespace ews {
             
             void MeshGeom::respondToSignals(bool respond) {
                 if(respond) {
-                    connect(&_dataModel, SIGNAL(dataChanged()), SLOT(updateGeom()));//, Qt::UniqueConnection);
+                   connect(&_dataModel, SIGNAL(dataChanged()), SLOT(updateGeom()));//, Qt::UniqueConnection);
                 }
                 else {
                     _dataModel.disconnect(this);
@@ -80,7 +80,9 @@ namespace ews {
             
 
 
+        void MeshGeom::changeOverlay(int){
 
+        }
 
             void MeshGeom::setEnabled(bool enabled) {
                 if(enabled) {
@@ -99,8 +101,9 @@ namespace ews {
                 while( it != list.end() ) {
                    //_dataModel.getPBarD()->reset();
 
-  //                  qDebug() << "Loading " << *it;
+                    qDebug() << "Loading " << *it;
                 string filename = it->toStdString();
+                //osgDB::Registry::instance()->setReadFileCallback(new MyReadCallback(*sseh));
                 osg::ref_ptr<osgDB::ReaderWriter> rw = osgDB::Registry::instance()->getReaderWriterForExtension(osgDB::getLowerCaseFileExtension(filename));
                 std::auto_ptr<progbuf> pb(new progbuf(osgDB::findDataFile(filename),_dataModel.getPBarD()));
                 if (!rw || !pb->is_open())
@@ -119,14 +122,15 @@ namespace ews {
                 std::istream mis(pb.get());
                 osgDB::ReaderWriter::ReadResult rr = rw->readNode(mis);
                 osg::ref_ptr<osg::Node> node = rr.getNode();
+                osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
+                if(ss)
+                    ss->addUniform(_dataModel.getShaderOutUniform());
                 _meshGeom->addChild(node.get());
                 ++it;
             }
 
 
                 setEnabled(_dataModel.isEnabled());
-                _dataModel.getPBarD()->close();
-                qApp->processEvents();
 
             }
 

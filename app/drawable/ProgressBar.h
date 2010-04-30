@@ -38,6 +38,7 @@ protected:
                 count_ += this->egptr() - this->gptr();
                 int prog=int(((size_ - this->showmanyc())/(double)size_)*div_) ;
                 pd_->setValue( prog );
+              //  qDebug() << prog << " "<<size_;
                 qApp->processEvents();
                 return v;
         }

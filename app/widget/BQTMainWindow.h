@@ -27,7 +27,7 @@
 #include "SceneRoot.h"
 #include "SimulationState.h"
 #include <QFileDialog>
-
+#include "UniformCallback.hpp"
 /** Forward declaration of generated UI class. */
 /** @cond */
 namespace Ui {
@@ -90,6 +90,8 @@ namespace ews {
                 Ui::EWSMainWindowForm* _ui;
                 SimulationState* _state;
                 QFileDialog *qf;
+                ShaderSwitchEventHandler *sseh;
+
                 osg::ref_ptr<SceneRoot> _sceneRoot;
             };
         }

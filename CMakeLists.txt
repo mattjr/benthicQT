@@ -101,6 +101,7 @@ unmoc(RStarBoundingBox.h)
 unmoc(RStarTree.h)
 unmoc(RStarVisitor.h)
 unmoc(ProgressBar.h)
+unmoc(UniformCallback.hpp)
 
 unmoc(Bboxes.hpp)
 

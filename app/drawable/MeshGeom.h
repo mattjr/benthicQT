@@ -29,6 +29,7 @@
 #include "MeshFile.h"
 #include "DrawableQtAdapter.h"
 #include <QErrorMessage>
+#include "UniformCallback.hpp"
 namespace ews {
     /**
      * Parent namespace for GUI-related code.
@@ -57,8 +58,10 @@ namespace ews {
                 /** Set whether barrier is visible and active. */
                 void setEnabled(bool enabled);
                 void updatePos(osg::Vec2);
-                
-            private slots:
+            public slots:
+                void changeOverlay(int);
+
+            public slots:
                 /** Recompute geometric representation to match data model. */
                 void updateGeom();
                 
@@ -76,7 +79,7 @@ namespace ews {
                 ref_ptr<Switch> _switch;
                 ref_ptr<PositionAttitudeTransform> _meshGeom;
                 QErrorMessage errorD;
-
+                int num_shader_out;
             };
         }
     }

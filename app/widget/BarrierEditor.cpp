@@ -36,6 +36,8 @@ namespace ews {
             BarrierEditor::BarrierEditor(QWidget* parent) 
             : QWidget(parent), _ui(new Ui::BarrierEditorForm), _dataModel(NULL) {
                 _ui->setupUi(this);
+                _ui->overlay->addItem("Texture");
+                _ui->overlay->addItem("Colored");
 
                 updateEnabled();
             }
@@ -68,6 +70,7 @@ namespace ews {
             void BarrierEditor::setDataModel(MeshFile* mf) {
                 _dataModel = mf;
                   QObject::connect(_dataModel, SIGNAL(posChanged(osg::Vec3)), this, SLOT(updatePos(osg::Vec3)));
+                 QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
                  QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
 
             /*    QAbstractItemModel* model = _ui->barrierTable->model();
@@ -231,6 +234,12 @@ namespace ews {
                     b->setSlitSeparation(static_cast<Uint>(sep));
                 }
             }
+            void BarrierEditor::on_overlay_currentIndexChanged(int index)
+            {
+                qDebug() << "changed to " << index;
+            }
+
         }
     }
 }
+

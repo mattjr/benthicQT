@@ -81,6 +81,7 @@ namespace ews {
                  */
                 void posChanged(osg::Vec3);
                 void imgLabelChanged(QString);
+                void overlayChanged(int);
             private:
                 Barrier::NumSlits numSlitsSelected() const;
                 void select(Barrier* barrier);
@@ -90,7 +91,10 @@ namespace ews {
 
                 Ui::BarrierEditorForm* _ui;
                 MeshFile* _dataModel;
-            };
+
+private slots:
+    void on_overlay_currentIndexChanged(int index);
+};
         }
     }
 }

@@ -31,6 +31,7 @@ using osg::ref_ptr;
 #include "MathUtils.h"
 #include <osgDB/FileNameUtils>
 #include "Bboxes.hpp"
+#include <osg/Uniform>
 #include <QProgressDialog>
 namespace ews {
     namespace app {
@@ -81,6 +82,7 @@ namespace ews {
                 }
                 void setFileNames(QStringList files) {
                     filenames = files;
+                    qDebug() << "SizeFM " << files.size();
                     updateBoxes();
                     emit dataChanged();
                 }
@@ -89,6 +91,7 @@ namespace ews {
                     return filenames ;
 
                 }
+                osg::Uniform * getShaderOutUniform(){return shared_shader_out;}
                 
 
                 void updatePos(osg::Vec3 v);
@@ -118,6 +121,8 @@ namespace ews {
                 QStringList filenames;
                 RTree *_tree;
                 QProgressDialog *progress;
+                osg::Uniform* shared_shader_out;
+
             };
         }
     }

@@ -32,6 +32,7 @@
 //#include "PointSampler.h"
 #include "Preferences.h"
 #include "PositionHandler.h"
+#include "UniformCallback.hpp"
 #include <iostream>
 namespace ews {
     namespace app {
@@ -39,7 +40,6 @@ namespace ews {
             using ews::Uint;
             using namespace ews::app::drawable;
             using namespace ews::app::model;
-            
             EWSMainWindow::EWSMainWindow(SimulationState* state, QWidget *parent) 
             : QMainWindow(parent), _ui(new Ui::EWSMainWindowForm), _state(state) {
                 _ui->setupUi(this);
@@ -60,7 +60,12 @@ namespace ews {
                 _sceneRoot = new SceneRoot(this);
                 // renderer is an instance (the only one) of QOSGWidget
                 _ui->renderer->setSceneData(_sceneRoot);
-                //_ui->renderer->addEventHandler(new PositionHandler);
+                        osg::Vec3 weights(6.24,0.79,0.3);
+                        int num_shader_out=2;
+                sseh=new ShaderSwitchEventHandler(weights,0,num_shader_out);
+
+                _ui->renderer->addEventHandler(sseh);
+
                 // Setup sync between model and renderer.
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
@@ -174,6 +179,11 @@ namespace ews {
             }
 
             void EWSMainWindow::openModel(){
+                //Stop rendering or it causes freakout ?
+                Uint fd=getInterFrameDelay();
+                setInterFrameDelay(INT_MAX);
+                ///
+
                 QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)");
                 if (files.isEmpty())
                     return;
@@ -185,13 +195,19 @@ namespace ews {
                     ++it;
                 }
 
+
                 _state->getMeshFiles().getPBarD()->setLabelText("Loading mesh "+first);
           //       _state->getMeshFiles().getPBarD()->reset();
                 _state->getMeshFiles().getPBarD()->show();
-
+                 sseh->setShaderOutUniform(_state->getMeshFiles().getShaderOutUniform());
                 _state->getMeshFiles().setFileNames(files);
-                _state->emitSignalsForLoad();
+               _state->emitSignalsForLoad();
+
                 _ui->renderer->computeHomePosition();
+                     //Redo rendering delay
+                 _state->getMeshFiles().getPBarD()->close();
+                setInterFrameDelay(fd);
+
                 qApp->processEvents();
 
             }

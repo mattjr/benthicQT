@@ -39,6 +39,7 @@ namespace ews {
                 progress = new QProgressDialog();
                 progress->setWindowModality(Qt::WindowModal);
                 progress->setCancelButtonText(0);
+                shared_shader_out = new osg::Uniform("shaderOut",0);
 
             }
             
@@ -70,6 +71,8 @@ namespace ews {
 
                 emit posChanged(v);
             }
+
+
             
 
         }
