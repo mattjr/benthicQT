@@ -28,7 +28,7 @@
 #include <osgManipulator/Translate2DDragger>
 #include "MeshFile.h"
 #include "DrawableQtAdapter.h"
-
+#include <QErrorMessage>
 namespace ews {
     /**
      * Parent namespace for GUI-related code.
@@ -75,7 +75,7 @@ namespace ews {
                 MeshFile& _dataModel;
                 ref_ptr<Switch> _switch;
                 ref_ptr<PositionAttitudeTransform> _meshGeom;
-
+                QErrorMessage errorD;
 
             };
         }

@@ -31,7 +31,7 @@ using osg::ref_ptr;
 #include "MathUtils.h"
 #include <osgDB/FileNameUtils>
 #include "Bboxes.hpp"
-
+#include <QProgressDialog>
 namespace ews {
     namespace app {
         namespace model {
@@ -93,7 +93,9 @@ namespace ews {
 
                 void updatePos(osg::Vec3 v);
 
-
+                QProgressDialog *getPBarD(void){
+                        return progress;
+                    }
             signals:
                 void dataChanged();
                 //void potentialChanged();
@@ -115,6 +117,7 @@ namespace ews {
                 bool _enabled;
                 QStringList filenames;
                 RTree *_tree;
+                QProgressDialog *progress;
             };
         }
     }

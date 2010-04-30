@@ -73,6 +73,7 @@ namespace ews {
 
                 // Sync setup between 
                 QObject::connect(&_state->getBarriers(), SIGNAL(sizeChanged(Uint)), this, SLOT(updateMenusEnabledState()));
+
             }
             
             EWSMainWindow::~EWSMainWindow() {
@@ -178,10 +179,15 @@ namespace ews {
                     return;
                 QStringList list = files;
                 QStringList::Iterator it = list.begin();
+                QString first=list.front();
                 while( it != list.end() ) {
                     qDebug() << "Opening" <<*it;
                     ++it;
                 }
+
+                _state->getMeshFiles().getPBarD()->setLabelText("Loading mesh "+first);
+                _state->getMeshFiles().getPBarD()->reset();
+                _state->getMeshFiles().getPBarD()->show();
 
                 _state->getMeshFiles().setFileNames(files);
                 _state->emitSignalsForLoad();

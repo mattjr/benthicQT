@@ -31,6 +31,8 @@
 #include "BQTDebug.h"
 #include "BarrierSet.h"
 #include "SimulationState.h"
+#include "ProgressBar.h"
+
 namespace ews {
     namespace app {
         namespace drawable {
@@ -93,13 +95,34 @@ namespace ews {
                 _meshGeom->removeChildren(0, _meshGeom->getNumChildren());
                 QStringList list=_dataModel.getFileNames();
                 QStringList::Iterator it = list.begin();
+                _dataModel.getPBarD()->show();
                 while( it != list.end() ) {
-                    qDebug() << "Loading " << *it;
-                osg::ref_ptr<osg::Node> Node = osgDB::readNodeFile( it->toStdString());
-                _meshGeom->addChild(Node.get());
+                   //_dataModel.getPBarD()->reset();
 
-                ++it;
+  //                  qDebug() << "Loading " << *it;
+                  _dataModel.getPBarD()->setLabelText("Loading Mesh: "+*it);
+                string filename = it->toStdString();
+                osg::ref_ptr<osgDB::ReaderWriter> rw = osgDB::Registry::instance()->getReaderWriterForExtension(osgDB::getLowerCaseFileExtension(filename));
+                std::auto_ptr<progbuf> pb(new progbuf(osgDB::findDataFile(filename),_dataModel.getPBarD()));
+                if (!pb->is_open())
+                {
+                    std::cerr << "Error: could not open file `" << filename << "'" << std::endl;
+                    QString errStr=string("Error: could not open file `" + filename + "'\n").c_str();
+                    errorD.showMessage(errStr);
+                    ++it;
+                    continue;
                 }
+               // std::cout << "Progress: ";
+
+                std::istream mis(pb.get());
+                osgDB::ReaderWriter::ReadResult rr = rw->readNode(mis);
+              //  std::cout << "\n";
+                osg::ref_ptr<osg::Node> node = rr.getNode();
+                _meshGeom->addChild(node.get());
+                ++it;
+            }
+                                  _dataModel.getPBarD()->close();
+
                 setEnabled(_dataModel.isEnabled());
             }
 

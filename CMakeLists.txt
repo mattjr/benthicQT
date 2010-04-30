@@ -100,6 +100,7 @@ unmoc(WaterBoundaryDragConstraint.h)
 unmoc(RStarBoundingBox.h)
 unmoc(RStarTree.h)
 unmoc(RStarVisitor.h)
+unmoc(ProgressBar.h)
 
 unmoc(Bboxes.hpp)
 

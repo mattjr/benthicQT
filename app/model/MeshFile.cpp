@@ -36,7 +36,9 @@ namespace ews {
 //            : QObject(parent)
             {
            //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));
-
+                progress = new QProgressDialog();
+                progress->setWindowModality(Qt::WindowModal);
+                progress->setCancelButtonText(0);
             }
             
            
