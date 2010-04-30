@@ -94,29 +94,30 @@ namespace ews {
             void MeshGeom::updateGeom() {
                 _meshGeom->removeChildren(0, _meshGeom->getNumChildren());
                 QStringList list=_dataModel.getFileNames();
+                qDebug() << "Number of files  "<<_dataModel.getFileNames().size();
                 QStringList::Iterator it = list.begin();
-                _dataModel.getPBarD()->show();
                 while( it != list.end() ) {
                    //_dataModel.getPBarD()->reset();
 
   //                  qDebug() << "Loading " << *it;
-                  _dataModel.getPBarD()->setLabelText("Loading Mesh: "+*it);
                 string filename = it->toStdString();
                 osg::ref_ptr<osgDB::ReaderWriter> rw = osgDB::Registry::instance()->getReaderWriterForExtension(osgDB::getLowerCaseFileExtension(filename));
                 std::auto_ptr<progbuf> pb(new progbuf(osgDB::findDataFile(filename),_dataModel.getPBarD()));
-                if (!pb->is_open())
+                if (!rw || !pb->is_open())
                 {
-                    std::cerr << "Error: could not open file `" << filename << "'" << std::endl;
-                    QString errStr=string("Error: could not open file `" + filename + "'\n").c_str();
+                    string errmsg= "Error: could not open file `" + filename +"'" +" Might be plugin not found\n";
+                    QString errStr=errmsg.c_str();
+                    std::cerr << errmsg;
                     errorD.showMessage(errStr);
                     ++it;
                     continue;
                 }
-               // std::cout << "Progress: ";
+                _dataModel.getPBarD()->setLabelText("Loading Mesh: "+*it);
+                 _dataModel.getPBarD()->setRange(0,100);
+                _dataModel.getPBarD()->show();
 
                 std::istream mis(pb.get());
                 osgDB::ReaderWriter::ReadResult rr = rw->readNode(mis);
-              //  std::cout << "\n";
                 osg::ref_ptr<osg::Node> node = rr.getNode();
                 _meshGeom->addChild(node.get());
                 ++it;
@@ -124,7 +125,9 @@ namespace ews {
 
 
                 setEnabled(_dataModel.isEnabled());
-                   _dataModel.getPBarD()->close();
+                _dataModel.getPBarD()->close();
+                qApp->processEvents();
+
             }
 
 

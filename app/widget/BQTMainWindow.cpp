@@ -192,6 +192,8 @@ namespace ews {
                 _state->getMeshFiles().setFileNames(files);
                 _state->emitSignalsForLoad();
                 _ui->renderer->computeHomePosition();
+                qApp->processEvents();
+
             }
 
 
