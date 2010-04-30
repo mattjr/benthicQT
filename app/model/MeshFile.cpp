@@ -58,7 +58,7 @@ namespace ews {
                bbox_map_info info;
                if(find_closet_img_idx(_tree,v,info)){
                    QString s;
-                   s=(info.leftname+"\n"+info.rightname).c_str();
+                   s=(info.leftname).c_str();
                    emit imgLabelChanged(s);
                    // qDebug()<< info.leftname.c_str();
                 }else{

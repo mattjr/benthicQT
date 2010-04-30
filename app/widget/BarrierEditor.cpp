@@ -175,9 +175,9 @@ namespace ews {
             /** Update the enabled state of all the widgets. */
             void BarrierEditor::updateEnabled() {
                 bool canEdit = false;
-                if(_ui->barrierTable->selectionModel()) {
+                /*if(_ui->barrierTable->selectionModel()) {
                     canEdit = _ui->barrierTable->selectionModel()->hasSelection();
-                }
+                }*/
                 
                 _ui->removeBarrier->setEnabled(canEdit);
 
@@ -204,7 +204,7 @@ namespace ews {
                 QObject* sender = QObject::sender();
                 if(sender) {
                     char tmp[1024];
-                    sprintf(tmp,"X: %.2f\nY: %.2f\nZ: %.2f",pos[0],pos[1],pos[2]);
+                    sprintf(tmp,"X: %3.2f Y: %3.2f Z: %3.2f",pos[0],pos[1],pos[2]);
                     posString=tmp;
                     _ui->label_2->setText(posString);
 
@@ -213,7 +213,7 @@ namespace ews {
                 void BarrierEditor::updateImgLabel(QString str) {
                 QObject* sender = QObject::sender();
                 if(sender) {
-                    _ui->textBrowser->setText(str);
+                    _ui->lineEdit->setText(str);
 
                 }
             }
