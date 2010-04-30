@@ -186,7 +186,7 @@ namespace ews {
                 }
 
                 _state->getMeshFiles().getPBarD()->setLabelText("Loading mesh "+first);
-          //      _state->getMeshFiles().getPBarD()->reset();
+          //       _state->getMeshFiles().getPBarD()->reset();
                 _state->getMeshFiles().getPBarD()->show();
 
                 _state->getMeshFiles().setFileNames(files);
