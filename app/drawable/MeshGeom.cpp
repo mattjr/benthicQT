@@ -121,9 +121,10 @@ namespace ews {
                 _meshGeom->addChild(node.get());
                 ++it;
             }
-                                  _dataModel.getPBarD()->close();
+
 
                 setEnabled(_dataModel.isEnabled());
+                   _dataModel.getPBarD()->close();
             }
 
 

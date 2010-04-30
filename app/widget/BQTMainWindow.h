@@ -26,7 +26,7 @@
 #include "BQTDefine.h"
 #include "SceneRoot.h"
 #include "SimulationState.h"
-
+#include <QFileDialog>
 
 /** Forward declaration of generated UI class. */
 /** @cond */
@@ -89,6 +89,7 @@ namespace ews {
                 Q_DISABLE_COPY(EWSMainWindow)
                 Ui::EWSMainWindowForm* _ui;
                 SimulationState* _state;
+                QFileDialog *qf;
                 osg::ref_ptr<SceneRoot> _sceneRoot;
             };
         }

@@ -73,9 +73,7 @@ namespace ews {
                 ref_ptr<DrawableQtAdapter> drawable = DrawableFactory::instance().createDrawableFor(data);
                 if(drawable) {
                    addChild(drawable);
-                                   addEventCallback(new PickHandler);
-
-                    _drawables.insert(&data, drawable);
+                  _drawables.insert(&data, drawable);
                 }
             }
             

@@ -39,6 +39,7 @@ namespace ews {
                 progress = new QProgressDialog();
                 progress->setWindowModality(Qt::WindowModal);
                 progress->setCancelButtonText(0);
+
             }
             
            

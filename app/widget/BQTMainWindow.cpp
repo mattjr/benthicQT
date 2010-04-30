@@ -43,7 +43,7 @@ namespace ews {
             EWSMainWindow::EWSMainWindow(SimulationState* state, QWidget *parent) 
             : QMainWindow(parent), _ui(new Ui::EWSMainWindowForm), _state(state) {
                 _ui->setupUi(this);
-                
+                qf=new QFileDialog();
                 // Config actions
                 //_ui->actionPause->setEnabled(false);
                 _ui->actionOpen->setEnabled(true);
@@ -174,7 +174,7 @@ namespace ews {
             }
 
             void EWSMainWindow::openModel(){
-                QStringList files = QFileDialog::getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)");
+                QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)");
                 if (files.isEmpty())
                     return;
                 QStringList list = files;
@@ -186,7 +186,7 @@ namespace ews {
                 }
 
                 _state->getMeshFiles().getPBarD()->setLabelText("Loading mesh "+first);
-                _state->getMeshFiles().getPBarD()->reset();
+          //      _state->getMeshFiles().getPBarD()->reset();
                 _state->getMeshFiles().getPBarD()->show();
 
                 _state->getMeshFiles().setFileNames(files);
