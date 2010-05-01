@@ -18,5 +18,5 @@ class  CompileObjects : public osgUtil::GLObjectsVisitor
           qApp->processEvents();
 
       }
-
+  }
 #endif // GLPRECOMPILE_H
