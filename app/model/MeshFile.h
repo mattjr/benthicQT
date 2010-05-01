@@ -102,7 +102,7 @@ namespace ews {
 
                     //emit dataChanged();
                 }
-
+            void setShaderOut(int index);
                 QStringList getFileNames(void) {
                     return filenames ;
 

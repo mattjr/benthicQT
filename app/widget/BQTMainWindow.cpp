@@ -219,6 +219,8 @@ compile.setState( _ui->renderer->getState());
                  qApp->processEvents();
                      //Redo rendering delay
                  _state->getMeshFiles().getPBarD()->close();
+                 _ui->barrierEditor->updateOverlayWidget();
+
                 setInterFrameDelay(fd);
 
                 qApp->processEvents();

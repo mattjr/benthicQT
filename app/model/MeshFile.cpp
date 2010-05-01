@@ -33,9 +33,9 @@ namespace ews {
 
             
             MeshFile::MeshFile()
-//            : QObject(parent)
+                    //            : QObject(parent)
             {
-           //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));
+                //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));
                 progress = new QProgressDialog();
                 progress->setWindowModality(Qt::WindowModal);
                 progress->setCancelButtonText(0);
@@ -43,9 +43,9 @@ namespace ews {
                 num_shader_out=2;
             }
             
-           
-              /** Create a new barrier and add it to the list. */
-                void MeshFile::loadMesh() {
+
+            /** Create a new barrier and add it to the list. */
+            void MeshFile::loadMesh() {
                 qDebug() <<"MeshFile::loadMesh()";
                 emit loadNewMeshes(this);
 
@@ -56,12 +56,12 @@ namespace ews {
 
             void MeshFile::updatePos(osg::Vec3 v)
             {
-               bbox_map_info info;
-               if(find_closet_img_idx(_tree,v,info)){
-                   QString s;
-                   s=(info.leftname).c_str();
-                   emit imgLabelChanged(s);
-                   // qDebug()<< info.leftname.c_str();
+                bbox_map_info info;
+                if(find_closet_img_idx(_tree,v,info)){
+                    QString s;
+                    s=(info.leftname).c_str();
+                    emit imgLabelChanged(s);
+                    // qDebug()<< info.leftname.c_str();
                 }else{
                     QString s;
                     s=string("N/A").c_str();
@@ -71,7 +71,10 @@ namespace ews {
 
                 emit posChanged(v);
             }
-
+            void MeshFile::setShaderOut(int index) {
+                if(shared_shader_out)
+                    shared_shader_out->set(index);
+            }
 
             
 

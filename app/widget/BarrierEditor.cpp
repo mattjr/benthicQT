@@ -170,7 +170,8 @@ namespace ews {
                 else if(_ui->oneSlit->isChecked()) {
                     return Barrier::ONE_SLIT;
                 }
-                else if(_ui->twoSlits->isChecked()) {
+                else if(_ui->twoSlits->isChecked()) {                    for(int i=0; i<=  _ui->overlay->count(); i++)
+
                     return Barrier::TWO_SLITS;
                 }
                 return Barrier::ZERO_SLITS;*/
@@ -222,6 +223,9 @@ namespace ews {
                 }
             }
                 void BarrierEditor::updateOverlayWidget(){
+                          _ui->overlay->clear();
+
+                    qDebug() << "Gere";
                       for(int i=0; i< _dataModel->getNumShaderOut(); i++){
                    if( i < _dataModel->getShaderNames().size())
                        _ui->overlay->addItem(_dataModel->getShaderNames()[i].c_str());
@@ -251,7 +255,9 @@ namespace ews {
             }
             void BarrierEditor::on_overlay_currentIndexChanged(int index)
             {
-                qDebug() << "changed to " << index;
+             //   qDebug() << "changed to " << index;
+                if(_dataModel)
+                    _dataModel->setShaderOut(index);
             }
 
         }
