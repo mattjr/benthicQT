@@ -84,7 +84,7 @@ namespace ews {
                     filenames = files;
                     qDebug() << "SizeFM " << files.size();
                     updateBoxes();
-                    emit dataChanged();
+                    //emit dataChanged();
                 }
 
                 QStringList getFileNames(void) {
@@ -100,7 +100,7 @@ namespace ews {
                         return progress;
                     }
             signals:
-                void dataChanged();
+               // void dataChanged();
                 //void potentialChanged();
                 void loadNewMeshes(MeshFile *);
 

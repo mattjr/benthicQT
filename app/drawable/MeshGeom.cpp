@@ -49,6 +49,7 @@ namespace ews {
             _meshGeom(new PositionAttitudeTransform)
        {
                 
+qDebug() << " In Mesh Geom const";
 
                 _switch->setNewChildDefaultValue(true);
                 addChild(_switch.get());
@@ -57,7 +58,7 @@ namespace ews {
                 addEventCallback(new PositionHandler(&_dataModel));
                 
               updateGeom();
-                qDebug() << "In contstrt mesh gerom";
+//                qDebug() << "In contstrt mesh gerom";
                 // Callback to detect when we've been moved
                 // and update the databmodel.
          //       setUpdateCallback(new PotentialUpdater);
@@ -71,7 +72,7 @@ namespace ews {
             
             void MeshGeom::respondToSignals(bool respond) {
                 if(respond) {
-                   connect(&_dataModel, SIGNAL(dataChanged()), SLOT(updateGeom()));//, Qt::UniqueConnection);
+               //    connect(&_dataModel, SIGNAL(dataChanged()), SLOT(updateGeom()));//, Qt::UniqueConnection);
                 }
                 else {
                     _dataModel.disconnect(this);
@@ -94,6 +95,8 @@ namespace ews {
             }
             
             void MeshGeom::updateGeom() {
+                qDebug() << " In Mesh Geom update";
+
                 _meshGeom->removeChildren(0, _meshGeom->getNumChildren());
                 QStringList list=_dataModel.getFileNames();
                 qDebug() << "Number of files  "<<_dataModel.getFileNames().size();
