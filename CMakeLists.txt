@@ -61,6 +61,7 @@ file(GLOB BQT_PHYS_SRC physics/*.cpp)
 # This is the list of source files that need to be compiled
 #--------------------------------------------------------------------------------
 file(GLOB BQT_SRCS main.cpp app/widget/*.cpp app/model/*.cpp app/drawable/*.cpp physics/*.cpp)
+list(REMOVE_ITEM BQT_SRCS VideoStreamer.cpp)
 
 #--------------------------------------------------------------------------------
 # Regular (non-qt) header files

@@ -1,7 +1,7 @@
 #include "VideoStreamer.h"
 #include <iostream>
 #include <fstream>
-
+#ifdef USE_FFMPEG
 #undef AV_NOPTS_VALUE
 #define AV_NOPTS_VALUE int64_t(0x8000000000000000)
 
@@ -413,3 +413,4 @@ void ReleaseFrame(AVFrame *ai_frame, bool ai_releaseData)
 
         return true;
 }*/
+#endif

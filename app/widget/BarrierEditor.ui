@@ -51,7 +51,7 @@
     <set>Qt::AlignCenter</set>
    </property>
    <property name="flat">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
@@ -152,7 +152,7 @@
     <string>...</string>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../../Resources.qrc">
      <normaloff>:/images/images/list-remove.png</normaloff>:/images/images/list-remove.png</iconset>
    </property>
   </widget>
@@ -169,12 +169,14 @@
     <string>...</string>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../../Resources.qrc">
      <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../Resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>addBarrier</sender>
