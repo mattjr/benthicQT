@@ -225,7 +225,7 @@ namespace ews {
                 void BarrierEditor::updateOverlayWidget(){
                           _ui->overlay->clear();
 
-                    qDebug() << "Gere";
+
                       for(int i=0; i< _dataModel->getNumShaderOut(); i++){
                    if( i < _dataModel->getShaderNames().size())
                        _ui->overlay->addItem(_dataModel->getShaderNames()[i].c_str());
@@ -234,7 +234,7 @@ namespace ews {
                        sprintf(tmp,"Aux %d",i);
                        QString qtmp=tmp;
                        _ui->overlay->addItem(qtmp);
-                       qDebug() << "Adding " <<qtmp;
+                       //qDebug() << "Adding " <<qtmp;
                    }
 
                }
