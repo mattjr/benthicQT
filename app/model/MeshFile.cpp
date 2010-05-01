@@ -32,7 +32,7 @@ namespace ews {
         namespace model {
 
             
-            MeshFile::MeshFile() 
+            MeshFile::MeshFile()
 //            : QObject(parent)
             {
            //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));

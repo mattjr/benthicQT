@@ -127,11 +127,19 @@ namespace ews {
 
                 osgDB::ReaderWriter::ReadResult rr = rw->readNode(mis,local_opt);
                 if (rr.validNode()) {
-                    osg::ref_ptr<osg::Node> node = rr.takeNode();
+                    osg::ref_ptr<osg::Node> node = rr.getNode();
+                    if(!node.valid()){
+                        string errmsg= "Invalid Node: could not open file `" + filename +"'";
+                        QString errStr=errmsg.c_str();
+                        std::cerr << errmsg;
+                        errorD.showMessage(errStr);
+                    }
                     osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
                     if(ss)
                     ss->addUniform(_dataModel.getShaderOutUniform());
                     _meshGeom->addChild(node.get());
+                    setEnabled(true);
+
                 }else{
                     if (rr.error()) {
                         string errmsg= "Error: could not open file `" + filename +"'" +rr.message();
@@ -144,7 +152,6 @@ namespace ews {
             }
 
 
-                setEnabled(_dataModel.isEnabled());
 
             }
 

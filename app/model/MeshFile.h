@@ -66,9 +66,9 @@ namespace ews {
                  * Gets enabled state of barrier. 
                  * @return true if active, false if inactive and invisible.
                  */
-                bool isEnabled() const {
+               /* bool isEnabled() const {
                     return _enabled;
-                }
+                }*/
                 void updateBoxes(){
                     QStringList list=getFileNames();
                     QStringList::Iterator it = list.begin();
@@ -142,7 +142,7 @@ namespace ews {
             private:
                 Q_DISABLE_COPY(MeshFile)
 
-                bool _enabled;
+                //bool _enabled;
                 QStringList filenames;
                 RTree *_tree;
                 QProgressDialog *progress;
