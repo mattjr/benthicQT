@@ -18,23 +18,5 @@ class  CompileObjects : public osgUtil::GLObjectsVisitor
           qApp->processEvents();
 
       }
-/*      virtual void apply(osg::Geode& node);
-      virtual void apply(osg::Drawable& drawable);
-      virtual void apply(osg::StateSet& stateset);*/
-   };
-/*class  CompileOp : public osgUtil::IncrementalCompileOperation
-   {
-   public:
-      CompileOp()
-      : osgUtil::IncrementalCompileOperation()
-      {
-qDebug() << "Overlaoded";
-      }
-      ~CompileOp(){}
 
-     virtual void apply(osg::Node& node);
-      virtual void apply(osg::Geode& node);
-      virtual void apply(osg::Drawable& drawable);
-      virtual void apply(osg::StateSet& stateset);
-   };*/
 #endif // GLPRECOMPILE_H
