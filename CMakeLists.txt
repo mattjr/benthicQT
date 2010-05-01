@@ -88,6 +88,7 @@ macro(unmoc FILENAME)
     endif()
 endmacro()    
 
+unmoc(IVideoStreamer.h)
 unmoc(DrawableFactory.h)
 unmoc(CameraController.h)
 unmoc(WWManipulator.hpp)
@@ -103,7 +104,7 @@ unmoc(RStarVisitor.h)
 unmoc(ProgressBar.h)
 unmoc(GLPreCompile.h)
 unmoc(Bboxes.hpp)
-
+unmoc(VideoStreamer.h)
 #message("moc files: ${BQT_MOC_HDRS}")
 
 set_source_files_properties(${BQT_HDRS} PROPERTIES HEADER_FILE_ONLY TRUE) 
@@ -139,12 +140,33 @@ endif (WIN32)
 # note that it's Qt4, not QT4 or qt4
 set(QT_COMPONENTS QtCore QtGui QtOpenGL QtSvg QtXml)
 find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
+include(FindFFmpeg)
+FIND_PACKAGE(FFmpeg)
 
 #--------------------------------------------------------------------------------
 # QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to
 # a CMake script that sets up this directory for building with Qt4
 include( ${QT_USE_FILE} )
 
+#--------------------------------------------------------------------------------
+
+IF(FFMPEG_FOUND)
+
+INCLUDE_DIRECTORIES( ${FFMPEG_INCLUDE_DIRS} )
+LINK_DIRECTORIES(${FFMPEG_LIBRARY_DIRS})
+SET(TARGET_EXTERNAL_LIBRARIES ${FFMPEG_LIBRARIES} x264)
+message("TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARIES}")
+
+IF(FFMPEG_LIBSWSCALE_FOUND)
+
+    INCLUDE_DIRECTORIES( ${FFMPEG_LIBSWSCALE_INCLUDE_DIRS} ${FFMPEG_LIBSWSCALE_INCLUDE_DIRS}/libswscale )
+
+    ADD_DEFINITIONS(-DUSE_SWSCALE)
+
+    SET(TARGET_EXTERNAL_LIBRARIES ${FFMPEG_LIBRARIES} ${FFMPEG_LIBSWSCALE_LIBRARIES} x264)
+
+ENDIF()
+ENDIF(FFMPEG_FOUND)
 
 #--------------------------------------------------------------------------------
 # Use qt menu nib stuff
@@ -327,7 +349,7 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
 set(ALL_QT_OSG_LIBS     
 	${QT_LIBRARIES}
     ${OPENSCENEGRAPH_LIBRARIES} 
-    ${Qwt5_Qt4_LIBRARIES}
+    ${TARGET_EXTERNAL_LIBRARIES}
 )
 
 ##message("libs:  ${ALL_QT_OSG_LIBS}")
