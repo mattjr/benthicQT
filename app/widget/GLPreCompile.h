@@ -1,7 +1,6 @@
 #ifndef GLPRECOMPILE_H
 #define GLPRECOMPILE_H
 #include <osgUtil/GLObjectsVisitor>
-#include <osgUtil/IncrementalCompileOperation>
 
 class  CompileObjects : public osgUtil::GLObjectsVisitor
    {
