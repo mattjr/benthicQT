@@ -121,14 +121,25 @@ namespace ews {
                 _dataModel.getPBarD()->setLabelText("Loading Mesh: "+*it);
                  _dataModel.getPBarD()->setRange(0,100);
                 _dataModel.getPBarD()->show();
-
+                osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = new osgDB::ReaderWriter::Options;
+                local_opt->setDatabasePath(osgDB::getFilePath(filename));
                 std::istream mis(pb.get());
-                osgDB::ReaderWriter::ReadResult rr = rw->readNode(mis);
-                osg::ref_ptr<osg::Node> node = rr.getNode();
-                osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
-                if(ss)
+
+                osgDB::ReaderWriter::ReadResult rr = rw->readNode(mis,local_opt);
+                if (rr.validNode()) {
+                    osg::ref_ptr<osg::Node> node = rr.takeNode();
+                    osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
+                    if(ss)
                     ss->addUniform(_dataModel.getShaderOutUniform());
-                _meshGeom->addChild(node.get());
+                    _meshGeom->addChild(node.get());
+                }else{
+                    if (rr.error()) {
+                        string errmsg= "Error: could not open file `" + filename +"'" +rr.message();
+                        QString errStr=errmsg.c_str();
+                        std::cerr << errmsg;
+                        errorD.showMessage(errStr);
+                    }
+                }
                 ++it;
             }
 
