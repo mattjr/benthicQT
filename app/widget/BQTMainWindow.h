@@ -91,7 +91,6 @@ namespace ews {
                 SimulationState* _state;
                 QFileDialog *qf;
                 ShaderSwitchEventHandler *sseh;
-
                 osg::ref_ptr<SceneRoot> _sceneRoot;
             };
         }

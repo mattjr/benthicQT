@@ -34,12 +34,16 @@
 #include "PositionHandler.h"
 #include "UniformCallback.hpp"
 #include <iostream>
+            #include "GLPreCompile.h"
+
 namespace ews {
     namespace app {
         namespace widget {
             using ews::Uint;
             using namespace ews::app::drawable;
             using namespace ews::app::model;
+
+
             EWSMainWindow::EWSMainWindow(SimulationState* state, QWidget *parent) 
             : QMainWindow(parent), _ui(new Ui::EWSMainWindowForm), _state(state) {
                 _ui->setupUi(this);
@@ -204,6 +208,15 @@ namespace ews {
                _state->emitSignalsForLoad();
 
                 _ui->renderer->computeHomePosition();
+                _state->getMeshFiles().getPBarD()->setLabelText("Compiling shaders. Please Wait.");
+                 _state->getMeshFiles().getPBarD()->setRange(0,0);
+                 qApp->processEvents();
+CompileObjects compile;
+compile.setState( _ui->renderer->getState());
+        _ui->renderer->getSceneData()->accept(compile);
+
+               _ui->renderer->paintGL();
+                 qApp->processEvents();
                      //Redo rendering delay
                  _state->getMeshFiles().getPBarD()->close();
                 setInterFrameDelay(fd);

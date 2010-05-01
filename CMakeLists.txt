@@ -102,7 +102,7 @@ unmoc(RStarTree.h)
 unmoc(RStarVisitor.h)
 unmoc(ProgressBar.h)
 unmoc(UniformCallback.hpp)
-
+unmoc(GLPreCompile.h)
 unmoc(Bboxes.hpp)
 
 #message("moc files: ${BQT_MOC_HDRS}")

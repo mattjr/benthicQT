@@ -49,7 +49,7 @@ namespace ews {
             _meshGeom(new PositionAttitudeTransform)
        {
                 
-qDebug() << " In Mesh Geom const";
+//qDebug() << " In Mesh Geom const";
 
                 _switch->setNewChildDefaultValue(true);
                 addChild(_switch.get());
@@ -95,7 +95,7 @@ qDebug() << " In Mesh Geom const";
             }
             
             void MeshGeom::updateGeom() {
-                qDebug() << " In Mesh Geom update";
+                //qDebug() << " In Mesh Geom update";
 
                 _meshGeom->removeChildren(0, _meshGeom->getNumChildren());
                 QStringList list=_dataModel.getFileNames();

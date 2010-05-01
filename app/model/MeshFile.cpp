@@ -40,7 +40,6 @@ namespace ews {
                 progress->setWindowModality(Qt::WindowModal);
                 progress->setCancelButtonText(0);
                 shared_shader_out = new osg::Uniform("shaderOut",0);
-qDebug() << " In Mesh File const";
 
             }
             

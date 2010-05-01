@@ -82,7 +82,7 @@ namespace ews {
                 }
                 void setFileNames(QStringList files) {
                     filenames = files;
-                    qDebug() << "SizeFM " << files.size();
+//                    qDebug() << "SizeFM " << files.size();
                     updateBoxes();
                     //emit dataChanged();
                 }

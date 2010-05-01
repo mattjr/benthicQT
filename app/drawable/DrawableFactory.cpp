@@ -41,7 +41,7 @@ namespace ews {
                 // Currently only a loose mapping between object data and drawable type is
                 // maintained, hense the switching on type.
                 QString name(data.metaObject()->className());
-                qDebug() << "Selecting drawable for" << name;
+              //  qDebug() << "Selecting drawable for" << name;
                 
                 DrawableQtAdapter* retval = NULL;
                 

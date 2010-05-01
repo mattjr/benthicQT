@@ -46,7 +46,9 @@ namespace ews {
                  * Virtual destructor
                  */
                 virtual ~QOSGWidget();
-                
+                osg::State *getState(){
+                    return _gw->getState();
+                }
                 /**
                  * Set the delay interjected between frames in milliseconds.
                  */
