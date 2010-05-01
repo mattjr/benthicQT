@@ -18,5 +18,9 @@ class  CompileObjects : public osgUtil::GLObjectsVisitor
           qApp->processEvents();
 
       }
-  }
+/*      virtual void apply(osg::Geode& node);
+      virtual void apply(osg::Drawable& drawable);
+      virtual void apply(osg::StateSet& stateset);*/
+   };
+
 #endif // GLPRECOMPILE_H
