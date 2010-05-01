@@ -40,7 +40,7 @@ namespace ews {
                 progress->setWindowModality(Qt::WindowModal);
                 progress->setCancelButtonText(0);
                 shared_shader_out = new osg::Uniform("shaderOut",0);
-
+                num_shader_out=2;
             }
             
            

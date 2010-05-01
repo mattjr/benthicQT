@@ -80,10 +80,26 @@ namespace ews {
                         it++;
                     }
                 }
+                void updateShaders(){
+                    QStringList list=getFileNames();
+                    QStringList::Iterator it = list.begin();
+                    while( it != list.end() ) {
+                        string path=osgDB::getFilePath(it->toStdString());
+                        FILE *fp=fopen(string(path+"/shaderout.txt").c_str(),"r");
+                        if(fp){
+                            fscanf(fp,"%d\n",&num_shader_out);
+                            qDebug() << "Sucessfully loaded shaderout";
+                            fclose(fp);
+                        }
+                        it++;
+                    }
+                }
                 void setFileNames(QStringList files) {
                     filenames = files;
 //                    qDebug() << "SizeFM " << files.size();
                     updateBoxes();
+                    updateShaders();
+
                     //emit dataChanged();
                 }
 
@@ -91,6 +107,15 @@ namespace ews {
                     return filenames ;
 
                 }
+                std::vector<string> getShaderNames(void) {
+                    return shader_names ;
+
+                }
+                int getNumShaderOut(void) {
+                    return num_shader_out ;
+
+                }
+
                 osg::Uniform * getShaderOutUniform(){return shared_shader_out;}
                 
 
@@ -122,7 +147,8 @@ namespace ews {
                 RTree *_tree;
                 QProgressDialog *progress;
                 osg::Uniform* shared_shader_out;
-
+                int num_shader_out;
+                 std::vector<string>  shader_names;
             };
         }
     }

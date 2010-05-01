@@ -69,6 +69,7 @@ namespace ews {
             /** Apply datamodel to editor. */
             void BarrierEditor::setDataModel(MeshFile* mf) {
                 _dataModel = mf;
+
                   QObject::connect(_dataModel, SIGNAL(posChanged(osg::Vec3)), this, SLOT(updatePos(osg::Vec3)));
                  QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
                  QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
@@ -219,6 +220,20 @@ namespace ews {
                     _ui->lineEdit->setText(str);
 
                 }
+            }
+                void BarrierEditor::updateOverlayWidget(){
+                      for(int i=0; i< _dataModel->getNumShaderOut(); i++){
+                   if( i < _dataModel->getShaderNames().size())
+                       _ui->overlay->addItem(_dataModel->getShaderNames()[i].c_str());
+                   else{
+                       char tmp[255];
+                       sprintf(tmp,"Aux %d",i);
+                       QString qtmp=tmp;
+                       _ui->overlay->addItem(qtmp);
+                       qDebug() << "Adding " <<qtmp;
+                   }
+
+               }
             }
             
             void BarrierEditor::updateSlitWidth(int width) {

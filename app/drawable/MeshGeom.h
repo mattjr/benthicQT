@@ -79,7 +79,6 @@ namespace ews {
                 ref_ptr<Switch> _switch;
                 ref_ptr<PositionAttitudeTransform> _meshGeom;
                 QErrorMessage errorD;
-                int num_shader_out;
             };
         }
     }
