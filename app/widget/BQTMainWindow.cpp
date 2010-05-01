@@ -32,7 +32,6 @@
 //#include "PointSampler.h"
 #include "Preferences.h"
 #include "PositionHandler.h"
-#include "UniformCallback.hpp"
 #include <iostream>
             #include "GLPreCompile.h"
 
@@ -66,9 +65,7 @@ namespace ews {
                 _ui->renderer->setSceneData(_sceneRoot);
                         osg::Vec3 weights(6.24,0.79,0.3);
                         int num_shader_out=2;
-                sseh=new ShaderSwitchEventHandler(weights,0,num_shader_out);
 
-                _ui->renderer->addEventHandler(sseh);
 
                 // Setup sync between model and renderer.
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
@@ -203,7 +200,7 @@ namespace ews {
                 _state->getMeshFiles().getPBarD()->setLabelText("Loading mesh "+first);
           //       _state->getMeshFiles().getPBarD()->reset();
                 _state->getMeshFiles().getPBarD()->show();
-                 sseh->setShaderOutUniform(_state->getMeshFiles().getShaderOutUniform());
+               //  sseh->setShaderOutUniform(_state->getMeshFiles().getShaderOutUniform());
                 _state->getMeshFiles().setFileNames(files);
                _state->emitSignalsForLoad();
 

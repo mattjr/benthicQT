@@ -111,6 +111,7 @@ void WorldWindManipulatorNew::home(double /*currentTime*/)
   _targetDistance = _distance;
   _thrown = false;
   _targetTilt=_tilt;
+  _doRecomp=false;
 }
 
 void WorldWindManipulatorNew::home(const GUIEventAdapter& ea ,GUIActionAdapter& us)
@@ -167,8 +168,12 @@ bool WorldWindManipulatorNew::handle(const GUIEventAdapter& ea,GUIActionAdapter&
 
     case(GUIEventAdapter::PUSH):
       {
-	//if(ea.getButtonMask() ==GUIEventAdapter::MIDDLE_MOUSE_BUTTON){
-	//  pick(ea);
+        if(ea.getButtonMask() ==GUIEventAdapter::MIDDLE_MOUSE_BUTTON){
+            osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&us);
+            if(viewer)
+                assignNewCenter(viewer,ea.getX(),ea.getY());
+        }
+        //  pick(ea);
 	//  return true;
 	//}
 	flushMouseEventStack();
@@ -292,8 +297,13 @@ void WorldWindManipulatorNew::_frame(const GUIEventAdapter& ea){
   _invMatrix=osg::Matrixd::translate(0.0,0.0,_distance)* osg::Matrixd::rotate(osg::Quat(osg::DegreesToRadians(_tilt),osg::Vec3d(1,0,0)))*
     osg::Matrixd::rotate(m_Orientation)*osg::Matrixd::translate(_center);
   _matrix.invert(_invMatrix);
-  
- 
+  //cout << _center << " t"<<_targetCenter<<endl;
+  /*if(_doRecomp && notMoving()){
+      RecomputeTerrainIntersection();
+      printf("Recompute\n");
+      fflush(stdout);
+      _doRecomp=false;
+  }*/
 }
 
 bool WorldWindManipulatorNew::isMouseMoving()
@@ -517,10 +527,18 @@ bool WorldWindManipulatorNew::calcMovement()
   }
   return false;
 }
-
+bool  WorldWindManipulatorNew::notMoving(void){
+    double epi=0.1;
+     double cenM=fabs((_center  -_targetCenter).length());
+     double distM=fabs(_targetDistance - _distance);
+   //  cout << "cenM " << cenM <<" distM" << distM<<endl;
+return (cenM < epi) && (distM < epi);
+}
 void WorldWindManipulatorNew::Zoom(float percent){
   //  if(percent > 0)
   //RecomputeTerrainIntersection();
+
+
   double tmp=_targetDistance;
   if(percent>0){
     tmp /= 1.0f + percent;

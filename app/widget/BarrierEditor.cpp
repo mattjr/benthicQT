@@ -36,8 +36,7 @@ namespace ews {
             BarrierEditor::BarrierEditor(QWidget* parent) 
             : QWidget(parent), _ui(new Ui::BarrierEditorForm), _dataModel(NULL) {
                 _ui->setupUi(this);
-                _ui->overlay->addItem("Texture");
-                _ui->overlay->addItem("Colored");
+
 
                 updateEnabled();
             }
@@ -183,7 +182,8 @@ namespace ews {
                 /*if(_ui->barrierTable->selectionModel()) {
                     canEdit = _ui->barrierTable->selectionModel()->hasSelection();
                 }*/
-                
+                _ui->addBarrier->setEnabled(canEdit);
+
                 _ui->removeBarrier->setEnabled(canEdit);
 
                 // Tweak canEdit determination with enabled state. */

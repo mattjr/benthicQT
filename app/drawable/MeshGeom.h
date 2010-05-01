@@ -29,7 +29,6 @@
 #include "MeshFile.h"
 #include "DrawableQtAdapter.h"
 #include <QErrorMessage>
-#include "UniformCallback.hpp"
 namespace ews {
     /**
      * Parent namespace for GUI-related code.

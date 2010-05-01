@@ -109,7 +109,7 @@ class WorldWindManipulatorNew : public MatrixManipulator
   double getTargetDistance() { return _targetDistance; }
 
   osg::Vec3d getTargetCenter() { return  _targetCenter; }
-
+  bool notMoving(void);
         /** Get the distance of the trackball. */
         double getDistance() const { return _distance; }
 
@@ -120,7 +120,7 @@ class WorldWindManipulatorNew : public MatrixManipulator
         float getWorldWindSize() const { return _trackballSize; }
  double getHomeDist(void){return _homeDist;}
     protected:
-
+bool _doRecomp;
         virtual ~WorldWindManipulatorNew();
 
         /** Reset the internal GUIEvent stack.*/

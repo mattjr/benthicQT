@@ -32,7 +32,6 @@
 #include "BarrierSet.h"
 #include "SimulationState.h"
 #include "ProgressBar.h"
-#include "UniformCallback.hpp"
 
 namespace ews {
     namespace app {

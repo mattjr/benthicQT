@@ -30,7 +30,6 @@
 #include <osg/MatrixTransform>
 
 #include "WWManipulator.hpp"
-#include "UniformCallback.hpp"
 #include "BQTDebug.h"
 
 namespace ews {
