@@ -36,23 +36,24 @@ struct IVideoStreamer
         virtual void Run(void) = 0;
         virtual bool IsOpen(void) {return _isOpen;};
 
-        static const bool enabled;
         bool _isOpen;
 };
 #ifndef USE_FFMPEG
 
-typedef class NullVideoStreamer: public IVideoStreamer{
+class NullVideoStreamer: public IVideoStreamer{
+    public:
     virtual int  OpenVideo(void) {}
     virtual bool Update(ImgData* ai_image) {}
     virtual void CloseVideo(void) {}
     virtual void Run(void) {}
     virtual bool IsOpen(void) {return false;}
     static const bool enabled = false;
-}OSGVideoStreamer;
-
+};
+typedef  NullVideoStreamer OSGVideoStreamer;
 #else
-class VideoStreamer;
+#include "VideoStreamer.h"
 typedef  VideoStreamer OSGVideoStreamer;
+
 #endif
 
 #endif // __IVIDEO_STREAMER_H__

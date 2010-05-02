@@ -311,7 +311,7 @@ void addMovieCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallba
 
             if (firstCamera)
             {
-                osg::notify(osg::NOTICE)<<"First camera "<<firstCamera<<std::endl;
+                osg::notify(osg::INFO)<<"First camera "<<firstCamera<<std::endl;
 
                 firstCamera->setInitialDrawCallback(callback);
             }
@@ -356,7 +356,7 @@ void addMovieCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallba
 
             if (lastCamera)
             {
-                osg::notify(osg::NOTICE)<<"Last camera "<<lastCamera<<std::endl;
+                osg::notify(osg::INFO)<<"Last camera "<<lastCamera<<std::endl;
 
                 lastCamera->setFinalDrawCallback(callback);
             }

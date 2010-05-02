@@ -6,7 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <string.h>
-#include "VideoStreamer.h"
+#include "IVideoStreamer.h"
 
 class WindowCaptureCallback : public osg::Camera::DrawCallback
 {

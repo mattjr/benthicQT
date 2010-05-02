@@ -58,6 +58,10 @@ namespace ews {
                  * trigger.
                  */
                 Uint getInterFrameDelay() const;
+                void setCurrentFile(const QString &fileName);
+                void updateRecentFileActions();
+                QString strippedName(const QString &fullFileName);
+
 
             public slots:
                 /** Open file */
@@ -78,18 +82,27 @@ namespace ews {
                 void setInterFrameDelay(Uint delay);
                 /** Show the preferences dialog. */
                 void resetView();
+                QSize computerWindowSizeForRenderSize(QSize target);
             private slots:
                 /** Do any final connecting of components after rest of application is connected.*/
                 void init();
+                void openRecentFile();
+                void loadFile(QStringList files);
                 /** Update the enabled state of menu items.*/
                 void updateMenusEnabledState();
-
+                void resize640(){resize(computerWindowSizeForRenderSize(QSize(640,480)));}
+                void resize720(){resize(computerWindowSizeForRenderSize(QSize(720,480)));}
             private:
                 Q_DISABLE_COPY(EWSMainWindow)
                 Ui::EWSMainWindowForm* _ui;
                 SimulationState* _state;
                 QFileDialog *qf;
                 osg::ref_ptr<SceneRoot> _sceneRoot;
+                QAction *separatorAct;
+                QString curFile;
+
+                enum { MaxRecentFiles = 5 };
+                QAction *recentFileActs[MaxRecentFiles];
             };
         }
     }

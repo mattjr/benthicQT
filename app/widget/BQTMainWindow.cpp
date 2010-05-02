@@ -33,7 +33,7 @@
 #include "Preferences.h"
 #include "PositionHandler.h"
 #include <iostream>
-            #include "GLPreCompile.h"
+#include "GLPreCompile.h"
 
 namespace ews {
     namespace app {
@@ -44,7 +44,7 @@ namespace ews {
 
 
             EWSMainWindow::EWSMainWindow(SimulationState* state, QWidget *parent) 
-            : QMainWindow(parent), _ui(new Ui::EWSMainWindowForm), _state(state) {
+                    : QMainWindow(parent), _ui(new Ui::EWSMainWindowForm), _state(state) {
                 _ui->setupUi(this);
                 qf=new QFileDialog();
                 // Config actions
@@ -52,19 +52,19 @@ namespace ews {
                 _ui->actionOpen->setEnabled(true);
                 
 
-                
+                _ui->menuItems->setEnabled(OSGVideoStreamer::enabled);
                 // Config barrier editor.
                 _ui->barrierEditor->setDataModel(&state->getMeshFiles());
                 
                 // Config detector editor.
-//                _ui->detectorEditor->setDataModel(&state->getSamplers());
+                //                _ui->detectorEditor->setDataModel(&state->getSamplers());
                 
                 // Config 3-D view.
                 _sceneRoot = new SceneRoot(this);
                 // renderer is an instance (the only one) of QOSGWidget
                 _ui->renderer->setSceneData(_sceneRoot);
-                        osg::Vec3 weights(6.24,0.79,0.3);
-                        int num_shader_out=2;
+                osg::Vec3 weights(6.24,0.79,0.3);
+                int num_shader_out=2;
 
 
                 // Setup sync between model and renderer.
@@ -73,16 +73,31 @@ namespace ews {
                 QObject::connect(_ui->actionOpen, SIGNAL(triggered()), this, SLOT(openModel()));
                 QObject::connect(_ui->actionStart_Recording, SIGNAL(triggered()), _ui->renderer, SLOT(startRecording()));
                 QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), _ui->renderer, SLOT(stopRecording()));
+                QObject::connect(_ui->actionSet_to_640x480, SIGNAL(triggered()), this, SLOT(resize640()));
+                QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720()));
 
                 // Setup sync between samplers and plot.
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerAdded(int,PointSampler*)), 
-                  //               _ui->amplitudePlot, SLOT(addSampleSource(int, PointSampler*)));
+                //               _ui->amplitudePlot, SLOT(addSampleSource(int, PointSampler*)));
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerRemoved(int,PointSampler*)), 
-                  //               _ui->amplitudePlot, SLOT(removeSampleSource(int, PointSampler*)));
+                //               _ui->amplitudePlot, SLOT(removeSampleSource(int, PointSampler*)));
 
                 // Sync setup between 
                 QObject::connect(&_state->getBarriers(), SIGNAL(sizeChanged(Uint)), this, SLOT(updateMenusEnabledState()));
 
+                for (int i = 0; i < MaxRecentFiles; ++i) {
+                    recentFileActs[i] = new QAction(this);
+                    recentFileActs[i]->setVisible(false);
+                    QObject::connect(recentFileActs[i], SIGNAL(triggered()),
+                                     this, SLOT(openRecentFile()));
+                }
+                separatorAct = _ui->menuFile->addSeparator();
+                updateRecentFileActions();
+                setWindowTitle(tr("BenthicQT"));
+
+                for (int i = 0; i < MaxRecentFiles; ++i)
+                    _ui->menuFile->addAction(recentFileActs[i]);
+                _ui->menuFile->addSeparator();
             }
             
             EWSMainWindow::~EWSMainWindow() {
@@ -115,14 +130,19 @@ namespace ews {
             void EWSMainWindow::stop() {
                 _state->setPaused(true);
                 //_ui->actionPause->setEnabled(false);
-               // _ui->actionRun->setEnabled(true);
+                // _ui->actionRun->setEnabled(true);
             }
-            
+            QSize EWSMainWindow::computerWindowSizeForRenderSize(QSize target){
+                QSize fullWin=size();
+                QSize diff =fullWin-_ui->renderer->size();
+                return diff+target;
+            }
+
             void EWSMainWindow::reset() {
                 _state->reset();
 
                 _ui->renderer->homePosition();
-               // _ui->amplitudePlot->reset();
+                // _ui->amplitudePlot->reset();
                 
                 // If paused we fire a run action trigger
                 // for convenience to start the simulation again
@@ -173,7 +193,7 @@ namespace ews {
             /** Show reset view. */
             void EWSMainWindow::resetView   () {
                 qDebug()<<"MadeIT";
-               _ui->renderer->computeHomePosition();
+                _ui->renderer->computeHomePosition();
             }
             /** Request the OS open the configured project site. */
             void EWSMainWindow::projectWebsite() {
@@ -189,6 +209,13 @@ namespace ews {
                 ///
 
                 QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)");
+
+                loadFile( files);
+                setInterFrameDelay(fd);
+                qApp->processEvents();
+
+            }
+            void EWSMainWindow::loadFile(QStringList files){
                 if (files.isEmpty())
                     return;
                 QStringList list = files;
@@ -198,33 +225,94 @@ namespace ews {
                     qDebug() << "Opening" <<*it;
                     ++it;
                 }
+                QApplication::setOverrideCursor(Qt::WaitCursor);
 
 
                 _state->getMeshFiles().getPBarD()->setLabelText("Loading mesh "+first);
-          //       _state->getMeshFiles().getPBarD()->reset();
+                //       _state->getMeshFiles().getPBarD()->reset();
                 _state->getMeshFiles().getPBarD()->show();
-               //  sseh->setShaderOutUniform(_state->getMeshFiles().getShaderOutUniform());
+                //  sseh->setShaderOutUniform(_state->getMeshFiles().getShaderOutUniform());
                 _state->getMeshFiles().setFileNames(files);
-               _state->emitSignalsForLoad();
+                _state->emitSignalsForLoad();
 
                 _ui->renderer->computeHomePosition();
                 _state->getMeshFiles().getPBarD()->setLabelText("Compiling shaders. Please Wait.");
-                 _state->getMeshFiles().getPBarD()->setRange(0,0);
-                 qApp->processEvents();
-CompileObjects compile;
-compile.setState( _ui->renderer->getState());
-        _ui->renderer->getSceneData()->accept(compile);
-
-               _ui->renderer->paintGL();
-                 qApp->processEvents();
-                     //Redo rendering delay
-                 _state->getMeshFiles().getPBarD()->close();
-                 _ui->barrierEditor->updateOverlayWidget();
-
-                setInterFrameDelay(fd);
-
+                _state->getMeshFiles().getPBarD()->setRange(0,0);
                 qApp->processEvents();
+                CompileObjects compile;
+                compile.setState( _ui->renderer->getState());
+                _ui->renderer->getSceneData()->accept(compile);
 
+                _ui->renderer->paintGL();
+                qApp->processEvents();
+                //Redo rendering delay
+                _state->getMeshFiles().getPBarD()->close();
+                _ui->barrierEditor->updateOverlayWidget();
+                QApplication::restoreOverrideCursor();
+                setCurrentFile(first);
+
+
+
+
+
+            }
+            void EWSMainWindow::setCurrentFile(const QString &fileName)
+            {
+                curFile = fileName;
+                if (curFile.isEmpty())
+                    setWindowTitle(tr("BenthicQT"));
+                else
+                    setWindowTitle(tr("%1 - %2").arg(strippedName(curFile))
+                                   .arg(tr("BenthicQT")));
+
+                QSettings settings("ACFR", "BenthicQT Viewer");
+                QStringList files = settings.value("recentFileList").toStringList();
+                files.removeAll(fileName);
+                files.prepend(fileName);
+                while (files.size() > MaxRecentFiles)
+                    files.removeLast();
+
+                settings.setValue("recentFileList", files);
+
+                foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+                    EWSMainWindow *mainWin = qobject_cast<EWSMainWindow *>(widget);
+                    if (mainWin)
+                        mainWin->updateRecentFileActions();
+                }
+            }
+
+            void EWSMainWindow::updateRecentFileActions()
+            {
+                QSettings settings("ACFR", "BenthicQT Viewer");
+                QStringList files = settings.value("recentFileList").toStringList();
+
+                int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+                for (int i = 0; i < numRecentFiles; ++i) {
+                    QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+                    recentFileActs[i]->setText(text);
+                    recentFileActs[i]->setData(files[i]);
+                    recentFileActs[i]->setVisible(true);
+                }
+                for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+                    recentFileActs[j]->setVisible(false);
+
+                separatorAct->setVisible(numRecentFiles > 0);
+            }
+            void EWSMainWindow::openRecentFile()
+            {
+                QAction *action = qobject_cast<QAction *>(sender());
+                if (action){
+                    QStringList files;
+                    files.push_back(action->data().toString());
+                    loadFile(files);
+                }
+            }
+            QString EWSMainWindow::strippedName(const QString &fullFileName)
+            {
+                QFileInfo p(fullFileName);
+                QStringList dirs = p.path().split( "/");
+                return dirs[dirs.size()-1]+"/"+p.fileName();
             }
 
 

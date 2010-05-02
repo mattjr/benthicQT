@@ -32,7 +32,6 @@ http://code.google.com/p/eyepatch/
 #ifndef __VIDEO_STREAMER_H__
 #define __VIDEO_STREAMER_H__
 
-#include "IVideoStreamer.h"
 #include <string>
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -105,7 +104,7 @@ public:
 	virtual int OpenVideo(void);
         virtual bool Update(ImgData* ai_image);
 	virtual void CloseVideo(void);
-        static const bool enabled = false;
+        static const bool enabled = true;
 
 private:
 

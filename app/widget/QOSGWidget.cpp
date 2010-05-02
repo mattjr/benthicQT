@@ -146,7 +146,6 @@ namespace ews {
                 computeHomePosition();
             }
             void QOSGWidget::startRecording() {
-resize(640,480);
                 if(movieCallback)
                     movieCallback->startRecording(_gw);
             }

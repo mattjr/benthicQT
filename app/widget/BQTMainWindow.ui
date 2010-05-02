@@ -87,7 +87,7 @@
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>700</width>
+        <width>640</width>
         <height>1</height>
        </size>
       </property>
@@ -127,6 +127,8 @@
     <addaction name="separator"/>
     <addaction name="actionStart_Recording"/>
     <addaction name="actionStop_Recording"/>
+    <addaction name="actionSet_to_640x480"/>
+    <addaction name="actionSet_to_720x480"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -301,6 +303,16 @@
   <action name="actionStop_Recording">
    <property name="text">
     <string>Stop Recording</string>
+   </property>
+  </action>
+  <action name="actionSet_to_640x480">
+   <property name="text">
+    <string>Set to 640x480</string>
+   </property>
+  </action>
+  <action name="actionSet_to_720x480">
+   <property name="text">
+    <string>Set to 720x480</string>
    </property>
   </action>
  </widget>

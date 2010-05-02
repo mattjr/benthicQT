@@ -61,7 +61,36 @@ file(GLOB BQT_PHYS_SRC physics/*.cpp)
 # This is the list of source files that need to be compiled
 #--------------------------------------------------------------------------------
 file(GLOB BQT_SRCS main.cpp app/widget/*.cpp app/model/*.cpp app/drawable/*.cpp physics/*.cpp)
-list(REMOVE_ITEM BQT_SRCS VideoStreamer.cpp)
+#--------------------------------------------------------------------------------
+#FFMPEG
+#--------------------------------------------------------------------------------
+include(FindFFmpeg)
+FIND_PACKAGE(FFmpeg)
+
+
+IF(FFMPEG_FOUND MATCHES "YES")
+INCLUDE_DIRECTORIES( ${FFMPEG_INCLUDE_DIRS} )
+LINK_DIRECTORIES(${FFMPEG_LIBRARY_DIRS})
+SET(TARGET_EXTERNAL_LIBRARIES ${FFMPEG_LIBRARIES} x264)
+message("Using FFMPEG libs ${TARGET_EXTERNAL_LIBRARIES}")
+add_definitions("-DUSE_FFMPEG")
+IF(FFMPEG_LIBSWSCALE_FOUND)
+
+    INCLUDE_DIRECTORIES( ${FFMPEG_LIBSWSCALE_INCLUDE_DIRS} ${FFMPEG_LIBSWSCALE_INCLUDE_DIRS}/libswscale )
+
+    ADD_DEFINITIONS(-DUSE_SWSCALE)
+
+    SET(TARGET_EXTERNAL_LIBRARIES ${FFMPEG_LIBRARIES} ${FFMPEG_LIBSWSCALE_LIBRARIES})
+
+ENDIF()
+
+
+ELSEIF(FFMPEG_FOUND MATCHES "YES")
+file(GLOB_RECURSE FFMPEG_DEP_SRC app/widget/VideoStreamer.cpp)
+list(REMOVE_ITEM BQT_SRCS ${FFMPEG_DEP_SRC})
+
+
+ENDIF(FFMPEG_FOUND MATCHES "YES")
 
 #--------------------------------------------------------------------------------
 # Regular (non-qt) header files
@@ -142,8 +171,6 @@ endif (WIN32)
 # note that it's Qt4, not QT4 or qt4
 set(QT_COMPONENTS QtCore QtGui QtOpenGL QtSvg QtXml)
 find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
-include(FindFFmpeg)
-FIND_PACKAGE(FFmpeg)
 
 #--------------------------------------------------------------------------------
 # QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to
@@ -152,23 +179,7 @@ include( ${QT_USE_FILE} )
 
 #--------------------------------------------------------------------------------
 
-IF(FFMPEG_FOUND)
 
-INCLUDE_DIRECTORIES( ${FFMPEG_INCLUDE_DIRS} )
-LINK_DIRECTORIES(${FFMPEG_LIBRARY_DIRS})
-SET(TARGET_EXTERNAL_LIBRARIES ${FFMPEG_LIBRARIES} x264)
-message("TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARIES}")
-add_definitions("-DUSE_FFMPEG")
-IF(FFMPEG_LIBSWSCALE_FOUND)
-
-    INCLUDE_DIRECTORIES( ${FFMPEG_LIBSWSCALE_INCLUDE_DIRS} ${FFMPEG_LIBSWSCALE_INCLUDE_DIRS}/libswscale )
-
-    ADD_DEFINITIONS(-DUSE_SWSCALE)
-
-    SET(TARGET_EXTERNAL_LIBRARIES ${FFMPEG_LIBRARIES} ${FFMPEG_LIBSWSCALE_LIBRARIES})
-
-ENDIF()
-ENDIF(FFMPEG_FOUND)
 
 #--------------------------------------------------------------------------------
 # Use qt menu nib stuff

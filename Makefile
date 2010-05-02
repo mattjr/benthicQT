@@ -26,7 +26,7 @@ BLD=build
 .PHONY: default test xcode vs clean
 
 default:
-	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..; make -j 2)
+	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..; make -j 4)
 
 test: $(BLD)
 	(cd $(BLD); make test)

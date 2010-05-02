@@ -1,4 +1,4 @@
-#include "VideoStreamer.h"
+#include "IVideoStreamer.h"
 #include <iostream>
 #include <fstream>
 
@@ -66,6 +66,9 @@ VideoStreamer::VideoStreamer(
 
 VideoStreamer::~VideoStreamer(void)
 {
+    if(_isOpen)
+        CloseVideo();
+
 	// Release the streams
 	if (m_formatContext)
 	{
