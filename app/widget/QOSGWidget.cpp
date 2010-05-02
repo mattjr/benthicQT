@@ -30,7 +30,6 @@
 #include <osg/MatrixTransform>
 
 #include "WWManipulator.hpp"
-#include "OSGMovieCallback.h"
 #include "BQTDebug.h"
 
 namespace ews {
@@ -81,9 +80,9 @@ namespace ews {
                 
                 // add the window size toggle handler
                 addEventHandler(new osgViewer::WindowSizeHandler);    
-
+                movieCallback = new WindowCaptureCallback();
                 //Movie capture callback
-                addMovieCallbackToViewer(*this, new WindowCaptureCallback());
+                addMovieCallbackToViewer(*this, movieCallback);
 
                 // updateGL will invoke glDraw which invokes paintGL
                 connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -147,7 +146,14 @@ namespace ews {
                 getCameraManipulator()->setNode(node);
                 computeHomePosition();
             }
-            
+            void QOSGWidget::startRecording() {
+                if(movieCallback)
+                    movieCallback->startRecording(_gw);
+            }
+            void QOSGWidget::stopRecording() {
+                if(movieCallback)
+                    movieCallback->stopRecording(_gw);
+            }
             void QOSGWidget::computeHomePosition() {
                 //using ews::app::drawable::CameraController;
                 

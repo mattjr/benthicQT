@@ -26,6 +26,7 @@
 #include <QtGui/QInputEvent>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
+#include "OSGMovieCallback.h"
 
 namespace ews {
     namespace app {
@@ -81,7 +82,9 @@ namespace ews {
                  */
                 virtual void homePosition();
                 void computeHomePosition();
-
+            public slots:
+               void startRecording();
+               void stopRecording();
                 
             protected:
                 virtual void resizeGL( int width, int height );
@@ -101,6 +104,7 @@ namespace ews {
                 Q_DISABLE_COPY(QOSGWidget)
                 osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
                 QTimer _timer;
+                WindowCaptureCallback *movieCallback;
             };
         }
     }

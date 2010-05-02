@@ -71,6 +71,9 @@ namespace ews {
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
                 QObject::connect(_ui->actionOpen, SIGNAL(triggered()), this, SLOT(openModel()));
+                QObject::connect(_ui->actionStart_Recording, SIGNAL(triggered()), _ui->renderer, SLOT(startRecording()));
+                QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), _ui->renderer, SLOT(stopRecording()));
+
                 // Setup sync between samplers and plot.
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerAdded(int,PointSampler*)), 
                   //               _ui->amplitudePlot, SLOT(addSampleSource(int, PointSampler*)));

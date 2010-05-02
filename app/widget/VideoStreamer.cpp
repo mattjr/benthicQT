@@ -86,6 +86,7 @@ int VideoStreamer::OpenVideo(void)
     //Check if allready open
         if(_isOpen)
         return -1;
+        printf("Opening Video\n");
 
 	// Find the video encoder
 	AVCodecContext *c = m_vStream->codec;
@@ -256,7 +257,6 @@ void VideoStreamer::Run(void)
                        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(m_mutex);
 			Write(m_frame[1]);
 			framesSent++;
-                  //      printf( "Wrote frame %d\n",framesSent);
 		}
 		else
 		{
@@ -271,9 +271,11 @@ void VideoStreamer::Run(void)
 // Close the output video
 void VideoStreamer::CloseVideo(void)
 {
+
     //Check if allready open
         if(!_isOpen)
         return;
+        printf("Closing Video\n");
 
 	m_stoprequested = true;
 //	if (m_thread)
