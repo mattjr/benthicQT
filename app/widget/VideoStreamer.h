@@ -77,6 +77,15 @@ struct AVFormatContext;
 struct AVFrame;
 enum PixelFormat;
 typedef uint8_t unsigned __int8   ;
+class VideoStreamer;
+class WorkThread : public OpenThreads::Thread
+{
+        public:
+    WorkThread(IVideoStreamer *streamObj):_streamer(streamObj){}
+    virtual void run(){_streamer->Run();};
+private:
+    IVideoStreamer *_streamer;
+};
 
 class VideoStreamer : IVideoStreamer
 {
@@ -96,15 +105,10 @@ public:
 	virtual int OpenVideo(void);
         virtual bool Update(ImgData* ai_image);
 	virtual void CloseVideo(void);
+        static const bool enabled = false;
 
 private:
-        class WorkThread : public OpenThreads::Thread
-        {
-        public:
 
-            virtual void run(){};
-
-        };
 
 	int Write(AVFrame *ai_picture);
 	void Run(void);
@@ -124,6 +128,8 @@ private:
         OpenThreads::Mutex m_mutex;
         OpenThreads::Condition m_firstFrame;
         OpenThreads::Mutex m_updateMutex; // to avoid reentrancy. Check if it is worth...
+        friend class WorkThread;
 };
+
 
 #endif // __VIDEO_STREAMER_H__

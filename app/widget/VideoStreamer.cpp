@@ -1,9 +1,10 @@
 #include "VideoStreamer.h"
 #include <iostream>
 #include <fstream>
-#ifdef USE_FFMPEG
+
 #undef AV_NOPTS_VALUE
 #define AV_NOPTS_VALUE int64_t(0x8000000000000000)
+#define VAR_SWAP(a,b,t) ((t) = (a), (a) = (b), (b) = (t))
 
 VideoStreamer::VideoStreamer(
 	const char *ai_fileName, 
@@ -19,7 +20,8 @@ VideoStreamer::VideoStreamer(
 	, m_vStream(NULL)
 	, m_vOutBuf(NULL)
 	, m_vOutBufSize(ai_bufferSize)
-	, m_stoprequested(false)
+        , m_stoprequested(false)
+        , m_thread(this)
 {
 	m_frame[0] = NULL;
 	m_frame[1] = NULL;
@@ -81,6 +83,10 @@ VideoStreamer::~VideoStreamer(void)
 // Open the output file
 int VideoStreamer::OpenVideo(void)
 {
+    //Check if allready open
+        if(_isOpen)
+        return -1;
+
 	// Find the video encoder
 	AVCodecContext *c = m_vStream->codec;
 	AVCodec *codec = avcodec_find_encoder(c->codec_id);
@@ -123,10 +129,8 @@ int VideoStreamer::OpenVideo(void)
 		std::cerr << "Error # VideoStreamer::OpenVideo: Could not open '" << m_formatContext->filename << "'" << std::endl;
 		return -4;
 	}
-
-	// Start the thread that will write the frames
-//	m_thread = boost::shared_ptr<boost::thread>(
-//		new boost::thread(boost::bind(&VideoStreamer::Run, this)));
+        _isOpen=true;
+        m_thread.start();
 
 	return 0;
 }
@@ -134,6 +138,8 @@ int VideoStreamer::OpenVideo(void)
 // Update the frame to stream
 bool VideoStreamer::Update(ImgData* ai_image)
 {
+        if(!_isOpen)
+            return false;
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock_(m_updateMutex);
 //	if (!ValidateImage(ai_image))
 //		return false;
@@ -168,7 +174,7 @@ bool VideoStreamer::Update(ImgData* ai_image)
 			return false;
 		}
 
-                int linesize[4] = {ai_image->width*4, 0, 0, 0};
+                int linesize[4] = {ai_image->width,ai_image->width/2 , ai_image->width/2, 0};
 		sws_scale(
 			convContext,
                         (uint8_t **)&ai_image->data,
@@ -180,7 +186,7 @@ bool VideoStreamer::Update(ImgData* ai_image)
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(m_mutex);
 	AVFrame *tmp;
-//	CV_SWAP(m_frame[0], m_frame[1], tmp);
+        VAR_SWAP(m_frame[0], m_frame[1], tmp);
 
 	//m_frame[1] is now updated and will be used by the thread working method VideoStreamer::Run()
         m_firstFrame.signal();
@@ -242,18 +248,19 @@ void VideoStreamer::Run(void)
 
 	while(!m_stoprequested)
 	{
-                uint64_t elapsedTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+                uint64_t elapsedTime = osg::Timer::instance()->delta_m(_startTick, osg::Timer::instance()->tick());
 		uint64_t targetFramesSent = elapsedTime / cycle;
 
-		if (framesSent < targetFramesSent) 
+                if (framesSent < targetFramesSent)
 		{
-                        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(m_mutex);
+                       OpenThreads::ScopedLock<OpenThreads::Mutex> lock(m_mutex);
 			Write(m_frame[1]);
 			framesSent++;
+                  //      printf( "Wrote frame %d\n",framesSent);
 		}
 		else
 		{
-			sleep(1);
+                        OpenThreads::Thread::microSleep(10);
 		}
 	}
 
@@ -264,6 +271,10 @@ void VideoStreamer::Run(void)
 // Close the output video
 void VideoStreamer::CloseVideo(void)
 {
+    //Check if allready open
+        if(!_isOpen)
+        return;
+
 	m_stoprequested = true;
 //	if (m_thread)
                 m_thread.join();
@@ -278,6 +289,7 @@ void VideoStreamer::CloseVideo(void)
 
 	ReleaseFrame(m_frame[0], true);
 	ReleaseFrame(m_frame[1], true);
+        _isOpen=false;
 }
 
 // Allocate and initialize format context
@@ -413,4 +425,3 @@ void ReleaseFrame(AVFrame *ai_frame, bool ai_releaseData)
 
         return true;
 }*/
-#endif

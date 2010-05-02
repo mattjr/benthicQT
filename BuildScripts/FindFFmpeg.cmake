@@ -19,7 +19,7 @@
 #Then we need to include ${FFMPEG_libname_INCLUDE_DIRS} (in old version case, use by ffmpeg header and osg plugin code)
 #                                                       (in new version case, use by ffmpeg header) 
 #and ${FFMPEG_libname_INCLUDE_DIRS/libname}             (in new version case, use by osg plugin code)
-INCLUDE(FindPkgConfig )
+ INCLUDE(FindPkgConfig )
 
 
 
@@ -27,18 +27,18 @@ INCLUDE(FindPkgConfig )
     pkg_check_modules(FFMPEG_LIBAVDEVICE libavdevice)
     pkg_check_modules(FFMPEG_LIBAVCODEC libavcodec)
     pkg_check_modules(FFMPEG_LIBAVUTIL libavutil)
-     pkg_check_modules(FFMPEG_LIBSWSCALE libswscale)
-     IF   (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND AND STDINT_OK)
+    pkg_check_modules(FFMPEG_LIBSWSCALE libswscale)
+    IF   (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND)
 
          SET(FFMPEG_FOUND "YES")
-    SET(FFMPEG_LIBRARIES
-            ${FFMPEG_LIBAVFORMAT_LIBRARIES}
-            ${FFMPEG_LIBAVDEVICE_LIBRARIES}
-            ${FFMPEG_LIBAVCODEC_LIBRARIES}
-            ${FFMPEG_LIBAVUTIL_LIBRARIES}
-            ${FFMPEG_LIBSWSCALE_LIBRARIES})
-ENDIF()
-IF(NOTUSED)
+         SET(FFMPEG_LIBRARIES
+         ${FFMPEG_LIBAVFORMAT_LIBRARIES}
+           ${FFMPEG_LIBAVDEVICE_LIBRARIES}
+             ${FFMPEG_LIBAVCODEC_LIBRARIES}
+               ${FFMPEG_LIBAVUTIL_LIBRARIES}
+                 ${FFMPEG_LIBSWSCALE_LIBRARIES})
+                   ENDIF()
+                   IF(NOTUSED)
 
 # Macro to find header and lib directories
 # example: FFMPEG_FIND(AVFORMAT avformat avformat.h)

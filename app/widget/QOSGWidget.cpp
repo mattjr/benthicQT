@@ -30,6 +30,7 @@
 #include <osg/MatrixTransform>
 
 #include "WWManipulator.hpp"
+#include "OSGMovieCallback.h"
 #include "BQTDebug.h"
 
 namespace ews {
@@ -80,7 +81,10 @@ namespace ews {
                 
                 // add the window size toggle handler
                 addEventHandler(new osgViewer::WindowSizeHandler);    
-                                
+
+                //Movie capture callback
+                addMovieCallbackToViewer(*this, new WindowCaptureCallback());
+
                 // updateGL will invoke glDraw which invokes paintGL
                 connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
                 _timer.start(30);

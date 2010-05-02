@@ -26,6 +26,7 @@
 #include <QtGui/QInputEvent>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
+
 namespace ews {
     namespace app {
         namespace widget {
