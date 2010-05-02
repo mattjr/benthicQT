@@ -279,7 +279,7 @@ void VideoStreamer::CloseVideo(void)
 
 	m_stoprequested = true;
 //	if (m_thread)
-                m_thread.join();
+        m_thread.join();
 
 	if (m_vStream->codec->codec)
 		avcodec_close(m_vStream->codec);
@@ -289,8 +289,8 @@ void VideoStreamer::CloseVideo(void)
 	if (m_formatContext->pb && !(m_formatContext->oformat->flags & AVFMT_NOFILE))
         url_fclose(m_formatContext->pb); 
 
-	ReleaseFrame(m_frame[0], true);
-	ReleaseFrame(m_frame[1], true);
+        ReleaseFrame(m_frame[0], false);
+        ReleaseFrame(m_frame[1], false);
         _isOpen=false;
 }
 

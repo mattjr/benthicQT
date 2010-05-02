@@ -54,8 +54,7 @@ namespace ews {
                 c->setViewport(new osg::Viewport(0,0,width(),height()));
                 c->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width())/static_cast<double>(height()), 1.0f, 10000.0f);
                 c->setGraphicsContext(_gw.get());
-                //c->setClearColor(osg::Vec4(0.7f, 0.7f, 0.7f, 1.0f));
-                c->setClearColor(osg::Vec4(0.0f,0,1, 1.0f));
+                c->setClearColor(osg::Vec4(0.7f, 0.7f, 0.7f, 1.0f));
                 setThreadingModel(osgViewer::Viewer::SingleThreaded);
                 osg::Matrixd *mat=NULL;
                 bool inverseMouse=false;
@@ -147,6 +146,7 @@ namespace ews {
                 computeHomePosition();
             }
             void QOSGWidget::startRecording() {
+resize(640,480);
                 if(movieCallback)
                     movieCallback->startRecording(_gw);
             }

@@ -40,7 +40,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 _height(0),
                 _currentImageIndex(0),
                 _currentPboIndex(0),
-                _reportTimingFrequency(100),
+                _reportTimingFrequency(0),
                 _numTimeValuesRecorded(0),
                 _timeForReadPixels(0.0),
                 _timeForFullCopy(0.0),
