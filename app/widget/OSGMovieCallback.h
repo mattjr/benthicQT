@@ -3,7 +3,6 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
-
 #include <iostream>
 #include <sstream>
 #include <string.h>
@@ -262,7 +261,7 @@ void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
                                       "time for memcpy = "<<timeForMemCpy*1000.0<<"ms  memcpy speed = "<<numMb / timeForMemCpy<<" Mb/sec"<<std::endl;
         }
         osg::notify(osg::NOTICE).precision(prec);
-        if(tmp++ > 2)
+        if(tmp++ > 1)
         _videoStreamer.CloseVideo();
     }
 
@@ -306,7 +305,6 @@ void WindowCaptureCallback::ContextData::readPixels()
     data.width=_width;
     data.data=image->data();
     _videoStreamer.Update(&data);
-
     _currentImageIndex = nextImageIndex;
     _currentPboIndex = nextPboIndex;
 }

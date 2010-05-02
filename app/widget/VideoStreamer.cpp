@@ -56,12 +56,12 @@ VideoStreamer::VideoStreamer(
 	dump_format(m_formatContext, 0, ai_fileName, 1);
 
 	// Save sdp info to a file
-	std::fstream sdpFile;
+        /*std::fstream sdpFile;
 	sdpFile.open ("videostreamer.sdp", std::fstream::out | std::fstream::binary);
 	char sdp[2048];
 	avf_sdp_create(&m_formatContext, 1, sdp, 2048);
 	sdpFile << sdp;
-	sdpFile.close();
+        sdpFile.close();*/
 }
 
 VideoStreamer::~VideoStreamer(void)
@@ -174,7 +174,7 @@ bool VideoStreamer::Update(ImgData* ai_image)
 			return false;
 		}
 
-                int linesize[4] = {ai_image->width,ai_image->width/2 , ai_image->width/2, 0};
+                int linesize[4] = {ai_image->width*3,ai_image->width *3, ai_image->width*3, 0};
 		sws_scale(
 			convContext,
                         (uint8_t **)&ai_image->data,
