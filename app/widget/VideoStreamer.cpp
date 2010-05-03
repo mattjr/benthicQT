@@ -442,11 +442,7 @@ AVStream *CreateVideoStream(
         }
 
         if(c->codec_id == CODEC_ID_H264){
-            c->me_range = 16;
-            c->max_qdiff = 4;
-            c->qmin = 10;
-            c->qmax = 51;
-            c->qcompress = 0.6;
+            set_libx264Opt(c);
         }
         // Some formats want stream headers to be seperate
         const char *fn = ai_formatContext->oformat->name;
@@ -505,3 +501,33 @@ void ReleaseFrame(AVFrame *ai_frame, bool ai_releaseData)
 
         return true;
 }*/
+
+void set_libx264Opt(AVCodecContext *videoContext){
+
+    // Set the libx264-specific options
+    videoContext->me_cmp |= FF_CMP_CHROMA;                                                         // cmp=+chroma
+    videoContext->partitions = X264_PART_I8X8 | X264_PART_I4X4 | X264_PART_P8X8 | X264_PART_B8X8;  // partitions=+parti8x8+parti4x4+partp8x8+partb8x8
+    videoContext->me_method = 8;                                                                   // me_method=umh
+    videoContext->me_subpel_quality = 8;                                                           // subq=8
+    videoContext->me_range = 16;                                                                   // me_range=16
+    videoContext->gop_size = 250;                                                                  // g=250
+    videoContext->keyint_min = 25;                                                                 // keyint_min=25
+    videoContext->scenechange_threshold = 40;                                                      // sc_threshold=40
+    videoContext->i_quant_factor = 0.71f;                                                          // i_qfactor=0.71
+    videoContext->b_frame_strategy = 2;                                                            // b_startegy=2
+    videoContext->qcompress = 0.6f;                                                                // qcomp=0.6
+    videoContext->qmin = 10;                                                                       // qmin = 10
+    videoContext->qmax = 51;                                                                       //qmax = 51
+    videoContext->max_qdiff = 4;                                                                   // qdiff=4
+    videoContext->refs = 4;                                                                        //refs=4
+    videoContext->directpred = 3;                                                                  //directpred=3
+    videoContext->trellis = 1;                                                                     //trellis=1
+    videoContext->flags2 |= CODEC_FLAG2_WPRED | CODEC_FLAG2_MIXED_REFS | CODEC_FLAG2_8X8DCT        // flags2=+wpred+mixed_refs+dct8x8+fastpskip
+                            | CODEC_FLAG2_FASTPSKIP;
+
+    videoContext->thread_count = 0; // let x264 decide the number of threads
+    videoContext->bit_rate =      videoContext->bit_rate*100;
+    videoContext->bit_rate_tolerance =      videoContext->bit_rate*100;
+
+
+}

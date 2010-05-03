@@ -89,7 +89,6 @@ class WorkThread : public OpenThreads::Thread
 private:
     IVideoStreamer *_streamer;
 };
-
 class VideoStreamer : IVideoStreamer
 {
 public:
@@ -151,7 +150,10 @@ private:
         friend class WorkThread;
         int m_movieCount;
 
+
 };
+
+void set_libx264Opt(AVCodecContext *videoContext);
 
 #if LIBAVFORMAT_VERSION_MAJOR < 52
 #define avformat_right_guess_version guess_stream_format
