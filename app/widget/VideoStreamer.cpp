@@ -53,7 +53,6 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
             codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MSMPEG4V2,"avi"));
         }
 
-
         SetupVideo();
 
 

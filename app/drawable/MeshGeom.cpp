@@ -114,6 +114,7 @@ namespace ews {
                     QString errStr=errmsg.c_str();
                     std::cerr << errmsg;
                     errorD.showMessage(errStr);
+                    errorD.exec();
                     ++it;
                     continue;
                 }
@@ -132,6 +133,7 @@ namespace ews {
                         QString errStr=errmsg.c_str();
                         std::cerr << errmsg;
                         errorD.showMessage(errStr);
+                        errorD.exec();
                     }
                     osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
                     if(ss)
@@ -145,6 +147,7 @@ namespace ews {
                         QString errStr=errmsg.c_str();
                         std::cerr << errmsg;
                         errorD.showMessage(errStr);
+                        errorD.exec();
                     }
                 }
                 ++it;

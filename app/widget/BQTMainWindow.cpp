@@ -102,6 +102,16 @@ namespace ews {
                 updateRecentFileActions();
                 setWindowTitle(tr("BenthicQT"));
 
+                if(_ui->renderer->movieCallback && OSGVideoStreamer::enabled){
+                    OSGVideoStreamer *iv=_ui->renderer->movieCallback->getRecorder(_ui->renderer->_gw);
+                    if(!iv->getEncoderNames().size()){
+                       QErrorMessage errorMessageDialog(this);
+                        errorMessageDialog.showMessage("No codec avalible diabling movie recording\n");
+                        errorMessageDialog.exec();
+                        _ui->actionStart_Recording->setEnabled(false);
+                        _ui->actionSetup_Recording->setEnabled(false);
+                    }
+                }
                 for (int i = 0; i < MaxRecentFiles; ++i)
                     _ui->menuFile->addAction(recentFileActs[i]);
                 _ui->menuFile->addSeparator();
