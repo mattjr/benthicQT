@@ -75,6 +75,8 @@ namespace ews {
                 /** Stop/pause the simulation. */
                 void stop();
                 void startRecording();
+                void stopRecording();
+
                 /** Reset simulation state to initial conditions. */
                 void reset();
                 /** Show the preferences dialog. */
@@ -89,6 +91,7 @@ namespace ews {
                 void resetView();
                 void updateOverlayWidget(MeshFile &data);
                 bool runRecDlg();
+                void toggleRecGui();
             private slots:
                 /** Do any final connecting of components after rest of application is connected.*/
                 void init();

@@ -74,7 +74,7 @@ namespace ews {
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
                 QObject::connect(_ui->actionOpen, SIGNAL(triggered()), this, SLOT(openModel()));
                 QObject::connect(_ui->actionStart_Recording, SIGNAL(triggered()), this,SLOT(startRecording()));
-                QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), _ui->renderer,SLOT(stopRecording()));
+                QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), this,SLOT(stopRecording()));
                 QObject::connect(_ui->actionSetup_Recording, SIGNAL(triggered()), this,SLOT(runRecDlg()));
 
                 QObject::connect(_ui->actionSet_to_640x480, SIGNAL(triggered()), this, SLOT(resize640()));
@@ -97,6 +97,8 @@ namespace ews {
                                      this, SLOT(openRecentFile()));
                 }
                 separatorAct = _ui->menuFile->addSeparator();
+                _ui->actionStop_Recording->setEnabled(false);
+
                 updateRecentFileActions();
                 setWindowTitle(tr("BenthicQT"));
 
@@ -360,13 +362,19 @@ namespace ews {
 
                  if(!firstRunRecord)
                      runRecDlg();
-                 if(firstRunRecord)
+                 if(firstRunRecord){
                      _ui->renderer->startRecording();
+                     toggleRecGui();
+                 }
              }
-
-
-
-
+              void EWSMainWindow::stopRecording(){
+                   toggleRecGui();
+                  _ui->renderer->stopRecording();
+              }
+              void EWSMainWindow::toggleRecGui(){
+                    _ui->actionStart_Recording->setEnabled(!_ui->actionStart_Recording->isEnabled());
+                    _ui->actionStop_Recording->setEnabled(!_ui->actionStart_Recording->isEnabled());
+              }
          }
     }
 }
