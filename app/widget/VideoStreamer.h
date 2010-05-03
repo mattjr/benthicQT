@@ -40,8 +40,9 @@ http://code.google.com/p/eyepatch/
 #include <osg/Timer>
 
 #include <stdint.h>
+#ifndef UINT64_C
 #define UINT64_C
-
+#endif
 extern "C"
 {
 #include <libavcodec/avcodec.h>

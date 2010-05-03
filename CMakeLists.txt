@@ -515,7 +515,7 @@ function(cxx_test name path)
   )
   add_dependencies(${name}
     ${ARGN}
-    ${BQT_GEN_MOC_HDRS} 
+    ${BQT_GEN_MOC_HDRS}
     ${BQT_TEST_GEN_MOC_HDRS} 
     ${BQT_HDRS}
   )
