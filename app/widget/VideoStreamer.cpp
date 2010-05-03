@@ -238,12 +238,11 @@ bool VideoStreamer::Update(ImgData* ai_image)
 			std::cout << "Cannot initialize the conversion context" << std::endl;
 			return false;
 		}
-                //Do flip during conversion more efficent
-                int linesize[4] = {-ai_image->width*3,0,0,0};
-                uint8_t *ptr=(ai_image->data+(ai_image->width*3)*(ai_image->height-1));
-                sws_scale(
+
+                int linesize[4] = {ai_image->width*3,ai_image->width *3, ai_image->width*3, 0};
+		sws_scale(
 			convContext,
-                       (uint8_t **)&ptr,
+                        (uint8_t **)&ai_image->data,
 			linesize, 0, ai_image->height,
 			m_frame[0]->data, m_frame[0]->linesize);
 
