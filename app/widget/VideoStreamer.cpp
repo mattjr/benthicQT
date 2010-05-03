@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 
+
 #undef AV_NOPTS_VALUE
 #define AV_NOPTS_VALUE int64_t(0x8000000000000000)
 #define VAR_SWAP(a,b,t) ((t) = (a), (a) = (b), (b) = (t))
@@ -33,29 +34,25 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
 	sdpFile << sdp;
         sdpFile.close();*/
 
-        if(avcodec_find_encoder(CODEC_ID_H264)){
-            encoderNames.push_back("H.264 in mp4");
-            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_H264,"mp4"));
-        }
-
-
-        if(avcodec_find_encoder(CODEC_ID_MPEG4)){
-            encoderNames.push_back("MPEG4 in mp4");
-            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MPEG4,"mp4"));
-            encoderNames.push_back("MPEG4 in avi");
-            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MPEG4,"avi"));
-            encoderNames.push_back("MPEG4 in mov");
-            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MPEG4,"mov"));
-        }
-
-        if(avcodec_find_encoder(CODEC_ID_MSMPEG4V2)){
-            encoderNames.push_back("MPEG4 MS-V2 in avi");
-            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MSMPEG4V2,"avi"));
-        }
+        checkAddEncoder(CODEC_ID_H264,"mp4","H.264 in mp4");
+        checkAddEncoder(CODEC_ID_MPEG4,"mp4","MPEG4 in mp4");
+        checkAddEncoder(CODEC_ID_MPEG4,"avi","MPEG4 in avi");
+        checkAddEncoder(CODEC_ID_MPEG4,"mov","MPEG4 in mov");
+        checkAddEncoder(CODEC_ID_XVID,"avi","XViD in avi");
+        checkAddEncoder(CODEC_ID_MSMPEG4V2,"avi","MPEG4 MS-V2 in avi");
 
         SetupVideo();
 
 
+}
+
+bool VideoStreamer::checkAddEncoder(CodecID id,const char *ext,std::string displayname){
+    if(avcodec_find_encoder(id)){
+        encoderNames.push_back(displayname);
+        codecs.push_back(std::pair<CodecID,const char *> (id,ext));
+        return true;
+    }
+    return false;
 }
 
 VideoStreamer::~VideoStreamer(void)
@@ -361,6 +358,8 @@ void VideoStreamer::CloseVideo(void)
         _isOpen=false;
 }
 
+
+
 // Allocate and initialize format context
 AVFormatContext* CreateFormatContext(
         const char *ai_fileName,
@@ -375,12 +374,12 @@ AVFormatContext* CreateFormatContext(
                 std::cerr << "ERROR: Could not allocate format context at ::CreateFormatContext()." << std::endl;
                 return NULL;
         }
+        formatContext->oformat = avformat_right_guess_version(ai_shortName, ai_fileExtension, ai_mimeType);
 
-        formatContext->oformat = guess_stream_format(ai_shortName, ai_fileExtension, ai_mimeType);
         if (!formatContext->oformat)
         {
                 std::cerr << std::endl << "WARNING: Could not find suitable output format, using avi-mpeg4" << std::endl << std::endl;
-                formatContext->oformat = guess_stream_format("avi", NULL, NULL);
+                formatContext->oformat = avformat_right_guess_version("avi", NULL, NULL);
         }
         if (!formatContext->oformat)
         {

@@ -40,6 +40,8 @@ http://code.google.com/p/eyepatch/
 #include <osg/Timer>
 
 #include <stdint.h>
+#define UINT64_C
+
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -101,6 +103,7 @@ public:
 	virtual void CloseVideo(void);
         static const bool enabled = true;
         std::vector<std::string> encoderNames;
+        bool checkAddEncoder(CodecID id,const char *ext,std::string displayname);
         virtual std::vector<std::string> getEncoderNames(){return encoderNames;}
         void SetupVideo(
                 std::string dir="/tmp",
@@ -149,5 +152,10 @@ private:
 
 };
 
+#if LIBAVFORMAT_VERSION_MAJOR < 52
+#define avformat_right_guess_version guess_stream_format
+#else
+#define avformat_right_guess_version av_guess_format
+#endif
 
 #endif // __VIDEO_STREAMER_H__
