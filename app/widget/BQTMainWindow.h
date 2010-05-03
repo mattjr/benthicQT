@@ -88,6 +88,7 @@ namespace ews {
                 /** Show the preferences dialog. */
                 void resetView();
                 void updateOverlayWidget(MeshFile &data);
+                bool runRecDlg();
             private slots:
                 /** Do any final connecting of components after rest of application is connected.*/
                 void init();

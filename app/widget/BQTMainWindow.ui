@@ -123,6 +123,7 @@
      <string>Recording</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionSetup_Recording"/>
     <addaction name="actionStart_Recording"/>
     <addaction name="actionStop_Recording"/>
     <addaction name="actionSet_to_640x480"/>
@@ -167,6 +168,7 @@
    <addaction name="actionOpen"/>
    <addaction name="actionReset"/>
    <addaction name="separator"/>
+   <addaction name="actionSetup_Recording"/>
    <addaction name="actionStart_Recording"/>
    <addaction name="actionStop_Recording"/>
    <addaction name="separator"/>
@@ -248,6 +250,15 @@
    </property>
    <property name="text">
     <string>Start Recording</string>
+   </property>
+  </action>
+  <action name="actionSetup_Recording">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Setup Recording</string>
    </property>
   </action>
   <action name="actionStop_Recording">

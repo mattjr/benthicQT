@@ -89,16 +89,10 @@ private:
 class VideoStreamer : IVideoStreamer
 {
 public:
-	VideoStreamer(
-		const char *ai_fileName = "out.avi", 
-		const char *ai_format = "avi",
-                unsigned int width=640,
-                unsigned int height=480, // size must be a multiple of two (because of fourcc)
-		int ai_bitRate = 500000, 
-		int ai_frameRate = 25,
-		int ai_gopSize = 12,	// emit one I-frame every "ai_gopSize" frames at most
-		int ai_bFrames = 2,     // emit this number of B-Frames in each gop
-		int ai_bufferSize = 2e5);
+        VideoStreamer(  int ai_bufferSize= 2e5);
+
+
+
 	virtual ~VideoStreamer();
 
 	virtual int OpenVideo(void);
@@ -107,11 +101,19 @@ public:
         static const bool enabled = true;
         std::vector<std::string> encoderNames;
         virtual std::vector<std::string> getEncoderNames(){return encoderNames;}
-
+        void SetupVideo(
+                std::string dir="/tmp",
+                std::string baseName="movie",
+                unsigned int width = 640,
+                unsigned int height = 480,
+                int bitrate = 5000,
+                int frameRate = 25,
+                int gopSize = 12,	// emit one I-frame every "ai_gopSize" frames at most
+                int bFrames = 2    //this number of B-Frames in each gop
+                              );
       
 private:
-
-
+        void ReleaseContext();
 	int Write(AVFrame *ai_picture);
 	void Run(void);
 
@@ -123,7 +125,13 @@ private:
 	AVFrame *m_frame[2];
 	uint8_t *m_vOutBuf;
 	int m_vOutBufSize;
-
+        int ai_bitRate;
+        int ai_frameRate;
+        int ai_gopSize;	// emit one I-frame every "ai_gopSize" frames at most
+        int ai_bFrames ;
+        int ai_width;
+        int ai_height;
+        std::string ai_baseName,ai_dir;
 	// Threading variables
 	bool m_stoprequested;
         WorkThread m_thread;
@@ -131,6 +139,8 @@ private:
         OpenThreads::Condition m_firstFrame;
         OpenThreads::Mutex m_updateMutex; // to avoid reentrancy. Check if it is worth...
         friend class WorkThread;
+        int m_movieCount;
+
 };
 
 

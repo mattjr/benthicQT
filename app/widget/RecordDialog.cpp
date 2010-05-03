@@ -1,13 +1,14 @@
 #include "RecordDialog.h"
 #include "ui_RecordDialog.h"
 #include <QtCore/QDir>
+#include <QtGui/QFileDialog>
 RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent),m_iv(iv),
     m_ui(new Ui::RecordDialog)
 {
     m_ui->setupUi(this);
     m_ui->saveDir->setText( QDir::homePath());
-    if(iv){
+    if(m_iv){
         for(int i=0; i < iv->getEncoderNames().size(); i++)
             m_ui->codecCombo->addItem(QString(iv->getEncoderNames()[i].c_str()));
     }else
@@ -22,12 +23,23 @@ RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
 
 
 }
+void RecordDialog::setParams(int width,int height){
+    if(m_iv){
+        m_iv->SetupVideo(m_ui->saveDir->text().toStdString(),
+                         m_ui->baseName->text().toStdString(),
+                         width,
+                         height,
+                         m_ui->bitRate->value()*1000);
+    }
 
+}
 RecordDialog::~RecordDialog()
 {
     delete m_ui;
 }
-
+int RecordDialog::getResizeCmd(){
+    return m_ui->resizeCombo->currentIndex();
+}
 void RecordDialog::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
@@ -38,4 +50,15 @@ void RecordDialog::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+void RecordDialog::on_toolButton_clicked()
+{
+QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                 "/home",
+                                                 QFileDialog::ShowDirsOnly
+                                                 | QFileDialog::DontResolveSymlinks);
+if(dir.size())
+     m_ui->saveDir->setText(dir);
+
 }

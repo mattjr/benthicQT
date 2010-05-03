@@ -6,22 +6,14 @@
 #define AV_NOPTS_VALUE int64_t(0x8000000000000000)
 #define VAR_SWAP(a,b,t) ((t) = (a), (a) = (b), (b) = (t))
 
-VideoStreamer::VideoStreamer(
-	const char *ai_fileName, 
-	const char *ai_format, 
-        unsigned int width,
-        unsigned int height,
-        int ai_bitRate,
-	int ai_frameRate,
-	int ai_gopSize,
-	int ai_bFrames,
-	int ai_bufferSize)
+VideoStreamer::VideoStreamer(int ai_bufferSize)
 	: m_formatContext(NULL) 
 	, m_vStream(NULL)
 	, m_vOutBuf(NULL)
 	, m_vOutBufSize(ai_bufferSize)
         , m_stoprequested(false)
         , m_thread(this)
+        , m_movieCount(0)
 {
 	m_frame[0] = NULL;
 	m_frame[1] = NULL;
@@ -31,29 +23,7 @@ VideoStreamer::VideoStreamer(
 	avcodec_register_all();
 	av_register_all();
 
-	// Allocate and initialize format context.
-	//m_formatContext = CreateFormatContext(ai_fileName, NULL, NULL, ai_format);
-	m_formatContext = CreateFormatContext(ai_fileName, ai_format, NULL, NULL);
-	if (!m_formatContext)
-		return;
-
-	// Add video stream
-	if (m_formatContext->oformat->video_codec != CODEC_ID_NONE)
-		m_vStream = CreateVideoStream(
-						m_formatContext,
-                                                width,
-                                                height,
-                                                ai_bitRate,
-						ai_frameRate, 
-						ai_gopSize,
-						ai_bFrames,
-						PIX_FMT_YUV420P);
-
-	// Set the output parameters (must be done even if no parameters) 
-	av_set_parameters(m_formatContext, NULL );
-
-	// Write out the format to the console
-	dump_format(m_formatContext, 0, ai_fileName, 1);
+	
 
 	// Save sdp info to a file
         /*std::fstream sdpFile;
@@ -65,6 +35,7 @@ VideoStreamer::VideoStreamer(
         encoderNames.push_back("MPEG-4");
         encoderNames.push_back("MPEG4 MS-V2");
         encoderNames.push_back("H.264");
+        SetupVideo();
 
 
 }
@@ -74,53 +45,107 @@ VideoStreamer::~VideoStreamer(void)
     if(_isOpen)
         CloseVideo();
 
-	// Release the streams
-	if (m_formatContext)
-	{
-		for(unsigned int i = 0; i < m_formatContext->nb_streams; i++) 
-		{
-			av_freep(&m_formatContext->streams[i]->codec);
-			av_freep(&m_formatContext->streams[i]);
-		}
 
-		// Release the format context
-		av_free(m_formatContext);
-	}
 }
 
+void VideoStreamer::SetupVideo(std::string dir,
+                               std::string baseName,
+                               unsigned int width,
+                               unsigned int height,
+                               int bitrate,
+                               int frameRate,
+                               int gopSize,	// emit one I-frame every "ai_gopSize" frames at most
+                               int bFrames    //his number of B-Frames in each gop
+                               )
+
+{
+    ai_dir=dir;
+    ai_baseName=baseName;
+ai_width=width;
+ai_height=height;
+ai_bitRate=bitrate;
+ai_frameRate=frameRate;
+ai_gopSize=gopSize;
+ai_bFrames=bFrames;
+
+}
+void VideoStreamer::ReleaseContext(){
+    // Release the streams
+    if (m_formatContext)
+    {
+        for(unsigned int i = 0; i < m_formatContext->nb_streams; i++)
+        {
+            av_freep(&m_formatContext->streams[i]->codec);
+            av_freep(&m_formatContext->streams[i]);
+        }
+
+        // Release the format context
+        av_free(m_formatContext);
+    }
+
+}
 // Open the output file
 int VideoStreamer::OpenVideo(void)
 {
     //Check if allready open
-        if(_isOpen)
+    if(_isOpen)
         return -1;
-        printf("Opening Video\n");
+    printf("Opening Video\n");
+    m_stoprequested=false;
 
-	// Find the video encoder
-	AVCodecContext *c = m_vStream->codec;
-	AVCodec *codec = avcodec_find_encoder(c->codec_id);
-	if (!codec) 
-	{
-		std::cerr << "Error # VideoStreamer::OpenVideo: Codec not found" << std::endl;
-		return -1;
-	}
+    const char *format="avi";
 
-	// Open the codec
-	if (avcodec_open(c, codec) < 0) 
-	{
-		std::cerr << "Error # VideoStreamer::OpenVideo: Could not open codec" << std::endl;
-		return -2;
-	}
+    char ai_fileName[1024];
+    sprintf(ai_fileName,"%s/%s-%02d.%s",ai_dir.c_str(),ai_baseName.c_str(),m_movieCount,format);
+    // Allocate and initialize format context.
+    m_formatContext = CreateFormatContext(ai_fileName, format, NULL, NULL);
+    if (!m_formatContext)
+        return -1;
 
-	// Allocate the encoded raw picture.
-	if (c->pix_fmt != PIX_FMT_BGR24)
-		m_frame[0] = CreateFrame(c->pix_fmt, c->width, c->height);
-	else
-		m_frame[0] = avcodec_alloc_frame();
-	m_frame[1] = CreateFrame(c->pix_fmt, c->width, c->height);
+    // Add video stream
+    if (m_formatContext->oformat->video_codec != CODEC_ID_NONE)
+        m_vStream = CreateVideoStream(
+                m_formatContext,
+                ai_width,
+                ai_height,
+                ai_bitRate,
+                ai_frameRate,
+                ai_gopSize,
+                ai_bFrames,
+                PIX_FMT_YUV420P);
 
-	if (!m_frame[0] || !m_frame[1])
-	{
+    // Set the output parameters (must be done even if no parameters)
+    av_set_parameters(m_formatContext, NULL );
+
+    // Write out the format to the console
+    dump_format(m_formatContext, 0, ai_fileName, 1);
+
+
+    // Find the video encoder
+    AVCodecContext *c = m_vStream->codec;
+    AVCodec *codec = avcodec_find_encoder(c->codec_id);
+    if (!codec)
+    {
+        std::cerr << "Error # VideoStreamer::OpenVideo: Codec not found" << std::endl;
+        return -1;
+    }
+
+    // Open the codec
+    if (avcodec_open(c, codec) < 0)
+    {
+        std::cerr << "Error # VideoStreamer::OpenVideo: Could not open codec" << std::endl;
+        return -2;
+    }
+
+    // Allocate the encoded raw picture.
+    if (c->pix_fmt != PIX_FMT_BGR24)
+        m_frame[0] = CreateFrame(c->pix_fmt, c->width, c->height);
+    else
+        m_frame[0] = avcodec_alloc_frame();
+    m_frame[1] = CreateFrame(c->pix_fmt, c->width, c->height);
+
+    if (!m_frame[0] || !m_frame[1])
+    {
 		std::cerr << "Error # VideoStreamer::OpenVideo: Could not allocate picture" << std::endl;
 		return -3;
 	}
@@ -139,8 +164,9 @@ int VideoStreamer::OpenVideo(void)
 		return -4;
 	}
         _isOpen=true;
-        m_thread.start();
+        m_movieCount++;
 
+        m_thread.start();
 	return 0;
 }
 
@@ -299,6 +325,7 @@ void VideoStreamer::CloseVideo(void)
 
         ReleaseFrame(m_frame[0], false);
         ReleaseFrame(m_frame[1], false);
+        ReleaseContext();
         _isOpen=false;
 }
 

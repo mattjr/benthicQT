@@ -75,6 +75,8 @@ namespace ews {
                 QObject::connect(_ui->actionOpen, SIGNAL(triggered()), this, SLOT(openModel()));
                 QObject::connect(_ui->actionStart_Recording, SIGNAL(triggered()), this,SLOT(startRecording()));
                 QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), _ui->renderer,SLOT(stopRecording()));
+                QObject::connect(_ui->actionSetup_Recording, SIGNAL(triggered()), this,SLOT(runRecDlg()));
+
                 QObject::connect(_ui->actionSet_to_640x480, SIGNAL(triggered()), this, SLOT(resize640()));
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720()));
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
@@ -333,17 +335,31 @@ namespace ews {
                    }
 
                }
-            }
-             void EWSMainWindow::startRecording(){
+                  }
+             bool EWSMainWindow::runRecDlg(){
                  if(!_ui->renderer->movieCallback)
-                     return;
+                     return false;
                  OSGVideoStreamer *iv=_ui->renderer->movieCallback->getRecorder(_ui->renderer->_gw);
+                 RecordDialog recdlg(iv);
+                 if(recdlg.exec()){
+                     int resizeCmd=recdlg.getResizeCmd();
+                     if(resizeCmd == 0)
+                         resize640();
+                     else if(resizeCmd == 1)
+                         resize720();
 
-                 if(!firstRunRecord){
-                     RecordDialog recdlg(iv);
-                     if(recdlg.exec())
-                         firstRunRecord=true;
+                     QSize size=_ui->renderer->size();
+
+                     recdlg.setParams(size.width(),size.height());
+                     firstRunRecord=true;
+                     return true;
                  }
+                 else return false;
+             }
+             void EWSMainWindow::startRecording(){
+
+                 if(!firstRunRecord)
+                     runRecDlg();
                  if(firstRunRecord)
                      _ui->renderer->startRecording();
              }
@@ -351,7 +367,7 @@ namespace ews {
 
 
 
-        }
+         }
     }
 }
 
