@@ -280,6 +280,11 @@
     <string>Set to 720x480</string>
    </property>
   </action>
+  <action name="actionSet_to_720x576">
+   <property name="text">
+    <string>Set to 720x576</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

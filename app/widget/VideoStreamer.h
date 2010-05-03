@@ -103,7 +103,7 @@ public:
 	virtual void CloseVideo(void);
         static const bool enabled = true;
         std::vector<std::string> encoderNames;
-        bool checkAddEncoder(CodecID id,const char *ext,std::string displayname);
+        int checkAddEncoder(CodecID id,const char *ext,std::string displayname);
         virtual std::vector<std::string> getEncoderNames(){return encoderNames;}
         void SetupVideo(
                 std::string dir="/tmp",
@@ -116,7 +116,7 @@ public:
                 int gopSize = 12,	// emit one I-frame every "ai_gopSize" frames at most
                 int bFrames = 2    //this number of B-Frames in each gop
                               );
-      
+      int dvComboEntry;
 private:
         void ReleaseContext();
 	int Write(AVFrame *ai_picture);

@@ -16,6 +16,7 @@ RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
  m_ui->codecCombo->setCurrentIndex(0);
  m_ui->resizeCombo->addItem(QString("Resize 640x480"));
  m_ui->resizeCombo->addItem(QString("Resize 720x480"));
+ m_ui->resizeCombo->addItem(QString("Resize 720x576"));
  m_ui->resizeCombo->addItem(QString("No Resize"));
 
  m_ui->resizeCombo->setCurrentIndex(0);
@@ -63,4 +64,27 @@ QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
 if(dir.size())
      m_ui->saveDir->setText(dir);
 
+}
+
+
+
+
+
+
+
+void RecordDialog::on_codecCombo_currentIndexChanged(int index)
+{
+     if(m_iv){
+        if(m_iv->dvComboEntry >= 0 && index==m_iv->dvComboEntry){
+            m_ui->resizeCombo->setDisabled(true);
+            m_ui->bitRate->setDisabled(true);
+            m_lastResizeEntry=m_ui->resizeCombo->currentIndex();
+            m_ui->resizeCombo->setCurrentIndex(RecordDialog::RESIZE_720_576);
+        }else{
+            m_ui->resizeCombo->setCurrentIndex(m_lastResizeEntry);
+            m_ui->resizeCombo->setDisabled(false);
+            m_ui->bitRate->setDisabled(false);
+
+        }
+    }
 }

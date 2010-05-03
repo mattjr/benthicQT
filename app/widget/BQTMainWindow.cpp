@@ -78,7 +78,9 @@ namespace ews {
                 QObject::connect(_ui->actionSetup_Recording, SIGNAL(triggered()), this,SLOT(runRecDlg()));
 
                 QObject::connect(_ui->actionSet_to_640x480, SIGNAL(triggered()), this, SLOT(resize640()));
-                QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720()));
+                QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720x480()));
+                QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
+
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
 
                 // Setup sync between samplers and plot.
@@ -355,10 +357,12 @@ namespace ews {
                  RecordDialog recdlg(iv);
                  if(recdlg.exec()){
                      int resizeCmd=recdlg.getResizeCmd();
-                     if(resizeCmd == 0)
+                     if(resizeCmd == RecordDialog::RESIZE_640_480)
                          resize640();
-                     else if(resizeCmd == 1)
-                         resize720();
+                     else if(resizeCmd == RecordDialog::RESIZE_720_480)
+                         resize720x480();
+                     else if(resizeCmd == RecordDialog::RESIZE_720_576)
+                         resize720x576();
 
                      QSize size=_ui->renderer->size();
 

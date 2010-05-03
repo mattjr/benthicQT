@@ -38,7 +38,7 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
         checkAddEncoder(CODEC_ID_MPEG4,"mp4","MPEG4 in mp4");
         checkAddEncoder(CODEC_ID_MPEG4,"avi","MPEG4 in avi");
         checkAddEncoder(CODEC_ID_MPEG4,"mov","MPEG4 in mov");
-        checkAddEncoder(CODEC_ID_XVID,"avi","XViD in avi");
+        dvComboEntry=checkAddEncoder(CODEC_ID_DVVIDEO,"dv","DV in dv");
         checkAddEncoder(CODEC_ID_MSMPEG4V2,"avi","MPEG4 MS-V2 in avi");
 
         SetupVideo();
@@ -46,13 +46,14 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
 
 }
 
-bool VideoStreamer::checkAddEncoder(CodecID id,const char *ext,std::string displayname){
+int VideoStreamer::checkAddEncoder(CodecID id,const char *ext,std::string displayname){
     if(avcodec_find_encoder(id)){
         encoderNames.push_back(displayname);
         codecs.push_back(std::pair<CodecID,const char *> (id,ext));
-        return true;
+        return codecs.size()-1;
     }
-    return false;
+    fprintf(stderr,"Cant find %d\n",id);
+    return -1;
 }
 
 VideoStreamer::~VideoStreamer(void)
@@ -485,22 +486,6 @@ void ReleaseFrame(AVFrame *ai_frame, bool ai_releaseData)
                 av_freep(ai_frame);
         }
 }
-
-/*bool ValidateImage(IplImage *ai_image)
-{
-        if ((ai_image == NULL) ||
-                (ai_image->nChannels != 3) ||
-                (ai_image->depth != IPL_DEPTH_8U) ||
-                (ai_image->width%2 != 0) ||
-                (ai_image->height%2 != 0) ||
-                (ai_image->imageSize != avpicture_get_size(PIX_FMT_BGR24, ai_image->width, ai_image->height)))
-        {
-                std::cout << "ERROR: Attempt to stream an invalid IplImage detected at ::ValidateImage()." << std::endl;
-                return false;
-        }
-
-        return true;
-}*/
 
 void set_libx264Opt(AVCodecContext *videoContext){
 

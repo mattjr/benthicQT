@@ -100,7 +100,8 @@ namespace ews {
                 /** Update the enabled state of menu items.*/
                 void updateMenusEnabledState();
                 void resize640(){resize(computerWindowSizeForRenderSize(QSize(640,480)));}
-                void resize720(){resize(computerWindowSizeForRenderSize(QSize(720,480)));}
+                void resize720x480(){resize(computerWindowSizeForRenderSize(QSize(720,480)));}
+                void resize720x576(){resize(computerWindowSizeForRenderSize(QSize(720,576)));}
             private:
                 Q_DISABLE_COPY(EWSMainWindow)
                 Ui::EWSMainWindowForm* _ui;

@@ -15,15 +15,21 @@ public:
     ~RecordDialog();
     void setParams(int width,int height);
     int getResizeCmd();
-
+    enum{
+        RESIZE_640_480,
+        RESIZE_720_480,
+        RESIZE_720_576
+    };
 protected:
     void changeEvent(QEvent *e);
 
 private:
     Ui::RecordDialog *m_ui;
     OSGVideoStreamer *m_iv;
+    int m_lastResizeEntry;
 
 private slots:
+    void on_codecCombo_currentIndexChanged(int index);
     void on_toolButton_clicked();
 };
 
