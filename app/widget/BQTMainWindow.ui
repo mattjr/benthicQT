@@ -101,7 +101,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -175,16 +175,19 @@
   </widget>
   <action name="actionOpen">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../Resources.qrc">
      <normaloff>:/images/images/file-open-green.png</normaloff>:/images/images/file-open-green.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionReset">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../Resources.qrc">
      <normaloff>:/images/images/view-refresh.png</normaloff>:/images/images/view-refresh.png</iconset>
    </property>
    <property name="text">
@@ -245,16 +248,19 @@
   </action>
   <action name="actionStart_Recording">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../Resources.qrc">
      <normaloff>:/images/images/media-record.png</normaloff>:/images/images/media-record.png</iconset>
    </property>
    <property name="text">
     <string>Start Recording</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
   </action>
   <action name="actionSetup_Recording">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../Resources.qrc">
      <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
    </property>
    <property name="text">
@@ -263,11 +269,14 @@
   </action>
   <action name="actionStop_Recording">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../Resources.qrc">
      <normaloff>:/images/images/media-stop-red.png</normaloff>:/images/images/media-stop-red.png</iconset>
    </property>
    <property name="text">
     <string>Stop Recording</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionSet_to_640x480">
@@ -302,7 +311,9 @@
    </slots>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../Resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionOpen</sender>

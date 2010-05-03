@@ -34,8 +34,8 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
 	sdpFile << sdp;
         sdpFile.close();*/
 
-        checkAddEncoder(CODEC_ID_H264,"mp4","H.264 in mp4");
         checkAddEncoder(CODEC_ID_MPEG4,"mp4","MPEG4 in mp4");
+        checkAddEncoder(CODEC_ID_H264,"mp4","H.264 in mp4");
         checkAddEncoder(CODEC_ID_MPEG4,"avi","MPEG4 in avi");
         checkAddEncoder(CODEC_ID_MPEG4,"mov","MPEG4 in mov");
         dvComboEntry=checkAddEncoder(CODEC_ID_DVVIDEO,"dv","DV in dv");
