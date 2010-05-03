@@ -40,7 +40,6 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
             codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MPEG4,"avi"));
         }
 
-
         if(avcodec_find_encoder(CODEC_ID_MSMPEG4V2)){
             encoderNames.push_back("MPEG4 MS-V2");
             codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MSMPEG4V2,"avi"));
@@ -440,6 +439,13 @@ AVStream *CreateVideoStream(
                 c->mb_decision=2;
         }
 
+        if(c->codec_id == CODEC_ID_H264){
+            c->me_range = 16;
+            c->max_qdiff = 4;
+            c->qmin = 10;
+            c->qmax = 51;
+            c->qcompress = 0.6;
+        }
         // Some formats want stream headers to be seperate
         const char *fn = ai_formatContext->oformat->name;
         if (!strcmp(fn, "mp4") || !strcmp(fn, "mov") || !strcmp(fn, "3gp"))
