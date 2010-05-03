@@ -167,8 +167,10 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpen"/>
-   <addaction name="separator"/>
    <addaction name="actionReset"/>
+   <addaction name="separator"/>
+   <addaction name="actionStart_Recording"/>
+   <addaction name="actionStop_Recording"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -296,11 +298,19 @@
    </property>
   </action>
   <action name="actionStart_Recording">
+    <property name="icon">
+    <iconset>
+     <normaloff>:/images/images/media-record.png</normaloff>:/images/images/media-record.png</iconset>
+   </property>
    <property name="text">
     <string>Start Recording</string>
    </property>
   </action>
   <action name="actionStop_Recording">
+    <property name="icon">
+    <iconset>
+     <normaloff>:/images/images/media-playback-stop.png</normaloff>:/images/images/media-playback-stop.png</iconset>
+   </property>
    <property name="text">
     <string>Stop Recording</string>
    </property>
