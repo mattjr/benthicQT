@@ -264,7 +264,7 @@
   <action name="actionStop_Recording">
    <property name="icon">
     <iconset>
-     <normaloff>:/images/images/media-playback-stop.png</normaloff>:/images/images/media-playback-stop.png</iconset>
+     <normaloff>:/images/images/media-stop-red.png</normaloff>:/images/images/media-stop-red.png</iconset>
    </property>
    <property name="text">
     <string>Stop Recording</string>

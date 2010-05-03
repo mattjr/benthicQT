@@ -13,6 +13,7 @@
         <file>images/media-playback-pause.png</file>
         <file>images/file-open-green.png</file>
         <file>images/media-playback-stop.png</file>
+        <file>images/media-stop-red.png</file>
     </qresource>
     <qresource prefix="/text" >
         <file alias="waves.vs" >app/drawable/waves.vs</file>
