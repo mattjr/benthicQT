@@ -40,12 +40,13 @@ void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
 
         if (timeForMemCpy==0.0)
         {
-            osg::notify(osg::NOTICE)<<"fps = "<<fps<<", full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, copy speed = "<<numMb / timeForFullCopy<<" Mb/sec"<<std::endl;
+            osg::notify(osg::NOTICE)<<"fps = "<<fps<<", full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, copy speed = "<<numMb / timeForFullCopy<<" Mb/sec"<<
+                    "time for readpixel = "<<timeForReadPixels*1000.0<<std::endl;
         }
         else
         {
             osg::notify(osg::NOTICE)<<"fps = "<<fps<<", full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, "<<numMb / timeForFullCopy<< " Mb/sec "<<
-                                      "time for memcpy = "<<timeForMemCpy*1000.0<<"ms  memcpy speed = "<<numMb / timeForMemCpy<<" Mb/sec"<<std::endl;
+                                     "time for readpixel = "<<timeForReadPixels*1000.0<<  "time for memcpy = "<<timeForMemCpy*1000.0<<"ms  memcpy speed = "<<numMb / timeForMemCpy<<" Mb/sec"<<std::endl;
         }
         osg::notify(osg::NOTICE).precision(prec);
 
@@ -76,6 +77,7 @@ void WindowCaptureCallback::ContextData::readPixels()
 #if 1
     image->readPixels(0,0,_width,_height,
                       _pixelFormat,_type);
+    image->flipVertical();
 #endif
 
     osg::Timer_t tick_afterReadPixels = osg::Timer::instance()->tick();

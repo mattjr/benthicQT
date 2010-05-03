@@ -239,7 +239,7 @@ bool VideoStreamer::Update(ImgData* ai_image)
 			return false;
 		}
 
-                int linesize[4] = {ai_image->width*3,ai_image->width *3, ai_image->width*3, 0};
+                int linesize[4] = {ai_image->width*3,0,0,0};
 		sws_scale(
 			convContext,
                         (uint8_t **)&ai_image->data,
