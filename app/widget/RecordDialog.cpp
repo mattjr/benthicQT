@@ -20,7 +20,7 @@ RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
  m_ui->resizeCombo->addItem(QString("No Resize"));
 
  m_ui->resizeCombo->setCurrentIndex(0);
-
+ m_lastResizeEntry=0;
 
 
 }
@@ -80,7 +80,7 @@ void RecordDialog::on_codecCombo_currentIndexChanged(int index)
             m_ui->bitRate->setDisabled(true);
             m_lastResizeEntry=m_ui->resizeCombo->currentIndex();
             m_ui->resizeCombo->setCurrentIndex(RecordDialog::RESIZE_720_576);
-        }else{
+        }else if(!m_ui->resizeCombo->isEnabled()){
             m_ui->resizeCombo->setCurrentIndex(m_lastResizeEntry);
             m_ui->resizeCombo->setDisabled(false);
             m_ui->bitRate->setDisabled(false);
