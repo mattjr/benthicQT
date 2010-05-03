@@ -105,7 +105,10 @@ public:
         virtual bool Update(ImgData* ai_image);
 	virtual void CloseVideo(void);
         static const bool enabled = true;
+        std::vector<std::string> encoderNames;
+        virtual std::vector<std::string> getEncoderNames(){return encoderNames;}
 
+      
 private:
 
 

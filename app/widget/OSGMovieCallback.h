@@ -226,6 +226,14 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
              _recording=false;
          }
 
+         OSGVideoStreamer* getRecorder(osg::GraphicsContext* gc){
+
+             osg::ref_ptr<ContextData> cd = getContextData(gc);
+             if(cd)
+                return &cd->_videoStreamer;
+
+             return NULL;
+         }
 
         typedef std::map<osg::GraphicsContext*, osg::ref_ptr<ContextData> > ContextDataMap;
 

@@ -335,13 +335,17 @@ namespace ews {
                }
             }
              void EWSMainWindow::startRecording(){
+                 if(!_ui->renderer->movieCallback)
+                     return;
+                 OSGVideoStreamer *iv=_ui->renderer->movieCallback->getRecorder(_ui->renderer->_gw);
+
                  if(!firstRunRecord){
-                     RecordDialog recdlg;
+                     RecordDialog recdlg(iv);
                      if(recdlg.exec())
-                      firstRunRecord=true;
+                         firstRunRecord=true;
                  }
                  if(firstRunRecord)
-                    _ui->renderer->startRecording();
+                     _ui->renderer->startRecording();
              }
 
 

@@ -19,7 +19,8 @@ Interfaz de Video Streamer
 
 #ifndef __IVIDEO_STREAMER_H__
 #define __IVIDEO_STREAMER_H__
-
+#include <string>
+#include <vector>
 struct ImgData{
 unsigned int width;
 unsigned int height;
@@ -35,10 +36,9 @@ struct IVideoStreamer
 	virtual void CloseVideo(void) = 0;
         virtual void Run(void) = 0;
         virtual bool IsOpen(void) {return _isOpen;};
-
         bool _isOpen;
+
 };
-#ifndef USE_FFMPEG
 
 class NullVideoStreamer: public IVideoStreamer{
     public:
@@ -48,7 +48,10 @@ class NullVideoStreamer: public IVideoStreamer{
     virtual void Run(void) {}
     virtual bool IsOpen(void) {return false;}
     static const bool enabled = false;
+    virtual std::vector<std::string> getEncoderNames(){return std::vector<std::string>();}
+
 };
+#ifndef USE_FFMPEG
 typedef  NullVideoStreamer OSGVideoStreamer;
 #else
 #include "VideoStreamer.h"

@@ -2,6 +2,7 @@
 #define RECORDDIALOG_H
 
 #include <QtGui/QDialog>
+#include "IVideoStreamer.h"
 
 namespace Ui {
     class RecordDialog;
@@ -10,7 +11,7 @@ namespace Ui {
 class RecordDialog : public QDialog {
     Q_OBJECT
 public:
-    RecordDialog(QWidget *parent = 0);
+    RecordDialog(OSGVideoStreamer *iv,QWidget *parent = 0);
     ~RecordDialog();
 
 protected:

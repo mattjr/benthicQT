@@ -62,6 +62,11 @@ VideoStreamer::VideoStreamer(
 	avf_sdp_create(&m_formatContext, 1, sdp, 2048);
 	sdpFile << sdp;
         sdpFile.close();*/
+        encoderNames.push_back("MPEG-4");
+        encoderNames.push_back("MPEG4 MS-V2");
+        encoderNames.push_back("H.264");
+
+
 }
 
 VideoStreamer::~VideoStreamer(void)

@@ -82,9 +82,11 @@ namespace ews {
                  */
                 virtual void homePosition();
                 void computeHomePosition();
+                WindowCaptureCallback *movieCallback;
+
             public slots:
-               void startRecording();
-               void stopRecording();
+                void startRecording();
+                void stopRecording();
                 
             protected:
                 virtual void resizeGL( int width, int height );
@@ -99,12 +101,12 @@ namespace ews {
                 virtual void closeEvent( QCloseEvent * event );
                 virtual void destroyEvent( bool destroyWindow = true, bool destroySubWindows = true);
                 virtual void initializeGL();
+            public:
+                osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 
             private:                
                 Q_DISABLE_COPY(QOSGWidget)
-                osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
-                QTimer _timer;
-                WindowCaptureCallback *movieCallback;
+                        QTimer _timer;
             };
         }
     }

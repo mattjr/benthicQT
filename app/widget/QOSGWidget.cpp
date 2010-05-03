@@ -153,6 +153,7 @@ namespace ews {
                 if(movieCallback)
                     movieCallback->stopRecording(_gw);
             }
+
             void QOSGWidget::computeHomePosition() {
                 //using ews::app::drawable::CameraController;
                 
