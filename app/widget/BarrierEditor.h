@@ -53,28 +53,18 @@ namespace ews {
                 
                 /** Connect the data model instance with the editor. */
                 void setDataModel(MeshFile* barriers);
-                
-                /** Remove all Barrier objects (e.g., to start over). */
-                void removeAllBarriers();
+
 
             public slots:
-                /** Slot to create a new barrier and add it to the end of the list.*/
-                void addBarrier();
-                /** Slot to remove the selected barrier. */
-                void removeBarrier();
+
                 /** Slot to update the enabled state of the controls. */
                 void updateEnabled();
-                /** Update UI after the table seletion changes. */
-                void updateOnSelection();
+
                 /** Update the data model to reflect the selected number of slits.*/
                 void updatePos(osg::Vec3);
                 void updateImgLabel(QString);
-                void updateOverlayWidget();
+                void changeOverlay(int index);
 
-                /** Update the data model to reflect the give slit width.*/
-                void updateSlitWidth(int);
-                /** Update the data model to reflect the give slit separation.*/
-                void updateSlitSeparation(int);
              signals:
                /**
                  * General signal for case when number of items in the
@@ -82,19 +72,16 @@ namespace ews {
                  */
                 void posChanged(osg::Vec3);
                 void imgLabelChanged(QString);
-                void overlayChanged(int);
+
             private:
-                Barrier::NumSlits numSlitsSelected() const;
-                void select(Barrier* barrier);
-                Barrier* selectedBarrier() const;
+
                 void syncUI();
                 QString posString;
 
                 Ui::BarrierEditorForm* _ui;
                 MeshFile* _dataModel;
 
-private slots:
-    void on_overlay_currentIndexChanged(int index);
+
 };
         }
     }

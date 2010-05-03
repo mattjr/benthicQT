@@ -122,8 +122,6 @@
     <property name="title">
      <string>Recording</string>
     </property>
-    <addaction name="actionAddBarrier"/>
-    <addaction name="actionRemoveBarrier"/>
     <addaction name="separator"/>
     <addaction name="actionStart_Recording"/>
     <addaction name="actionStop_Recording"/>
@@ -171,6 +169,7 @@
    <addaction name="separator"/>
    <addaction name="actionStart_Recording"/>
    <addaction name="actionStop_Recording"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -194,61 +193,6 @@
    </property>
    <property name="shortcut">
     <string>Meta+Shift+R</string>
-   </property>
-  </action>
-  <action name="actionAddBarrier">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add Barrier</string>
-   </property>
-   <property name="toolTip">
-    <string>Add barrier</string>
-   </property>
-   <property name="shortcut">
-    <string>Meta+B</string>
-   </property>
-  </action>
-  <action name="actionRemoveBarrier">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/images/images/list-remove.png</normaloff>:/images/images/list-remove.png</iconset>
-   </property>
-   <property name="text">
-    <string>Remove Barrier</string>
-   </property>
-   <property name="toolTip">
-    <string>Remove selected barrier</string>
-   </property>
-   <property name="shortcut">
-    <string>Meta+Shift+B</string>
-   </property>
-  </action>
-  <action name="actionToggleDripSource1">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Toggle Drip Source 1</string>
-   </property>
-   <property name="toolTip">
-    <string>Toggle Drip Source 1</string>
-   </property>
-  </action>
-  <action name="actionToggleDripSource2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Toggle Drip Source 2</string>
-   </property>
-   <property name="toolTip">
-    <string>Toggle Drip Source 2</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -298,7 +242,7 @@
    </property>
   </action>
   <action name="actionStart_Recording">
-    <property name="icon">
+   <property name="icon">
     <iconset>
      <normaloff>:/images/images/media-record.png</normaloff>:/images/images/media-record.png</iconset>
    </property>
@@ -307,7 +251,7 @@
    </property>
   </action>
   <action name="actionStop_Recording">
-    <property name="icon">
+   <property name="icon">
     <iconset>
      <normaloff>:/images/images/media-playback-stop.png</normaloff>:/images/images/media-playback-stop.png</iconset>
    </property>

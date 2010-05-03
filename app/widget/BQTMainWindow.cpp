@@ -65,8 +65,8 @@ namespace ews {
                 _ui->renderer->setSceneData(_sceneRoot);
                 osg::Vec3 weights(6.24,0.79,0.3);
                 int num_shader_out=2;
-
-
+                overlay=new QComboBox;
+                _ui->mainToolBar->addWidget(overlay);
                 // Setup sync between model and renderer.
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
@@ -75,6 +75,7 @@ namespace ews {
                 QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), _ui->renderer, SLOT(stopRecording()));
                 QObject::connect(_ui->actionSet_to_640x480, SIGNAL(triggered()), this, SLOT(resize640()));
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720()));
+                QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
 
                 // Setup sync between samplers and plot.
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerAdded(int,PointSampler*)), 
@@ -167,8 +168,8 @@ namespace ews {
             }
             
             void EWSMainWindow::updateMenusEnabledState() {
-                _ui->actionAddBarrier->setEnabled(!_state->getBarriers().isFull());
-                _ui->actionRemoveBarrier->setEnabled(_state->getBarriers().size() > 0);
+                //_ui->actionAddBarrier->setEnabled(!_state->getBarriers().isFull());
+                //_ui->actionRemoveBarrier->setEnabled(_state->getBarriers().size() > 0);
             }
             
             Uint EWSMainWindow::getInterFrameDelay() const {
@@ -247,7 +248,7 @@ namespace ews {
                 qApp->processEvents();
                 //Redo rendering delay
                 _state->getMeshFiles().getPBarD()->close();
-                _ui->barrierEditor->updateOverlayWidget();
+                updateOverlayWidget(_state->getMeshFiles());
                 QApplication::restoreOverrideCursor();
                 setCurrentFile(first);
 
@@ -313,6 +314,23 @@ namespace ews {
                 QFileInfo p(fullFileName);
                 QStringList dirs = p.path().split( "/");
                 return dirs[dirs.size()-1]+"/"+p.fileName();
+            }
+             void EWSMainWindow::updateOverlayWidget(MeshFile &data){
+                          overlay->clear();
+
+
+                      for(int i=0; i< data.getNumShaderOut(); i++){
+                   if( i < data.getShaderNames().size())
+                       overlay->addItem(data.getShaderNames()[i].c_str());
+                   else{
+                       char tmp[255];
+                       sprintf(tmp,"Aux %d",i);
+                       QString qtmp=tmp;
+                       overlay->addItem(qtmp);
+                       //qDebug() << "Adding " <<qtmp;
+                   }
+
+               }
             }
 
 

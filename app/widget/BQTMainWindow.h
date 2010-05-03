@@ -25,6 +25,7 @@
 #include <osg/ref_ptr>
 #include "BQTDefine.h"
 #include "SceneRoot.h"
+#include <QComboBox>
 #include "SimulationState.h"
 #include <QFileDialog>
 /** Forward declaration of generated UI class. */
@@ -40,6 +41,7 @@ namespace ews {
         namespace widget {
             using ews::app::drawable::SceneRoot;
             using ews::app::model::SimulationState;
+            using ews::app::model::MeshFile;
 
             /**
              * Class definining the main screen, including scene graph and all widgets.
@@ -61,6 +63,7 @@ namespace ews {
                 void setCurrentFile(const QString &fileName);
                 void updateRecentFileActions();
                 QString strippedName(const QString &fullFileName);
+                QSize computerWindowSizeForRenderSize(QSize target);
 
 
             public slots:
@@ -82,7 +85,7 @@ namespace ews {
                 void setInterFrameDelay(Uint delay);
                 /** Show the preferences dialog. */
                 void resetView();
-                QSize computerWindowSizeForRenderSize(QSize target);
+                void updateOverlayWidget(MeshFile &data);
             private slots:
                 /** Do any final connecting of components after rest of application is connected.*/
                 void init();
@@ -100,7 +103,7 @@ namespace ews {
                 osg::ref_ptr<SceneRoot> _sceneRoot;
                 QAction *separatorAct;
                 QString curFile;
-
+                QComboBox *overlay;
                 enum { MaxRecentFiles = 5 };
                 QAction *recentFileActs[MaxRecentFiles];
             };
