@@ -24,9 +24,11 @@ RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
 
 }
 void RecordDialog::setParams(int width,int height){
+
     if(m_iv){
         m_iv->SetupVideo(m_ui->saveDir->text().toStdString(),
                          m_ui->baseName->text().toStdString(),
+                         m_ui->codecCombo->currentIndex(),
                          width,
                          height,
                          m_ui->bitRate->value()*1000);

@@ -32,9 +32,25 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
 	avf_sdp_create(&m_formatContext, 1, sdp, 2048);
 	sdpFile << sdp;
         sdpFile.close();*/
-        encoderNames.push_back("MPEG-4");
-        encoderNames.push_back("MPEG4 MS-V2");
-        encoderNames.push_back("H.264");
+
+        if(avcodec_find_encoder(CODEC_ID_MPEG4)){
+            encoderNames.push_back("MPEG4 in mp4");
+            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MPEG4,"mp4"));
+             encoderNames.push_back("MPEG4 in avi");
+            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MPEG4,"avi"));
+        }
+
+
+        if(avcodec_find_encoder(CODEC_ID_MSMPEG4V2)){
+            encoderNames.push_back("MPEG4 MS-V2");
+            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MSMPEG4V2,"avi"));
+        }
+
+        if(avcodec_find_encoder(CODEC_ID_H264)){
+            encoderNames.push_back("H.264");
+            codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_H264,"mp4"));
+        }
+
         SetupVideo();
 
 
@@ -50,6 +66,7 @@ VideoStreamer::~VideoStreamer(void)
 
 void VideoStreamer::SetupVideo(std::string dir,
                                std::string baseName,
+                               unsigned int codec_num,
                                unsigned int width,
                                unsigned int height,
                                int bitrate,
@@ -67,6 +84,8 @@ ai_bitRate=bitrate;
 ai_frameRate=frameRate;
 ai_gopSize=gopSize;
 ai_bFrames=bFrames;
+ai_format=getFormat(codec_num);
+ai_codec_id=getFFMPEGCodecId(codec_num);
 
 }
 void VideoStreamer::ReleaseContext(){
@@ -85,6 +104,18 @@ void VideoStreamer::ReleaseContext(){
 
 }
 // Open the output file
+const char *VideoStreamer::getFormat(unsigned int codec_id){
+   if(codec_id < codecs.size())
+       return codecs[codec_id].second;
+    return NULL;
+}
+
+CodecID VideoStreamer::getFFMPEGCodecId(unsigned int codec_id){
+   if(codec_id < codecs.size())
+       return codecs[codec_id].first;
+    return (CodecID)NULL;
+}
+
 int VideoStreamer::OpenVideo(void)
 {
     //Check if allready open
@@ -93,12 +124,11 @@ int VideoStreamer::OpenVideo(void)
     printf("Opening Video\n");
     m_stoprequested=false;
 
-    const char *format="avi";
 
     char ai_fileName[1024];
-    sprintf(ai_fileName,"%s/%s-%02d.%s",ai_dir.c_str(),ai_baseName.c_str(),m_movieCount,format);
+    sprintf(ai_fileName,"%s/%s-%02d.%s",ai_dir.c_str(),ai_baseName.c_str(),m_movieCount,ai_format);
     // Allocate and initialize format context.
-    m_formatContext = CreateFormatContext(ai_fileName, format, NULL, NULL);
+    m_formatContext = CreateFormatContext(ai_fileName, ai_format, NULL, NULL,ai_codec_id);
     if (!m_formatContext)
         return -1;
 
@@ -334,9 +364,10 @@ AVFormatContext* CreateFormatContext(
         const char *ai_fileName,
         const char *ai_shortName,
         const char *ai_fileExtension,
-        const char *ai_mimeType)
+        const char *ai_mimeType,
+        CodecID codec_id)
 {
-        AVFormatContext* formatContext = av_alloc_format_context();
+        AVFormatContext* formatContext =  avformat_alloc_context();
         if (!formatContext)
         {
                 std::cerr << "ERROR: Could not allocate format context at ::CreateFormatContext()." << std::endl;
@@ -347,13 +378,17 @@ AVFormatContext* CreateFormatContext(
         if (!formatContext->oformat)
         {
                 std::cerr << std::endl << "WARNING: Could not find suitable output format, using avi-mpeg4" << std::endl << std::endl;
-                formatContext->oformat = guess_format("avi", NULL, NULL);
+                formatContext->oformat = guess_stream_format("avi", NULL, NULL);
         }
         if (!formatContext->oformat)
         {
                 std::cerr << "ERROR: Could not find suitable output format." << std::endl;
+                return NULL;
         }
+        else{
+            formatContext->oformat->video_codec=codec_id;
 
+        }
         sprintf(formatContext->filename, "%s", ai_fileName);
 
         return formatContext;
@@ -394,7 +429,7 @@ AVStream *CreateVideoStream(
         c->gop_size		  = ai_gopSize;
         c->pix_fmt		  = ai_pixFmt;
 
-        /*
+
         if (c->codec_id == CODEC_ID_MPEG2VIDEO)
                 c->max_b_frames = ai_bFrames; // we also add B frames
         if (c->codec_id == CODEC_ID_MPEG1VIDEO)
@@ -406,10 +441,10 @@ AVStream *CreateVideoStream(
         }
 
         // Some formats want stream headers to be seperate
-        const char *fn = ai_formatCtx->oformat->name;
+        const char *fn = ai_formatContext->oformat->name;
         if (!strcmp(fn, "mp4") || !strcmp(fn, "mov") || !strcmp(fn, "3gp"))
                 c->flags |= CODEC_FLAG_GLOBAL_HEADER;
-        */
+
 
         return st;
 }

@@ -1,10 +1,10 @@
 /*************************************************************************\
 
-Librería de Sensor Visual (LibSV)
+LibrerÃ­a de Sensor Visual (LibSV)
 
 http://code.google.com/p/pfcfnm/
 
-© 2007, Fernando N. M.         
+Â© 2007, Fernando N. M.         
 This project is released under the GPL license. 
 See http://www.gnu.org/licenses/gpl.html for the full text.
 
@@ -13,9 +13,9 @@ $Revision:  $
 $Author:  $
 $Date:  $
 
-Declaración de la clase de video streaming. Esta clase es un wrapper
-de la funcionalidad de emisión de video de la librería FFMPEG, que
-permite componer dicho flujo de video a partir de las imágenes en
+DeclaraciÃ³n de la clase de video streaming. Esta clase es un wrapper
+de la funcionalidad de emisiÃ³n de video de la librerÃ­a FFMPEG, que
+permite componer dicho flujo de video a partir de las imÃ¡genes en
 formato Ipl, propias de OpenCV.
 
 Los binarios de ffmpeg pueden obtenerse en:
@@ -23,7 +23,7 @@ http://arrozcru.no-ip.org/ffmpeg_builds/
 http://code.google.com/p/msinttypes/
 http://www.codeproject.com/KB/cpp/Using_FFMpeg.aspx
 
-En la siguiente dirección se puede encontrar una versión de highgui
+En la siguiente direcciÃ³n se puede encontrar una versiÃ³n de highgui
 mejorada y capaz de emitir rtp mediante FFMPEG.
 http://code.google.com/p/eyepatch/
 
@@ -53,7 +53,8 @@ AVFormatContext* CreateFormatContext(
         const char *ai_fileName,
         const char *ai_shortName,
         const char *ai_fileExtension,
-        const char *ai_mimeType);
+        const char *ai_mimeType,
+        CodecID codec_id);
 
 AVStream* CreateVideoStream(
         AVFormatContext* ai_formatContext,
@@ -104,6 +105,7 @@ public:
         void SetupVideo(
                 std::string dir="/tmp",
                 std::string baseName="movie",
+                unsigned int codec_num=0,
                 unsigned int width = 640,
                 unsigned int height = 480,
                 int bitrate = 5000,
@@ -116,11 +118,13 @@ private:
         void ReleaseContext();
 	int Write(AVFrame *ai_picture);
 	void Run(void);
+        const char *getFormat(unsigned int codec_num);
+        CodecID getFFMPEGCodecId(unsigned int codec_num);
 
 	// Video format context and stream
 	AVFormatContext *m_formatContext;
 	AVStream *m_vStream;
-
+        std::vector<std::pair<CodecID, const char *> > codecs;
 	// Video buffers
 	AVFrame *m_frame[2];
 	uint8_t *m_vOutBuf;
@@ -131,6 +135,8 @@ private:
         int ai_bFrames ;
         int ai_width;
         int ai_height;
+        const char *ai_format;
+        CodecID ai_codec_id;
         std::string ai_baseName,ai_dir;
 	// Threading variables
 	bool m_stoprequested;
