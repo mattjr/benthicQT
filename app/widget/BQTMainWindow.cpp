@@ -34,6 +34,7 @@
 #include "PositionHandler.h"
 #include <iostream>
 #include "GLPreCompile.h"
+#include "RecordDialog.h"
 
 namespace ews {
     namespace app {
@@ -47,6 +48,7 @@ namespace ews {
                     : QMainWindow(parent), _ui(new Ui::EWSMainWindowForm), _state(state) {
                 _ui->setupUi(this);
                 qf=new QFileDialog();
+                firstRunRecord=false;
                 // Config actions
                 //_ui->actionPause->setEnabled(false);
                 _ui->actionOpen->setEnabled(true);
@@ -71,8 +73,8 @@ namespace ews {
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
                 QObject::connect(_ui->actionOpen, SIGNAL(triggered()), this, SLOT(openModel()));
-                QObject::connect(_ui->actionStart_Recording, SIGNAL(triggered()), _ui->renderer, SLOT(startRecording()));
-                QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), _ui->renderer, SLOT(stopRecording()));
+                QObject::connect(_ui->actionStart_Recording, SIGNAL(triggered()), this,SLOT(startRecording()));
+                QObject::connect(_ui->actionStop_Recording, SIGNAL(triggered()), _ui->renderer,SLOT(stopRecording()));
                 QObject::connect(_ui->actionSet_to_640x480, SIGNAL(triggered()), this, SLOT(resize640()));
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720()));
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
@@ -332,6 +334,17 @@ namespace ews {
 
                }
             }
+             void EWSMainWindow::startRecording(){
+                 if(!firstRunRecord){
+                     RecordDialog recdlg;
+                     if(recdlg.exec())
+                      firstRunRecord=true;
+                 }
+                 if(firstRunRecord)
+                    _ui->renderer->startRecording();
+             }
+
+
 
 
         }

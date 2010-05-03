@@ -28,6 +28,7 @@
 #include <QComboBox>
 #include "SimulationState.h"
 #include <QFileDialog>
+
 /** Forward declaration of generated UI class. */
 /** @cond */
 namespace Ui {
@@ -73,6 +74,7 @@ namespace ews {
                 void start();
                 /** Stop/pause the simulation. */
                 void stop();
+                void startRecording();
                 /** Reset simulation state to initial conditions. */
                 void reset();
                 /** Show the preferences dialog. */
@@ -106,6 +108,7 @@ namespace ews {
                 QComboBox *overlay;
                 enum { MaxRecentFiles = 5 };
                 QAction *recentFileActs[MaxRecentFiles];
+                bool firstRunRecord;
             };
         }
     }
