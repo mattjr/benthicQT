@@ -34,7 +34,7 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
         sdpFile.close();*/
 
         if(avcodec_find_encoder(CODEC_ID_H264)){
-            encoderNames.push_back("H.264");
+            encoderNames.push_back("H.264 in mp4");
             codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_H264,"mp4"));
         }
 
@@ -49,7 +49,7 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
         }
 
         if(avcodec_find_encoder(CODEC_ID_MSMPEG4V2)){
-            encoderNames.push_back("MPEG4 MS-V2");
+            encoderNames.push_back("MPEG4 MS-V2 in avi");
             codecs.push_back(std::pair<CodecID,const char *> (CODEC_ID_MSMPEG4V2,"avi"));
         }
 

@@ -57,7 +57,7 @@ void RecordDialog::changeEvent(QEvent *e)
 void RecordDialog::on_toolButton_clicked()
 {
 QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                                                 "/home",
+                                                 QDir::homePath(),
                                                  QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
 if(dir.size())
