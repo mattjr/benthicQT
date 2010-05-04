@@ -400,7 +400,7 @@ if(APPLE)
     # "${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
 
 elseif(WIN32)
-
+  install(FILES images/benthicQT.ico DESTINATION bin COMPONENT Runtime)
 endif()
 
 install(TARGETS ${EXE_TARGET_NAME} 
@@ -476,10 +476,9 @@ elseif(WIN32)
     set(CPACK_NSIS_MENU_LINKS "${BQT_WEBSITE}" "Homepage for ${BQT_APP_NAME}")
 
     # set the install icon used for the installer itself (.ico format) TODO: doesn't work
-#	set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/images/${BQT_ICON_ICO}")
-
+    set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/images/${BQT_ICON_ICO}")
     # set the package header icon (.bmp format) TODO: doesn't work
-#	set(CPACK_PACKAGE_ICON  "${CMAKE_CURRENT_SOURCE_DIR}/images/${BQT_ICON_BMP}")
+    set(CPACK_PACKAGE_ICON  "${CMAKE_CURRENT_SOURCE_DIR}/images/${BQT_ICON_BMP}")
 
 	# Icon in the add/remove control panel. Must be an .exe file on destination
 	set(CPACK_NSIS_INSTALLED_ICON_NAME bin\\\\${EXE_TARGET_NAME}.exe)
