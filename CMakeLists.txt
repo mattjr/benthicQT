@@ -23,7 +23,7 @@ set(BQT_ICON_ICO "bqt-icon.ico")
 set(BQT_ICON_BMP "bqt-icon.bmp")
 set(BQT_BUNDLE_ID "com.acfr.bqt")
 set(BQT_ORGANIZATION_NAME "ACFR")
-
+set(APP_ICON_RC "${CMAKE_CURRENT_SOURCE_DIR}/images/benthicQT.ico")
 # Add to search path our custom scripts
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts;${CMAKE_MODULE_PATH}")
 
@@ -356,6 +356,7 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
   ${BQT_GEN_UIS}
   ${BQT_GEN_RCS}
   ${WIN_RC}
+  ${WIN32_ICON_O}
   ${BQT_MOC_HDRS}
   ${BQT_HDRS}
   ${apple_bundle_sources}
