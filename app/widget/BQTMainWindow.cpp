@@ -234,8 +234,10 @@ namespace ews {
                 Uint fd=getInterFrameDelay();
                 setInterFrameDelay(INT_MAX);
                 ///
+                QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
+                QString selectedFilter;
 
-                QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)");
+                QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)",&selectedFilter,options);
 
                 loadFile( files);
                 setInterFrameDelay(fd);
