@@ -103,7 +103,13 @@ namespace ews {
 
                 updateRecentFileActions();
                 setWindowTitle(tr("BenthicQT"));
+                if(!OSGVideoStreamer::enabled){
+                    _ui->actionStart_Recording->setEnabled(false);
+                    _ui->actionStop_Recording->setEnabled(false);
+                    _ui->menuItems->setEnabled(false);
+                    _ui->actionSetup_Recording->setEnabled(false);
 
+                }
                 if(_ui->renderer->movieCallback && OSGVideoStreamer::enabled){
                     OSGVideoStreamer *iv=_ui->renderer->movieCallback->getRecorder(_ui->renderer->_gw);
                     if(!iv->getEncoderNames().size()){
