@@ -7,6 +7,10 @@
 #include <sstream>
 #include <string.h>
 #include "IVideoStreamer.h"
+#include <osg/Version>
+#if OSG_MIN_VERSION_REQUIRED(2,9,0)  
+#define  BufferObject GLBufferObject
+#endif
 
 class WindowCaptureCallback : public osg::Camera::DrawCallback
 {

@@ -35,6 +35,8 @@ struct IVideoStreamer
         virtual bool Update(ImgData* ai_image) = 0;
 	virtual void CloseVideo(void) = 0;
         virtual void Run(void) = 0;
+        virtual std::vector<std::string> getEncoderNames(){return std::vector<std::string>();}
+
         virtual bool IsOpen(void) {return _isOpen;};
         bool _isOpen;
 
@@ -47,6 +49,7 @@ class NullVideoStreamer: public IVideoStreamer{
     virtual void CloseVideo(void) {}
     virtual void Run(void) {}
     virtual bool IsOpen(void) {return false;}
+    static const int dvComboEntry = -1;
     static const bool enabled = false;
     virtual std::vector<std::string> getEncoderNames(){return std::vector<std::string>();}
 

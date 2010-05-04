@@ -65,8 +65,13 @@ file(GLOB BQT_SRCS main.cpp app/widget/*.cpp app/model/*.cpp app/drawable/*.cpp 
 #--------------------------------------------------------------------------------
 #FFMPEG
 #--------------------------------------------------------------------------------
+SET(FFMPEG_FOUND "NO")
+IF(NOT WIN32)
+
 include(FindFFmpeg)
 FIND_PACKAGE(FFmpeg)
+
+ENDIF(NOT WIN32)
 
 
 IF(FFMPEG_FOUND MATCHES "YES")
@@ -86,13 +91,10 @@ IF(FFMPEG_LIBSWSCALE_FOUND)
 ENDIF()
 
 
-ELSEIF(FFMPEG_FOUND MATCHES "YES")
+ELSE()
 file(GLOB_RECURSE FFMPEG_DEP_SRC app/widget/VideoStreamer.cpp)
 list(REMOVE_ITEM BQT_SRCS ${FFMPEG_DEP_SRC})
-
-
 ENDIF(FFMPEG_FOUND MATCHES "YES")
-
 #--------------------------------------------------------------------------------
 # Regular (non-qt) header files
 #--------------------------------------------------------------------------------
@@ -432,7 +434,7 @@ INSTALL(CODE "
 if(APPLE)
     include(InstallSupportLibraries)
 elseif(WIN32)
-#	include(InstallSupportLibraries)
+	include(InstallSupportLibraries)
 	file(GLOB WIN_MANIFEST ${CMAKE_CURRENT_BINARY_DIR}/*.manifest)
 	install(FILES ${WIN_MANIFEST} DESTINATION bin COMPONENT Runtime)
 endif()

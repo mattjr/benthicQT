@@ -25,6 +25,7 @@ RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
 
 }
 void RecordDialog::setParams(int width,int height){
+#ifdef USE_FFMPEG
 
     if(m_iv){
         m_iv->SetupVideo(m_ui->saveDir->text().toStdString(),
@@ -34,6 +35,7 @@ void RecordDialog::setParams(int width,int height){
                          height,
                          m_ui->bitRate->value()*1000);
     }
+#endif
 
 }
 RecordDialog::~RecordDialog()
@@ -74,6 +76,8 @@ if(dir.size())
 
 void RecordDialog::on_codecCombo_currentIndexChanged(int index)
 {
+    int dvComboEntry=-1;
+
      if(m_iv){
         if(m_iv->dvComboEntry >= 0 && index==m_iv->dvComboEntry){
             m_ui->resizeCombo->setDisabled(true);
