@@ -42,7 +42,7 @@ WBLD=build-win32
 win32pkg:
 	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make -j 4 package)
 win32cross:
-	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make -j 4)
+	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make -j 4 install)
 
 VSBLD=build-vs
 vs:
