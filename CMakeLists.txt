@@ -27,17 +27,18 @@ set(BQT_ORGANIZATION_NAME "ACFR")
 # Add to search path our custom scripts
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts;${CMAKE_MODULE_PATH}")
 
+
 add_definitions("-g")
 #----------------------------------------------------------------------
 # Macro to get the current date, from:
 # http://www.cmake.org/pipermail/cmake/2009-February/027014.html
 macro (curr_date RESULT)
-    if (WIN32)
-        execute_process(COMMAND "cmd" "/C" "date" "/T" OUTPUT_VARIABLE CMD_OUT)
-        string(REGEX REPLACE ".*(..)/(..)/(....).*" "\\3\\2\\1" ${RESULT} ${CMD_OUT})
-    elseif(UNIX)
+    if(UNIX)
         execute_process(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE CMD_OUT)
         string(REGEX REPLACE "(..)/(..)/(....).*" "\\3\\2\\1" ${RESULT} ${CMD_OUT})
+    elseif (WIN32)
+        execute_process(COMMAND "cmd" "/C" "date" "/T" OUTPUT_VARIABLE CMD_OUT)
+        string(REGEX REPLACE ".*(..)/(..)/(....).*" "\\3\\2\\1" ${RESULT} ${CMD_OUT})    
     else()
         message(SEND_ERROR "date not available")
         set(${RESULT} 000000)
@@ -172,16 +173,24 @@ endif (WIN32)
 set(QT_COMPONENTS QtCore QtGui QtOpenGL QtSvg QtXml)
 find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
 
-#--------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to
 # a CMake script that sets up this directory for building with Qt4
 include( ${QT_USE_FILE} )
+#-------------------------------------------------------------------------------
+# Add OpenSceneGraph suppport
+set(OSG_COMPONENTS osg osgUtil osgViewer osgGA osgManipulator osgText osgDB)
+find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
+#-------------------------------------------------------------------------------
 
-#--------------------------------------------------------------------------------
+if(WIN32)
+  include(lin-mingw)
+  include_directories(${QT_INCLUDES})
+  add_definitions("-Wno-attributes")
+endif(WIN32)
 
+#-------------------------------------------------------------------------------
 
-
-#--------------------------------------------------------------------------------
 # Use qt menu nib stuff
  IF (APPLE)
  #   IF (BPC_BUNDLE_ICON)
@@ -214,10 +223,6 @@ include( ${QT_USE_FILE} )
     SET(MAKE_BUNDLE MACOSX_BUNDLE)
   ENDIF (APPLE)
 
-#--------------------------------------------------------------------------------
-# Find plotting library.
-#find_package(Qwt5 REQUIRED)
-#include_directories(${Qwt5_INCLUDE_DIR})
 
 
 #--------------------------------------------------------------------------------
@@ -250,10 +255,7 @@ qt4_wrap_ui( BQT_GEN_UIS ${BQT_UIS} )
 qt4_wrap_cpp( BQT_GEN_MOC_HDRS ${BQT_MOC_HDRS} )
 qt4_wrap_cpp( BQT_TEST_GEN_MOC_HDRS ${BQT_TEST_MOC_HDRS} )
 
-#--------------------------------------------------------------------------------
-# Add OpenSceneGraph suppport
-set(OSG_COMPONENTS osg osgUtil osgViewer osgGA osgManipulator osgText osgDB)
-find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
+
 
 include_directories(${OPENSCENEGRAPH_INCLUDE_DIRS})
 
@@ -360,7 +362,7 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
 #--------------------------------------------------------------------------------
 # Tell CMake which libraries we need to link our executable against.
 set(ALL_QT_OSG_LIBS     
-	${QT_LIBRARIES}
+    ${QT_LIBRARIES}
     ${OPENSCENEGRAPH_LIBRARIES} 
     ${TARGET_EXTERNAL_LIBRARIES}
 )
@@ -430,7 +432,7 @@ INSTALL(CODE "
 if(APPLE)
     include(InstallSupportLibraries)
 elseif(WIN32)
-	include(InstallSupportLibraries)
+#	include(InstallSupportLibraries)
 	file(GLOB WIN_MANIFEST ${CMAKE_CURRENT_BINARY_DIR}/*.manifest)
 	install(FILES ${WIN_MANIFEST} DESTINATION bin COMPONENT Runtime)
 endif()
@@ -499,38 +501,3 @@ include(CPack)
 get_cmake_property(CPACK_COMPONENTS_ALL COMPONENTS)
 
 message(STATUS "CPack components: ${CPACK_COMPONENTS_ALL}")
-
-
-############################################################
-# C++ tests built with standard compiler flags.
-
-# cxx_test(name lib srcs...)
-#
-# creates a named test target that is built from the given source files.
-function(cxx_test name path)
-  add_executable(${name}
-    ${path}/moc_${name}.cxx
-    ${ARGN}
-    ${BQT_HDRS}
-  )
-  add_dependencies(${name}
-    ${ARGN}
-    ${BQT_GEN_MOC_HDRS}
-    ${BQT_TEST_GEN_MOC_HDRS} 
-    ${BQT_HDRS}
-  )
-  set_target_properties(${name}
-    PROPERTIES
-    COMPILE_FLAGS "${cxx_default}")
-# Not all tests will need all libraries
-  target_link_libraries(${name}
-    ${QT_QTCORE_LIBRARY} 
-    ${QT_QTGUI_LIBRARY} 
-    ${QT_QTOPENGL_LIBRARY} 
-    ${OPENSCENEGRAPH_LIBRARIES} 
-    ${OPENGL_LIBRARIES}
-    ${QT_QTTEST_LIBRARY}
-  )
-#  add_test(${name} ${name} -xml -o ${name}.xml)
-  add_test(${name} ${name} -xunitxml -o ${name}.xml)
-endfunction()

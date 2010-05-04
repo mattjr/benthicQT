@@ -38,6 +38,9 @@ xcode:
 XBLDT=build.xc-test
 xcode-test:
 	(mkdir -p ${XBLDT}; cd ${XBLDT}; cmake .. -G"Xcode"; open VisualizePhysics-Wave.xcodeproj)
+WBLD=build-win32
+win32cross:
+	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make -j 4)
 
 VSBLD=build-vs
 vs:
