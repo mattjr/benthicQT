@@ -10,6 +10,7 @@
 #-----------------------------------------------------------------------------
 
 if(WIN32)
+
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)
     endif()
@@ -45,7 +46,7 @@ if(WIN32)
 	if(NOT OSG_COMPONENTS OR NOT OSG_DLL_PATH)
 		message(FATAL_ERROR "OSG_COMPONENTS needs to be defined.")
 	endif()
-	list(APPEND OSG_COMPONENTS osg)
+	list(APPEND OSG_COMPONENTS osg osgFX osgSim osgTerrain osgVolume)
 	message(STATUS "OSG library path: ${OSG_DLL_PATH}, components ${OSG_COMPONENTS}")	
 	if (OSG_COMPONENTS AND OSG_DLL_PATH)
 	  	foreach( component ${OSG_COMPONENTS} )
@@ -84,6 +85,12 @@ if(WIN32)
 			DESTINATION bin 
 			COMPONENT Runtime
 		)
+	      foreach(ITEM ${OSGPLUGINS})
+		install(FILES ${OSG_DLL_PATH}/osgPlugins-${OPENSCENEGRAPH_VERSION}/mingw_${ITEM}.dll
+		  DESTINATION bin/osgPlugins-${OPENSCENEGRAPH_VERSION}/
+		  COMPONENT Runtime
+		  )
+	      endforeach()
 #        get_filename_component(Qwt5_DLL_DIR ${Qwt5_Qt4_LIBRARY} PATH)
 #        install(FILES ${Qwt5_DLL_DIR}/qwt5.dll
 #            DESTINATION bin

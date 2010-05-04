@@ -56,7 +56,8 @@ if(WIN32)
 	SET(OPENSCENEGRAPH_LIBRARIES  ${OSG_BASE}/bin/libOpenThreads.dll;${OSG_BASE}/bin/libosg.dll;${OSG_BASE}/bin/libosgUtil.dll;${OSG_BASE}/bin/libosgViewer.dll;${OSG_BASE}/bin/libosgGA.dll;${OSG_BASE}/bin/libosgManipulator.dll;${OSG_BASE}/bin/libosgText.dll;${OSG_BASE}/bin/libosgDB.dll)
 	set(QT_INCLUDES ${QT_BASE}/include/)
 	set(OPENSCENEGRAPH_INCLUDE_DIRS ${OSG_BASE}/include)
-message("LIBS  ${QT_LIBRARIES}")
+	set(OSG_INCLUDE_DIR ${OSG_BASE}/include)
+	include(GetOSGVersion)
 	message("Building For   : Win32")
 	if(NOT IS_DIRECTORY ${QT_BASE}/lib)
 		message("Error : ${QT_BASE} doesn't exist, won't be able to link against Qt4.")
@@ -67,3 +68,5 @@ message("LIBS  ${QT_LIBRARIES}")
 else() #include Qt4 defaults for linux
 	include(${QT_USE_FILE})
 endif()
+
+
