@@ -109,3 +109,49 @@ if(WIN32)
 endif()
 
 
+#-----------------------------------------------------------------------------
+# MacOS X specific tasks
+#-----------------------------------------------------------------------------
+
+if(APPLE)
+    #--------------------------------------------------------------------------------
+    # Use BundleUtilities to get all other dependencies for the application to work.
+    # It takes a bundle or executable along with possible plugins and inspects it
+    # for dependencies.
+
+    # directories to look for dependencies
+    get_filename_component(OSG_LIBRARY_DIR ${OSG_LIBRARY} PATH)
+    set(FIXUP_LIBRARY_SEARCH_PATH ${QT_LIBRARY_DIR} ${OSG_LIBRARY_DIR} ${QT_PLUGINS_DIR}/imageformats)
+
+    # Now the work of copying dependencies into the bundle/package
+    # The quotes are escaped and variables to use at install time have their $ escaped
+    # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
+    # over.
+    install(CODE "
+        ##include(InstallRequiredSystemLibraries)
+        file(GLOB_RECURSE QTPLUGINS
+            \"\${CMAKE_INSTALL_PREFIX}/${QT_PLUGIN_DEST}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+        message(STATUS \"Qt plugins: \${QTPLUGINS}\")
+        message(STATUS \"Grel ${OSG_INSTALLED_PLUGINS}\")
+        set(FIXUP_EXTRA_LIBS ${OSG_INSTALLED_PLUGINS};${OPENSCENEGRAPH_LIBRARIES};\${QTPLUGINS})
+        include(BundleUtilities)
+        message(STATUS \"About to apply bundle fixup to: \${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app\")
+        fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app\" \"\${FIXUP_EXTRA_LIBS}\" \"${FIXUP_LIBRARY_SEARCH_PATH}\")
+        " COMPONENT Runtime)
+        INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/MacOS/osgdb_ive.so"
+            DESTINATION
+            "${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
+        INSTALL(CODE "EXECUTE_PROCESS( COMMAND ../BuildScripts/gendmg.sh)")
+
+# INSTALL(CODE "
+#    file(GLOB_RECURSE QTPLUGINS
+#      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+#    include(BundleUtilities)
+#    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+#    " COMPONENT Runtime)
+
+endif()
+
+
+
+
