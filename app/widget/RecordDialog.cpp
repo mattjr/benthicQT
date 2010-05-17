@@ -17,6 +17,7 @@ RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
  m_ui->resizeCombo->addItem(QString("Resize 640x480"));
  m_ui->resizeCombo->addItem(QString("Resize 720x480"));
  m_ui->resizeCombo->addItem(QString("Resize 720x576"));
+ m_ui->resizeCombo->addItem(QString("Resize 960x540"));
  m_ui->resizeCombo->addItem(QString("No Resize"));
 
  m_ui->resizeCombo->setCurrentIndex(0);

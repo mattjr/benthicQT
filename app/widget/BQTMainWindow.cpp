@@ -80,6 +80,7 @@ namespace ews {
                 QObject::connect(_ui->actionSet_to_640x480, SIGNAL(triggered()), this, SLOT(resize640()));
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720x480()));
                 QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
+                QObject::connect(_ui->actionSet_to_960x540, SIGNAL(triggered()), this, SLOT(resize960x540()));
 
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
 
@@ -373,6 +374,9 @@ namespace ews {
                          resize720x480();
                      else if(resizeCmd == RecordDialog::RESIZE_720_576)
                          resize720x576();
+                     else if(resizeCmd == RecordDialog::RESIZE_960_540)
+                         resize960x540();
+
 
                      QSize size=_ui->renderer->size();
 

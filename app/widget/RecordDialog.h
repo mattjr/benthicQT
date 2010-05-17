@@ -18,7 +18,8 @@ public:
     enum{
         RESIZE_640_480,
         RESIZE_720_480,
-        RESIZE_720_576
+        RESIZE_720_576,
+        RESIZE_960_540
     };
 protected:
     void changeEvent(QEvent *e);

@@ -128,6 +128,7 @@
     <addaction name="actionStop_Recording"/>
     <addaction name="actionSet_to_640x480"/>
     <addaction name="actionSet_to_720x480"/>
+    <addaction name="actionSet_to_960x540"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -295,6 +296,14 @@
   <action name="actionSet_to_720x576">
    <property name="text">
     <string>Set to 720x576</string>
+   </property>
+  </action>
+  <action name="actionSet_to_960x540">
+   <property name="text">
+    <string>Set to 960x540</string>
+   </property>
+   <property name="toolTip">
+    <string>Set to 960x540</string>
    </property>
   </action>
  </widget>
