@@ -1,0 +1,52 @@
+#-----------------------------------------------------------------------------
+#
+# ufConfig.cmake - UF CMake configuration file for external projects.
+#
+# This file is configured by UF and used by the UseUF.cmake module
+# to load UF's settings for an external project.
+@UF_CONFIG_INSTALL_ONLY@
+
+# The UF include file directories.
+set(UF_INCLUDE_DIRS "@UF_INCLUDE_DIRS_CONFIG@")
+
+# The UF library directories.
+set(UF_LIBRARY_DIRS "@UF_LIBRARY_DIRS_CONFIG@")
+
+# The UF binary executable directories.  Note that if
+# UF_CONFIGURATION_TYPES is set (see below) then these directories
+# will be the parent directories under which there will be a directory
+# of runtime binaries for each configuration type.
+set(UF_EXECUTABLE_DIRS "@UF_EXECUTABLE_DIRS_CONFIG@")
+
+# The UF runtime library directories.  Note that if
+# UF_CONFIGURATION_TYPES is set (see below) then these directories
+# will be the parent directories under which there will be a directory
+# of runtime libraries for each configuration type.
+set(UF_RUNTIME_LIBRARY_DIRS "@UF_RUNTIME_LIBRARY_DIRS_CONFIG@")
+
+# The runtime library path variable name e.g. LD_LIBRARY_PATH,
+# this environment variable should be set to UF_RUNTIME_LIBRARY_DIRS
+set(UF_RUNTIME_PATH_VAR_NAME "@SHARED_LIBRARY_PATH_VAR_NAME@")
+
+# The C and C++ flags added by UF to the cmake-configured flags.
+set(UF_REQUIRED_C_FLAGS "@UF_REQUIRED_C_FLAGS@")
+set(UF_REQUIRED_CXX_FLAGS "@UF_REQUIRED_CXX_FLAGS@")
+set(UF_REQUIRED_EXE_LINKER_FLAGS "@UF_REQUIRED_EXE_LINKER_FLAGS@")
+set(UF_REQUIRED_SHARED_LINKER_FLAGS "@UF_REQUIRED_SHARED_LINKER_FLAGS@")
+set(UF_REQUIRED_MODULE_LINKER_FLAGS "@UF_REQUIRED_MODULE_LINKER_FLAGS@")
+
+# The UF version number
+set(UF_MAJOR_VERSION "@UF_MAJOR_VERSION@")
+set(UF_MINOR_VERSION "@UF_MINOR_VERSION@")
+set(UF_BUILD_VERSION "@UF_BUILD_VERSION@")
+
+# The location of the UseUF.cmake file.
+set(UF_USE_FILE "@UF_USE_FILE@")
+
+# The build settings file.
+#set(UF_BUILD_SETTINGS_FILE "@UF_BUILD_SETTINGS_FILE@")
+
+# Utility Functions Configuration options.
+set(UF_BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@")
+set(UF_USE_BOOST "@USE_BOOST@")
+set(UF_USE_VTK "@USE_VTK@")

@@ -1,0 +1,16 @@
+These are example scripts for setting up testing.
+
+In general you will need to:
+1) Set up directories called ctest, ctest-scripts, cron-logs.
+2) Copy the contents of ctest_scripts to the directory called ctest_scripts that you made.
+3) Checkout UF from the SVN into UF.
+4) Change the paths to reflect where you have put UF, UFNightlyBuild and UFContinuousBuild.
+5) my.crontab shows some crontab entries. Edit the paths in this.
+6) Do crontab my.crontab
+7) And everything should run.
+
+Note: Make sure that you do not use your development tree for testing.
+
+For Windows the procedure is similar, except you use the scripts UF_continuous.bat, UF_continuous.script, UF_nightly.bat, UF_nightly.cfg. In Scheduled tasks, you have to set up tasks to call the batch files: UF_continuous.bat and UF_nightly.bat 
+
+

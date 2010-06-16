@@ -1,0 +1,8 @@
+# To find all the backup files.
+find . -name '*~'
+# Before doing a delete, check that you dont want these files anymore.
+# To delete all these files, use the -exec option:
+find . -name '*~' -exec /bin/rm {} \; 2>/dev/null 1>&2
+
+#An altenative version for files older than say 7 days is:
+find . -name '*~' -mtime +7

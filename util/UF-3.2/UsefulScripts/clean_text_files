@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Replace tabs with two spaces.
+find . -type f  \! -path "*svn*"  -name '*.cpp' -exec vim -c ':%s/\t/  /g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.h' -exec vim -c ':%s/\t/  /g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.txt' -exec vim -c ':%s/\t/  /g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.in' -exec vim -c ':%s/\t/  /g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.cmake' -exec vim -c ':%s/\t/  /g' -c ':wq' {} \;
+# Replace CRLF with LF
+find . -type f  \! -path "*svn*"  -name '*.cpp' -exec vim -c ':%s/\r\n/\n/g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.h' -exec vim -c ':%s/\r\n/\n/g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.txt' -exec vim -c ':%s/\r\n/\n/g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.in' -exec vim -c ':%s/\r\n/\n/g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.cmake' -exec vim -c ':%s/\r\n/\n/g' -c ':wq' {} \;
+# Remove any remaining CR
+find . -type f  \! -path "*svn*"  -name '*.cpp' -exec vim -c ':%s/\r//g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.h' -exec vim -c ':%s/\r//g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.txt' -exec vim -c ':%s/\r//g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.in' -exec vim -c ':%s/\r//g' -c ':wq' {} \;
+find . -type f  \! -path "*svn*"  -name '*.cmake' -exec vim -c ':%s/\r//g' -c ':wq' {} \;

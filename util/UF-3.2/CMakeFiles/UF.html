@@ -1,0 +1,378 @@
+<html>
+
+<head>
+<h1>Useful Functions</h1>
+</head>
+
+<body>
+<table>
+  <caption><h2>Contents</h2></caption>
+  <tbody>
+    <tr>
+      <td><a href="#Introduction">Introduction</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#OS">Operating Systems</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#Dependencies">Dependencies</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#Using">Using the Library</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><a href="#Using_BI">Building and Installing</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><a href="#Using_Versioning">Versioning</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#Examples">Examples</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#CMakeMajFiles">CMakeLists.txt and Major files</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+      <td></td>
+      <td><a href="#CMakeMajFiles_CMakeComments">CMake Comments</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#Adding">Adding new components to the library</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#Creating">Creating a new library</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<h2><a name="Introduction">Introduction</a></h2>
+
+<p>This is a library of <strong>U</strong>seful <strong>F</strong>unctions. If you have any questions please contact  <a href="mailto:a.maclean@cas.edu.au?subject=UF" title="Andrew Maclean">Andrew Maclean</a>.</p>
+
+<p>Library contents.</p>
+<table  cellspacing="1" cellpadding="1" rules="all" frame="border">
+	<caption><h2>Subdirectories and their broad functional areas.</h2></caption>
+  <thead>
+    <tr>
+      <th>Subdirectory</th>
+      <th>Functional Area.</th>
+    </tr>
+  </thead>  <tbody>
+    <tr>
+      <td><strong>Colour</strong></td>
+      <td>Contains a series of classes for manipulating RGB values.</td>
+    </tr>
+    <tr>
+      <td><strong>Conversions</strong></td>
+      <td>Contains classes to effect conversions for output, translating between different formats, rotations and homogenous coordinates.</td>
+    </tr>
+    <tr>
+      <td><strong>CSVParser</strong></td>
+      <td>A comma-separated value parser.</td>
+    </tr>
+    <tr>
+      <td><strong>DateTime</strong></td>
+      <td>Date, system time and time conversion classes.</td>
+    </tr>
+    <tr>
+      <td><strong>DTM</strong></td>
+      <td>Digital Terrain Modelling - routines for calculating volume.</td>
+    </tr>
+    <tr>
+      <td><strong>FileUtilities</strong></td>
+      <td>File Utilities - routines for searching for a file and listing all files in directories. These will (optionally) recursively search subdirectories.</td>
+    </tr>
+    <tr>
+      <td><strong>Examples</strong></td>
+      <td>Examples that illustrate the use of various components of the library. The directory structure reflects that of the library.</td>
+    </tr>
+    <tr>
+      <td><strong>GeographicConversions</strong></td>
+      <td>Classes to convert to and from the various geographic coordinate systems in use.</td>
+    </tr>
+    <tr>
+      <td><strong>GPSNavigation</strong></td>
+      <td>Classes that store and hold routes, points and tracks. Great circle navigation routines are also here.</td>
+    </tr>
+    <tr>
+      <td><strong>GPSParser</strong></td>
+      <td>This is a library of parsers primarily for NMEA messages.</td>
+    </tr>
+    <tr>
+      <td><strong>Logger</strong></td>
+      <td>Use this to log data to/from files.</td>
+    </tr>
+    <tr>
+      <td><strong>Macros</strong></td>
+      <td>General macros that may be used by the library.</td>
+    </tr>
+    <tr>
+      <td><strong>Statistics</strong></td>
+      <td>Some statistical routines.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>All the library .h and .cpp files are prefixed with &quot;<strong>uf</strong>&quot;. When the libraries are built, all the libraries have a prefix of &quot;<strong>uf</strong>&quot;. Thus is it easy to identify the headers and libraries that belong to this collection of libraries.</p>
+
+<h2><a name="OS">Operating Systems</a></h2>
+
+<p>This library compiles as static and shared in Windows, Linux and QNX.</p>
+
+<p>In Linux you have a further option regarding building shared libraries. This is called <strong>CMAKE_SKIP_RPATH</strong>. </p>
+
+<p>If it is <strong>ON</strong> then runtime paths are not added when using shared libraries. This is useful when you are installing the library in a system directory like /usr/local.</p>
+
+<p>If it is <strong>OFF</strong> then there is no need to do this as the paths to the library are build in to the code. However do not rename the library or change the path to the library because, if you do, your compiled code will not run.</p>
+
+<p>Note that in QNX you must add <strong>-lm</strong> to the <strong>CMAKE_CXX_FLAGS</strong> when you run CMake.</p>
+
+<h2><a name="Dependencies">Dependencies</a></h2>
+
+<p>Currently, the Boost libraries are needed for Homogenous Coordinate conversions (in /Conversions).</p>
+
+<p>VTK will be needed for some parts of the library.</p>
+
+<p>The library can be built without Boost or VTK if you set USE_BOOST and/or USE_VTK to OFF when using CMake to configure the library. The values of these settings will be propagated to any CMakeLists.txt files using the library as UF_USE_BOOST as UF_USE_VTK. Thus you can use these values to determine whether to find boost or find VTK in your own code. E.g. In your CMakeLists.txt file, do something like this:</p>
+
+<table cellspacing="1" cellpadding="1" frame="border">
+  <tbody>
+    <tr>
+      <td>
+# Now depending upon the variables set we determine whether additional<br>
+# libraries should be included,<br>
+# Boost<br>
+IF ( UF_USE_BOOST )<br>
+&nbsp;&nbsp;# If FindBoost.cmake is in the modules directory of CMake then comment out the<br>
+&nbsp;&nbsp;# following line. Otherwise set it to the path where BoostConfig.cmake is.<br>
+&nbsp;&nbsp;SET ( Boost_DIR ${PROJECT_SOURCE_DIR} )<br>
+&nbsp;&nbsp;FIND_PACKAGE(Boost REQUIRED)<br>
+ENDIF ( UF_USE_BOOST )<br>
+<br>
+IF ( EXISTS ${Boost_INCLUDE_PATH} )<br>
+&nbsp;&nbsp;INCLUDE_DIRECTORIES(${Boost_INCLUDE_PATH})<br>
+ENDIF ( EXISTS ${Boost_INCLUDE_PATH} )<br>
+<br>
+IF ( EXISTS ${Boost_LIBRARY_PATH} )<br>
+&nbsp;&nbsp;LINK_DIRECTORIES(${Boost_LIBRARY_PATH})<br>
+ENDIF ( EXISTS ${Boost_LIBRARY_PATH} )<br>
+<br>
+# VTK<br>
+# FindVTK.cmake is in the modules directory of CMake.<br>
+#SET( VTK_DIR VTK_DIR-NOTFOUND )<br>
+IF ( UF_USE_VTK )<br>
+&nbsp;&nbsp;FIND_PACKAGE(VTK REQUIRED)<br>
+ENDIF ( UF_USE_VTK )<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2><a name="Using">Using the Library</a></h2>
+You need to obtain the library from the repository.
+<h3><a name="Using_BI">Building and Installing</a></h3>
+<p>To use this library, firstly, download it from the repository into a directory called <strong>UF</strong>. Then create a build directory called <strong>UFBuild</strong>. You may also wish to create a build directory for the Examples called <strong>UFExamplesBuild</strong>. If you are thinking of installing the library then you can install it to a system-wide default library or to a directory you specify. So the directory structure looks something like this:</p>
+
+<table cellspacing="1" cellpadding="1" frame="border">
+  <tbody>
+    <tr>
+      <td>MyDevelopmentPath</td>
+      <td>/UF</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/UFBuild</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/UFExamplesBuild</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If in Linux, <strong><em>cd</em></strong> to <strong><em>UFBuild</em></strong> and type <strong><em>ccmake ../UF</em></strong>. If all goes well CMake will configure a build for you. If Boost or VTK are not on the system, set USE_BOOST and/or USE_VTK to OFF. Decide whether you want shared libraries or static libraries. If you are going to use shared libraries but are not installing the library then make sure CMAKE_SKIP_RPATH is OFF. If you are installing the libraries, then make sure CMAKE_SKIP_RPATH is ON and that the install path is correct. Check that the CMAKE_INSTALL_PREFIX is correct and press "c" and finally "g". Make sure you are in the directory and then type <strong><em>make</em></strong> and finally <strong><em>make install</em></strong>. </p> 
+
+<dl>
+  <dt><A NAME="Linux commands:">Linux commands</a></dt>
+  <dd>ccmake &lt; path to library &gt;</dd>
+  <dd>ccmake &lt; path to library -GKDevelop3 &gt; <em>If you want to use KDevelop as the IDE.</em></dd>
+</dl>
+
+If you install it, then the path structure will be something like this:
+<table cellspacing="1" cellpadding="1" frame="border">
+  <tbody>
+    <tr>
+      <td>CMAKE_INSTALL_PREFIX</td>
+      <td>/bin</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/include/uf-x.y</td>
+   </tr>
+    <tr>
+      <td></td>
+      <td>/lib</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/lib/uf-x.y</td>
+    </tr>
+  </tbody>
+</table>
+<p>Where CMAKE_INSTALL_PREFIX is /usr/local in Linux or c:\Program Files\uf in Windows by default. In linux, if CMAKE_INSTALL_PREFIX is not the default path, you may need to add the directory CMAKE_INSTALL_PREFIX/lib to /etc/ld.so.conf and run ldconf. If CMAKE_SKIP_RPATH is OFF then no library files are installed but binaries and includes will be. </p>
+<p>If you are in Windows, the procedure is similar to that in Linux except it is GUI based when using CMake and CMAKE_SKIP_RPATH is meaningless. IF you are using Visual Studio, then right-click on <strong><em>ALL_BUILD</em></strong> and select <strong><em>build</em></strong>. Finally right-click on <strong><em>INSTALL</em></strong> and select <strong><em>build</em></strong>. In Windows you can add the path to the dlls (<strong><em>CMAKE_INSTALL_PREFIX/bin</em></strong>) to the PATH environment variable. </p>
+
+<p>For both Linux and Windows, you can also create an environment variable called <strong><em>UF_DIR</em></strong>. This should point to the directory containing UFConfig.cmake which is either the root of the build tree or the <strong><em>CMAKE_INSTALL_PREFIX/lib/uf&lt;version&gt;</em></strong> directory. Doing this will help FindUF.cmake find the library.</p>
+
+
+<h3><a name="Using_Versioning">Versioning</a></h3>
+
+<p>The include files are in a directory called <strong><em>include/uf-x.y</em></strong> and in the lib directory there is a directory called <strong><em>uf-x.y</em></strong> containing the necessary CMake files to find and use the library.</p>
+
+<p>It is proposed that release versions will have an even value for y.</p>
+
+<h2><a name="Examples">Examples</a></h2>
+
+<p>Please note that the Examples directory is not part of the library build.</p>
+
+<p>The CMakeLists.txt file in this directory will show you how to incorporate this library in your own code. This file requires FindUF.cmake to locate the UF library and to set the include and linker paths correctly. It also uses the values of UF_USE_BOOST and UF_USE_VTK to determine if Boost and VTK are needed.</p>
+
+<p>If in Linux, <strong><em>cd</em></strong> to <strong><em>UFExamplesBuild</em></strong> and type <strong><em>ccmake ../UF/Examples</em></strong>. If UF is not found you will get a message to that effect. Then just set UF_DIR to <strong><em>MyDevelopmentPath/BuildUF</em></strong> or to <strong><em>CMAKE_INSTALL_PREFIX/lib/uf-x.y</em></strong>. Press "c" and finally "g". Make sure you are in the directory and then type <strong><em>make</em></strong> and finally <strong><em>make install</em></strong>.</p>
+
+<p>If you are in Windows, the procedure is similar to that in Linux except it is GUI based when using CMake. IF you are using Visual Studio, then right-click on <strong><em>ALL_BUILD</em></strong> and select <strong><em>build</em></strong>. Finally right-click on <strong><em>INSTALL</em></strong> and select <strong><em>build</em></strong>.</p>
+
+
+<h2><a name="CMakeMajFiles">CMakeLists.txt and Major files</a></h2>
+
+  <dl>
+    <dt><A NAME="CMake and the CMake include files needed to build the library:"><strong>CMake and the CMake include files needed to build the library:</strong></A></dt>
+    <dd>CMakeLists.txt - the main CMakeLists.txt file that configures the build for the library.</dd>
+    <dd>CMakeOptions.cmake - options that the user can switch on or off.</dd>
+    <dd>DartConfig.cmake - Dart testing configuration file.</dd>
+    <dd>Examples/CMakeLists.txt - the main CMakeLists.txt file that configures the build for the examples.</dd>
+    <dd>Examples/FindUF.cmake - a script that finds the UF library.</dd>
+    <dd>GenerateUFConfig.cmake - generates the file UFConfig.cmake</dd>
+    <dd>LastConfigureStep/CMakeLists.txt - calls the final configuration file ufGenerateUFConfig.cmake</dd>
+    <dd>ufConfig.cmake.in - the UF configuration file for external projects. It is configured by UF and used by the UseUF.cmake module.</dd>
+    <dd>ufConfigure.h.in - the special system computed values are stored here and this file is used by UF to make ufConfigure.h.</dd>
+    <dd>ufCPack.cmake - sets up a package builder.</dd>
+    <dd>UF.bmp - The UF logo, used by the package builder.</dd>
+    <dd>ufGenerateUFConfig.cmake - configures UFConfig.cmake and writes it out for the build and install directories.</dd>
+    <dd>ufGenerateUFConfig.cmake - configures UFConfig.cmake and writes it out for the build and install directories.</dd>
+    <dd>ufIncludeDirectories.cmake - directories that must be included.</dd>
+    <dd>ufWin32Header.h - used to capture system differences between Windows and Unix operating systems. In particular we handle the Microsoft __declspec () for building DLLs here.</dd>
+    <dd>UseUF.cmake.in - used by UF to make UseUF.cmake.</dd>
+    <dd></dd>
+  </dl>
+
+<p>CMakeLists.txt is the main file which sets up all that is needed for compiling, linking and installing the library. Here is a description of what this file does and the files that it needs.</p>
+<p>CMakeLists.txt when used by CMake or ccmake does the following:</p>
+<ol>
+ <li>Sets all the necessary variables. </li>
+ <li>Includes CMakeOptions.cmake which contains any further compiler settings that are needed. </li>
+ <li>Includes FindBoost.cmake which sets the include path for boost and the linker path (Win32 only) for Boost. </li>
+ <li>Creates a file called ufBuildSettings.cmake containing the build configuration for CMake. This file is copied to the build directory and the &lt;Install Directory&gt;/lib/uf-&lt;version&gt; directory. </li>
+ <li>Uses ufConfigure.h.in to create an include file ufConfigure.h. This file is copied to the build directory and the &lt;Install Directory&gt;/include/uf-&lt;version&gt; directory. System computed values are stored in this file. </li>
+ <li>Uses UseUF.cmake.in to create a configuration file UseUF.cmake. This file is copied to the build directory and the &lt;Install Directory&gt;/lib/uf-&lt;version&gt; directory. System computed values are stored in this file. This file is included in a project using this library. It contains the necessary compiler and linker settings needed to use the library. </li>
+ <li>Uses ufIncludeDirectories.cmake to find all the include directories. This file, UFIncludeDirectories.cmake, contains a list of all the include directories needed. </li>
+ <li>It installs ufConfigure.h and ufWin32Header.h in the build directory and the &lt;Install Directory&gt;/include/uf-&lt;version&gt; directory. </li>
+ <li>After all that it recurses into all the subdirectories and sets up the builds for the libraries and test programs. </li>
+ <li>Then it sets up the configuration for cpack. </li>
+ <li>Then it sets up the configuration for dart. </li>
+ <li>Recurses into the directory called LastConfigureStep. Here the CMakeLists.txt file calls ufGenerateUFConfig.cmake which calls ufConfig.cmake.in to make ufConfig.cmake. This file is copied to the build directory and the &lt;Install Directory&gt;/lib/uf-&lt;version&gt; directory. ufConfig.cmake is the file loaded by external projects it calls UseUF.cmake and ufBuildSettings.cmake to set the paths and compiler/linker settings needed if you use the library. </li>
+ <li>Finally Dart is included which reads DartConfig.cmake to set up the necessary structure for testing. </li>
+</ol>
+
+<h3><a name="CMakeMajFiles_CMakeComments">CMake Comments</a></h3>
+<p>In general the library will build without problems as a static or shared library under Unix. In Windows the libraries will build as static libraries with no problems. However because of the nature of dynamic link libraries (DLLs), some parts of the library will not build as a dll. So we need extra code in some of the the CMakeLists.txt files to address this problem.</p>
+<p>Here are some more specific comments:</p>
+<p>In /Colour the files will not build as a DLL in Windows. So we need to exclude ufColour.h and ufColour.cpp from building as a dll. This is done by the WRAP_EXCLUDE option in the CMakeLists.txt file in Colour. Note how we copy ufColour.cpp across when installing. This is done towards the end of the file. Of course then we have to include the .cpp file when building an application so in /Examples/Colour/CmakeLists.txt we find ufColour.cpp and add it to the build in this case.</p>
+<p>In /Conversions if Boost is present we specifically include ufHomogenousCoordinateConversions.h. Additionally, this library will not build as a DLL, so we use the same technique as we used in Colour. Howerver there is a difference in that there are no source files, just header files. In this case, if we build as a static or shared library in Unix or static in Windows, we need to tell CMake to set the linker language correctly. This can be done by introducing a dummy file ufConversionsDummy.cpp which is is added to the source file list so that CMake can determine that it has to use C++ from the extension. However we can also set the linker language directly by issuing the command: <strong><em>SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES LINKER_LANGUAGE CXX)</em></strong>, which has been done here. Note also that the CMakeLists.txt file in /Conversions and /Conversions/Test show a more fine-grained technique of excluding files from a build, in this case if UF_USE_BOOST is off, ufHomogenousCoordinateConversions.h and HomogenousCoordinates.cpp are excluded from the build.</p>
+<p>DTM is dependent upon VTK so if VTK is not present then all of this library is excluded from the build.</p>
+<p>In /Examples the various CMakeLists.txt files may also exclude/include examples based on the platform and what external libraries they need.</p>
+	
+<h2><a name="Adding">Adding new components to the library</a></h2>
+
+<ol>
+ <li>Create a new subdirectory (model it on an existing one). </li>
+ <li>Edit ufWin32Header.h to put in the necessary symbols for building dlls. </li>
+ <li>Edit ufGenerateUFConfig.cmake to add in the include directory path. </li>
+ <li>Add in the subdirectory in CMakeLists.txt </li>
+ <li>If building examples, create a new subdirectory (model it on an existing one). Also edit CMakeLists.txt in the /Examples directory to include the new subdirectory.
+     </li>
+</ol>
+
+<h2><a name="Creating">Creating a new library</a></h2>
+
+<p>You can use the structure of this library and the cmake files as a model for your library. The steps are as follows:</p>
+<ol>
+ <li>Copy UF to a new directory and <strong>remove</strong> any .svn directories. This will prevent accidental overwriting of UF.</li>
+ <li>Edit CMakeLists.txt and delete the directories listed in the SUBDIRS() macro. However do not delete SUBDIRS(LastConfigureStep). Also edit Examples/CMakeLists.txt removing any direcories listed in the SUBDIRS() macro. In both these cases, keep the SUBDIRS() statement. You will populate these with your own subdirectories.</li>
+ <li>You may remove most of the UF directories if you want. However you must keep <strong>LastConfigureStep</strong> and <strong>Examples</strong>. Keep <strong>Examples/CMakeLists.txt</strong>, <strong>Examples/FindUF.cmake</strong>, <strong>Examples/UFExamples.html</strong>. You can delete the subdirectories in Examples because you will replace them with your own examples.</li>
+ <li>Decide on a prefix for your library. Not "UF"! </li> 
+ <li>Edit the text in these files,replacing "uf" and "UF" keeping the case with your new prefix. It is important that you preserve the case in this step. E.g. If your new library is going to be called "FIIK" then replace "uf" with "fiik" and "UF with "FIIK".
+  <dl>
+    <dt><A NAME="Files to edit:">Files to edit:</A></dt>
+    <dd>CMakeLists.txt</dd>
+    <dd>CMakeOptions.cmake</dd>
+    <dd>DartConfig.cmake</dd>
+    <dd>Examples/CMakeLists.txt</dd>
+    <dd>Examples/FindUF.cmake</dd>
+    <dd>Examples/UFExamples.html (Edit this to reflect the contents of your examples directory.</dd>
+    <dd>GenerateUFConfig.cmake</dd>
+    <dd>LastConfigureStep/CMakeLists.txt</dd>
+    <dd>ufConfig.cmake.in</dd>
+    <dd>ufConfigure.h.in</dd>
+    <dd>ufCPack.cmake</dd>
+    <dd>ufGenerateUFConfig.cmake</dd>
+    <dd>UF.html (Edit this to reflect the contents of your library.)</dd>
+    <dd>ufIncludeDirectories.cmake</dd>
+    <dd>ufWin32Header.h</dd>
+    <dd>UseUF.cmake.in</dd>
+    <dd></dd>
+  </dl>
+ </li>
+ <li>Rename the following files replacing "uf" and "UF" keeping the case with your new prefix. It is important that you preserve the case in this step. E.g. If your new library is going to be called "FIIK" then replace "uf" with "fiik" and "UF with "FIIK".
+  <dl>
+    <dt><A NAME="Files to rename:">Files to rename:</A></dt>
+    <dd>Examples/FindUF.cmake</dd>
+    <dd>Examples/UFExamples.html</dd>
+    <dd>GenerateUFConfig.cmake</dd>
+    <dd>ufConfig.cmake.in</dd>
+    <dd>ufConfigure.h.in</dd>
+    <dd>ufCPack.cmake</dd>
+    <dd>ufGenerateUFConfig.cmake</dd>
+    <dd>UF.html</dd>
+    <dd>ufIncludeDirectories.cmake</dd>
+    <dd>ufWin32Header.h</dd>
+    <dd>UseUF.cmake.in</dd>
+    <dd></dd>
+  </dl>
+  </li>
+  <li>Replace UF.bmp with a suitable logo for your library.</li>
+ <li>At this point you should test and fix any errors.</li>
+ <li>Begin adding in your library files using the CMakeLists.txt files in the subdirectories of UF as templates. It is <strong>strongly recommended</strong> that you prefix your header and source files in the library with your library prefix similar to the way it is done in UF. The reason for this is to prevent any conflicts over header inclusions. It also helps the user of the library in that they can clearly identify the library belonging to a particular file. Edit &lt;your prefix&gt;Win32Header.h to put in the necessary symbols for building dlls and &lt;your prefix&gt;Generate&lt;your prefix&gt;Config.cmake to add in the include directory path. Finally remember to add the subdirectories to your top-level CmakeLists.txt file and Examples/CMakeLists.txt file (if you are adding examples). </li>
+</ol>
+
+</body>
+
+</html>

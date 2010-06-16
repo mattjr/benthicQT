@@ -1,0 +1,5 @@
+#!/bin/sh
+
+svn update svn+ssh://<username>@opium/home/svnroot/acfr/UF UF
+
+

@@ -1,0 +1,29 @@
+#
+# This module is provided as Utility Functions USE_FILE by ufConfig.cmake.  It can
+# be INCLUDEd in a project to load the needed compiler and linker
+# settings to use Utility Functions.
+#
+
+if(NOT UF_USE_FILE_INCLUDED)
+  set(UF_USE_FILE_INCLUDED 1)
+
+  # Load the compiler settings used for UF.
+  if(UF_BUILD_SETTINGS_FILE)
+    INCLUDE(${CMAKE_ROOT}/Modules/CMakeImportBuildSettings.cmake)
+    CMAKE_IMPORT_BUILD_SETTINGS(${UF_BUILD_SETTINGS_FILE})
+  endif(UF_BUILD_SETTINGS_FILE)
+
+  # Add compiler flags needed to use UF.
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${UF_REQUIRED_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${UF_REQUIRED_CXX_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${UF_REQUIRED_EXE_LINKER_FLAGS}")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${UF_REQUIRED_SHARED_LINKER_FLAGS}")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${UF_REQUIRED_MODULE_LINKER_FLAGS}")
+
+  # Add include directories needed to use UF.
+  include_directories(${UF_INCLUDE_DIRS})
+
+  # Add link directories needed to use UF.
+  link_directories(${UF_LIBRARY_DIRS})
+
+endif(NOT UF_USE_FILE_INCLUDED)

@@ -1,0 +1,15 @@
+SHELL=/bin/bash
+# UF Nightly
+0 2    * * *  /home/amaclean/Work/Testing/UFTest/scripts/nightly.sh
+# UF Continuous
+0 8    * * *  /home/amaclean/Work/Testing/UFTest/scripts/continuous.sh
+# Run on Sunday night.
+0 0    * * 0  /home/amaclean/Work/Testing/UFTest/scripts/copy_delete_logs.sh
+#
+# QLib Nightly
+0 2    * * *  /home/amaclean/Work/Testing/QTest/scripts/QLib_nightly.sh
+# QLib Continuous
+0 8    * * *  /home/amaclean/Work/Testing/QTest/scripts/QLib_continuous.sh
+# Run on Sunday night.
+0 0    * * 0  /home/amaclean/Work/Testing/QTest/scripts/copy_delete_logs.sh
+

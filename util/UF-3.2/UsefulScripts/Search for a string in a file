@@ -1,0 +1,3 @@
+# This will search for a string in a file but ignore those in the .svn path.
+find . -type f  \! -path "*svn*"  -name '*.cpp' | xargs grep -n 'TimeStr'
+ 

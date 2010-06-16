@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# If you place this file in /usr/local/bin then its use is
+#
+# In the module root directory eg QLib/Timing
+#  ConvertFiles -s Q
+#
+# This will recurse through the directory structure and append Q to each file,
+# then parse the file to replace each instance of it's class name with the
+# new name appended with Q.
+#
+# You can also use this script to make a new class with a different name
+# eg Convert QNXClass to LinuxClass by the command
+#   ConvertFiles QNX Linux
+#
+# It may be best if you make a backup of the directories you are working on
+# before you do this.
+
+
+if [ $# -ne 2 ];
+then
+echo Usage $0 regExp1 regExp2
+exit
+fi
+
+if [ "$1" = "-s" ]
+then
+for x in `ls`
+do
+if [ -f $x ]
+then
+codeFile=`echo $x | sed -e "s/\.cpp//" | sed -e "s/\.h//"`
+if [ "$x" != "$codeFile" ]
+then
+fileName=$2"$x"
+echo Converting File $x to $fileName
+className=`echo $x | sed -e "s/\.[^ ]*//"`
+cat $x | sed s/$className/$2$className/g > $fileName
+rm $x
+fi
+fi
+if [ -d $x ]
+then
+cd $x
+$0 $@
+cd ..
+fi
+done
+
+else
+
+for x in `ls $1*`
+do
+fileName=`echo $x | sed s/$1/$2/`
+echo Converting File $x to $fileName
+
+cat $x | sed s/$1/$2/g > $fileName
+
+done
+
+fi
+

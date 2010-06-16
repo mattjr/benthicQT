@@ -1,0 +1,886 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0057)http://www.astro.uni.torun.pl/~kb/Papers/geod/Geod-BG.htm -->
+<HTML><HEAD><TITLE>Accurate Algorithms to Transform<Br /> Geocentric to Geodetic Coordinates</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1250">
+<META content="MSHTML 6.00.6001.18099" name=GENERATOR></HEAD>
+<BODY text=#0000b0 bgColor=#b7cece>
+<P align=right>The following paper has been published in:<BR><EM>Bull. 
+Géod.</EM>, <B>63</B> (1989), pp. 50–56. </P>
+<P><FONT face=Arial><BR>
+<CENTER><A href="http://www.astro.uni.torun.pl/~kb/personal.html">K.M. 
+BORKOWSKI</A> 
+<P><A href="http://www.astro.uni.torun.pl/index_trao.html">Torun Radio Astronomy 
+Observatory</A>,<BR>Nicolaus Copernicus University,<BR>ul. Chopina 12/18, 
+PL–87–100 Torun, Poland 
+<P><BR><BR><B><BIG>ACCURATE ALGORITHMS TO TRANSFORM<BR>GEOCENTRIC TO GEODETIC 
+COORDINATES </BIG>
+<P></B></CENTER><BR><BR>
+<TABLE align=center border=0>
+  <TBODY>
+  <TR>
+    <TD><B>Abstract</B></TD></TR></TBODY></TABLE>
+<P><BR>
+<TABLE cellPadding=8 width="90%" align=center bgColor=#aec8b1 border=1>
+  <TBODY>
+  <TR>
+    <TD><I>The problem of the transformation is reduced to solving of the 
+      equation</I> 
+      <TABLE width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD>
+            <TABLE align=center>
+              <TBODY>
+              <TR>
+                <TD noWrap align=middle>2 sin(<FONT face=symbol>y</FONT> <FONT 
+                  face=symbol>-</FONT> <FONT face=symbol>W</FONT>) = c sin 
+                  2<FONT face=symbol>y</FONT>, 
+      </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE><I>where</I> <FONT 
+      face=symbol>W</FONT> = arctg [bz/(ar)], c = (a<SUP>2 </SUP><FONT 
+      face=symbol>-</FONT> b<SUP>2</SUP>)/<FONT face=symbol>Ö</FONT>{(ar)<SUP>2 
+      </SUP>+ (bz)<SUP>2</SUP>}, a <I>and</I> b <I>are the semi-axes of the 
+      reference ellipsoid, and</I> z <I>and</I> r <I>are the polar and 
+      equatorial, respectively, components of the position vector in the 
+      Cartesian system of coordinates. Then, the geodetic latitude is found 
+      as</I> <FONT face=symbol>f</FONT> = arctg [(a/b) tg <FONT 
+      face=symbol>y</FONT>], <I>and the height above the ellipsoid as</I> h = (r 
+      <FONT face=symbol>-</FONT> a cos<FONT face=symbol>y</FONT>) cos<FONT 
+      face=symbol>f</FONT> + (z <FONT face=symbol>-</FONT> b sin<FONT 
+      face=symbol>y</FONT>) sin<FONT face=symbol>f</FONT>. <I>Two accurate 
+      closed solutions are proposed of which one is approximate in nature and 
+      the other is exact. They are shown to be superior to others, found in 
+      literature and in practice, in both or either accuracy and/or 
+      simplicity.</I></TD></TR></TBODY></TABLE>
+<P><BR>The transformation of coordinates between the geodetic and Cartesian 
+system is a matter of everyday practice in geodesy. While conversion of the 
+geodetic coordinates, the latitude <FONT face=symbol>f</FONT>, the longitude 
+<FONT face=symbol>l</FONT> and the height above a reference ellipsoid h, to the 
+geocentric Cartesian x, y and z coordinates is done straightforwardly the 
+reverse conversion poses certain difficulties. Usually it is being performed by 
+successive approximations in an iterative process (e.g. Heiskanen and Moritz, 
+1967, Bartelme and Meissl, 1975, Urmaev, 1981, Hlibowicki, 1981), or using 
+closed approximative formulae cast as series expansions (e.g. Morrison and 
+Pines, 1961, Izotov <I>et al.</I>, 1974, Long, 1976, Taff, 1985) or other 
+expressions (e.g. Pick, 1985, Baranov <I>et al.</I>, 1986). Even though there 
+exist closed exact solutions for transformation of the Cartesian coordinates 
+onto the geodetic coordinates (Paul, 1973, Hedgley, 1976, Heikkinen, 1982, 
+Vaniček and Krakiwsky, 1982) many authors seem to believe to the contrary (e.g. 
+Woolard and Clemence, 1966, Heiskanen and Moritz, 1967, Izotov <I>et al.</I>, 
+1974, Taff, 1985, Baranov <I>et al.</I>, 1986, <I>Astronomical Almanac</I>, 
+1987). The exact solutions are in principle error free, however, in practice 
+errors arise due to rounding-off in relatively complicated algorithms. 
+Nevertheless, in certain applications, they might be preferred to simpler 
+approximative solutions both due to their higher accuracy and completeness 
+(range of latitudes and heights). 
+<P>In this report we offer two solutions: a very simple approximation algorithm, 
+which gives accuracies well above any practical needs, and in fact approaching 
+the precision of exact algorithms, and one truly exact, independent of the so 
+far published. The derivation of the latter is so simple that it may serve as a 
+standard reference. The simplicity comes from the fact that in our quartic 
+(biquadratic) equation only two of the five terms have coefficients different 
+from zero or <FONT face=symbol>±</FONT>1 (other authors solve a general form of 
+the quartic equation). We shall also present a comparison of performance of a 
+few of more popular algorithms, along with ours. 
+<P>To start with, observe that the Cartesian coordinates can be obtained from 
+the geodetic ones through the following formulae 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>r = a cos<FONT face=symbol>y</FONT> + h cos<FONT 
+      face=symbol>f</FONT> &nbsp;&nbsp;&nbsp; and </TD>
+    <TD align=right width=40>(1a)</TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>z = b sin<FONT face=symbol>y</FONT> + h sin<FONT 
+      face=symbol>f</FONT>, 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+    <TD align=right width=40>(1b)</TD></TR></TBODY></TABLE>
+<P>where a&nbsp;(b) is the semimajor (semiminor) axis of the reference ellipsoid 
+and r, the equatorial component, is split into x and y by multiplying Eq.(1a) by 
+the cosine and sine, respectively, function of the longitude. The <FONT 
+face=symbol>y</FONT> parameter, sometimes called parametric or reduced latitude, 
+is calculated from 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle><FONT face=symbol>y</FONT> = arctg([b/a] tg<FONT 
+      face=symbol>f</FONT>). </TD>
+    <TD align=right width=40>(2)</TD></TR></TBODY></TABLE>
+<P>The Eqs. (1) are equivalent to the more common ones 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>r = (N + h) cos<FONT 
+      face=symbol>f</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+    <TD align=right width=40>(3a)</TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>z = [N(1 <FONT face=symbol>-</FONT> e<SUP>2</SUP>) + h] 
+      sin<FONT face=symbol>f</FONT>, </TD>
+    <TD align=right width=40>(3b) </TD></TR></TBODY></TABLE>
+<P>where N = a/(1 <FONT face=symbol>-</FONT> e<SUP>2</SUP> sin<SUP>2</SUP><FONT 
+face=symbol>f</FONT>)<SUP>1/2</SUP>, and e<SUP>2</SUP> = (a<SUP>2</SUP> <FONT 
+face=symbol>-</FONT> b<SUP>2</SUP>)/a<SUP>2</SUP>. Now, given r and z, the 
+problem of finding <FONT face=symbol>f</FONT> and h can be shown to reduce to 
+solving of the following equation: 
+<P>
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>2 sin(<FONT face=symbol>y</FONT> <FONT 
+      face=symbol>-</FONT> <FONT face=symbol>W</FONT>) <FONT 
+      face=symbol>-</FONT> c sin 2<FONT face=symbol>y</FONT> = 0, </TD>
+    <TD align=right width=40>(4) </TD></TR></TBODY></TABLE>
+<P>where <FONT face=symbol>W</FONT> = arctg [bz/(ar)] and c = (a<SUP>2</SUP> 
+<FONT face=symbol>-</FONT> b<SUP>2</SUP>)/[(ar)<SUP>2</SUP> + 
+(bz)<SUP>2</SUP>]<SUP>1/2</SUP>. This equation obtains from geometrical 
+considerations. Equivalently, it can be derived directly from Eqs. (1) by 
+eliminating the h parameter. A <FONT face=symbol>y</FONT> that solves Eq. (4), 
+by virtue of Eq. (2), is used to calculate the geodetic latitude: 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle><FONT face=symbol>f</FONT> = arctg[(a/b) tg<FONT 
+      face=symbol>y</FONT>]. </TD>
+    <TD align=right width=40>(5)</TD></TR></TBODY></TABLE>
+<P>This, in turn, allows the use of both or any one of the two equations (1) to 
+find the height, e.g. 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>h = (r <FONT face=symbol>- </FONT>a cos<FONT 
+      face=symbol>y</FONT>) cos<FONT face=symbol>f </FONT>+ (z <FONT 
+      face=symbol>-</FONT> b sin<FONT face=symbol>y</FONT>) sin<FONT 
+      face=symbol>f</FONT>. </TD>
+    <TD align=right width=40>(6) </TD></TR></TBODY></TABLE>
+<P>We prefer this form for it has similar accuracy over all range of latitudes 
+unlike the formulas met in practice and involving division by the sine or cosine 
+of the latitude. Solving of the Eq. (4) should not present any difficulty in 
+view of the fact that nowadays even handheld calculators have a built-in 
+capability of finding the zeroes of transcendental functions of the type of the 
+left side of (4). A convenient starting value for <FONT face=symbol>y</FONT> can 
+be chosen to equal arctg [az/(br)], which, as evidenced by Eqs. (1), is exact on 
+the surface of the ellipsoid (with h = 0). Applying the Newton's method results 
+in a rapidly converging series of approximations. This method uses the 
+derivative of a function to be solved with respect to the variable (the <FONT 
+face=symbol>y</FONT> here), which in our case is 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>w = 2[cos(<FONT face=symbol>y</FONT><FONT 
+      face=symbol>˘</FONT> <FONT face=symbol>-</FONT> <FONT 
+      face=symbol>W</FONT>) <FONT face=symbol>-</FONT> c cos 2<FONT 
+      face=symbol>y</FONT><FONT face=symbol>˘</FONT>], </TD>
+    <TD align=right width=40>(7) </TD></TR></TBODY></TABLE>
+<P>to find next approximation: 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle><FONT face=symbol>y</FONT> = <FONT 
+      face=symbol>y</FONT><FONT face=symbol>˘</FONT> <FONT face=symbol>-</FONT> 
+      [2sin(<FONT face=symbol>y</FONT><FONT face=symbol>˘</FONT> <FONT 
+      face=symbol>-</FONT> <FONT face=symbol>W</FONT>) <FONT 
+      face=symbol>-</FONT> c sin 2<FONT face=symbol>y</FONT><FONT 
+      face=symbol>˘</FONT>]/w, </TD>
+    <TD align=right width=40>(8) </TD></TR></TBODY></TABLE>
+<P>where the prime indicates the starting value or previous approximation. 
+Computer tests have shown that just two iterations provide accuracies by far 
+exceeding the needs of even very demanding practical user. The accuracies are of 
+the order of 1E–9 rad in the geodetic latitude for all points further than a 
+thousand of kilometers away from the origin of the Cartesian system. Another way 
+of saying roughly the same is to claim that it is some six orders of magnitude 
+more accurate than other algorithms met in literature, save the few truly exact 
+solutions. 
+<P>Table 1 presents errors of position calculated with the use of 10 different 
+algorithms. The errors are defined to be the distances between the true position 
+and the one calculated. To make the comparison meaningful the first three 
+iterative algorithms (based on Heiskanen and Moritz (1967), <I>Astronomical 
+Almanac</I> (1987), and Bartelme and Meissl (1975), respectively) were 
+restricted to only two iterations (their performance for the third iteration is 
+shown in brackets). The algorithms numbered 4 to 7 were taken from Izotov at al. 
+(1974), Long (1976; Eq. (8) and (15) therein), Baranov <I>et al.</I> (1986) and 
+Pick (1985), respectively. The Baranov <I>et al.</I> formula has been corrected 
+for a misprint in the cited source (the a parameter in their expression for 
+tg<FONT face=symbol>f</FONT> has been inadvertadly squared). It is clear from 
+this table that our relatively simple algorithm, whose performance is listed in 
+the column headed 8, compares favourably even with the exact solutions (the two 
+rightmost columns in Table 1, of which the first corresponds to the algorithm 
+given by Heikkinen (1982) and the second is ours, still to be presented, see 
+also Borkowski 1987). Although our approximative solution is iterative in 
+principle, due to its exceptionally fast convergence, all the process of 
+iterations is reduced to two formulas which are essentially the first (Eq. (8) 
+with <FONT face=symbol>y</FONT><FONT face=symbol>˘</FONT> = <FONT 
+face=symbol>W</FONT>) and the second approximation (Eq. (8) itself). With such 
+an understanding this algorithm can be safely treated also as a closed solution. 
+It was used for calculation of entries to Table 1. 
+<P>Eq.(4), when expressed in tg(<FONT face=symbol>p</FONT>/4 <FONT 
+face=symbol>-</FONT> <FONT face=symbol>y</FONT>/2) <FONT face=symbol>ş</FONT> t, 
+leads to the fourth-degree polynomial (biquadratic or quartic equation): 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>t<SUP>4</SUP> + 2Et<SUP>3</SUP> + 2Ft <FONT 
+      face=symbol>-</FONT> 1 = 0, </TD>
+    <TD align=right width=40>(9) </TD></TR></TBODY></TABLE>
+<P>where 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>E = [bz <FONT face=symbol>-</FONT> (a<SUP>2</SUP> <FONT 
+      face=symbol>-</FONT> b<SUP>2</SUP>)]/(ar) &nbsp;&nbsp;&nbsp; and </TD>
+    <TD align=right width=40>(10) </TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>F = [bz + (a<SUP>2</SUP> <FONT face=symbol>-</FONT> 
+      b<SUP>2</SUP>)]/(ar). &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+    <TD align=right width=40>(11) </TD></TR></TBODY></TABLE>
+<P>Applying the Ferrari's solution (e.g. Korn and Korn, 1961) to Eq. (9) one 
+obtains: 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>t = <FONT face=symbol>±</FONT><FONT 
+      face=symbol>Ö</FONT>{G<SUP>2</SUP> + (F <FONT face=symbol>-</FONT> vG)/(2G 
+      <FONT face=symbol>-</FONT> E)} <FONT face=symbol>-</FONT> G, </TD>
+    <TD align=right width=40>(12) </TD></TR></TBODY></TABLE>
+<P>where 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD width="25%"></TD>
+    <TD align=left>G = [<FONT face=symbol>±</FONT>(E<SUP>2</SUP> + 
+      v)<SUP>1/2</SUP> + E]/2, </TD>
+    <TD align=right width=40>(13) </TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD width="25%"></TD>
+    <TD align=left>v = (D<SUP>1/2</SUP> <FONT face=symbol>-</FONT> 
+      Q)<SUP>1/3</SUP> <FONT face=symbol>-</FONT> (D<SUP>1/2</SUP> + 
+      Q)<SUP>1/3</SUP>, </TD>
+    <TD align=right width=40>(14a) </TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD width="25%"></TD>
+    <TD align=left>D = P<SUP>3</SUP> + Q<SUP>2</SUP>, </TD>
+    <TD align=right width=40>(15) </TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD width="25%"></TD>
+    <TD align=left>P = (4/3)(EF + 1)&nbsp;&nbsp;&nbsp; and </TD>
+    <TD align=right width=40>(16) </TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD width="25%"></TD>
+    <TD align=left>Q = 2(E<SUP>2</SUP> <FONT face=symbol>-</FONT> 
+      F<SUP>2</SUP>). </TD>
+    <TD align=right width=40>(17) </TD></TR></TBODY></TABLE>
+<P>For D &lt; 0, to avoid the complex arithmetic, it is recommended to use the 
+following equivalent of Eq.(14a) 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>v = 2 <FONT face=symbol>Ö</FONT>{<FONT 
+      face=symbol>-</FONT>P} cos{(1/3)arccos[Q/(<FONT 
+      face=symbol>-</FONT>P)<SUP>3/2</SUP>]}. </TD>
+    <TD align=right width=40>(14b) </TD></TR></TBODY></TABLE>
+<P>The case of D &lt; 0 will be of marginal use in practice since D is a 
+positive quantity anywhere further than about 45 km from the Earth center. Now, 
+any real of the four solutions (corresponding to the four combinations of 
++/<FONT face=symbol>-</FONT> signs in Eqs. (12) and (13)) represents a 
+distinctive set of geodetic coordinates obtainable through: 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle><FONT face=symbol>f</FONT> = arctg [a(1 <FONT 
+      face=symbol>-</FONT> t<SUP>2</SUP>)/(2bt)] &nbsp;&nbsp;&nbsp;and </TD>
+    <TD align=right width=40>(18) </TD></TR></TBODY></TABLE>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>h = (r <FONT face=symbol>-</FONT> at) cos<FONT 
+      face=symbol>f</FONT>+ (z <FONT face=symbol>-</FONT> b) sin<FONT 
+      face=symbol>f</FONT>&nbsp;. </TD>
+    <TD align=right width=40>(19) </TD></TR></TBODY></TABLE>
+<P>As a practical matter, one does not need all the four solutions even though 
+each of them satisfies Eqs. (1) (they are all real for D &lt; 0 and two are real 
+for D &gt; 0). To obtain readily programmable algorithm yielding the single 
+desired solution just skip out the double signs in Eqs. (12) and (13) to leave 
+only positive square roots there. Then it will work provided a &gt; b and <FONT 
+face=symbol>f</FONT> &gt; 0. Noteworthy, this algorithm will work properly also 
+for southern latitudes (z &lt; 0) if one additionally preassigns the 
+z-coordinate sign to the minor semiaxis, b. 
+<P><BR><BR>
+<TABLE cellPadding=8 width="90%" align=center bgColor=#bed8c1 border=0>
+  <TBODY>
+  <TR>
+    <TD align=middle><B>Table 1</B></TD></TR>
+  <TR>
+    <TD>Position displacement errors (in mm) for ten algorithms. The numbers 
+      in brackets are for 3 iterations with procedures of Heiskanen and Moritz 
+      (1967), <I>Astronomical Almanac</I> (1987) and Bartelme and Meissl (1975), 
+      algorithms No. 1, 2 and 3, respectively. Other algorithms are based on 
+      approximate closed solutions: Izotov <I>et al.</I>, (1974; No. 4), Long 
+      (1975; 5), Baranov <I>et al.</I>, (1986; 6), Pick (1985; 7) and this paper 
+      (8), and exact solutions: Heikkinen (1982; 9) and this paper (10). The 
+      bottom line lists respective timing measurements in units of 0.1 ms. 
+  </TD></TR></TBODY></TABLE>
+<P>
+<TABLE cellSpacing=1 cellPadding=3 align=center bgColor=#aec8b1 border=1>
+  <TBODY>
+  <TR>
+    <TD colSpan=2></TD></TR>
+  <TR>
+    <TD align=right><FONT face=symbol>f</FONT> [deg]</TD>
+    <TD align=right>h [km]</TD>
+    <TD align=middle>1</TD>
+    <TD align=middle>2</TD>
+    <TD align=middle>3</TD>
+    <TD align=middle>4</TD>
+    <TD align=middle>5</TD>
+    <TD align=middle>6</TD>
+    <TD align=middle>7</TD>
+    <TD align=middle>8</TD>
+    <TD align=middle>9</TD>
+    <TD align=middle>10</TD></TR>
+  <TR>
+    <TD colSpan=2></TD></TR>
+  <TR>
+    <TD>89.000</TD>
+    <TD align=right>100000</TD>
+    <TD>109(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>1(0)</TD>
+    <TD>721</TD>
+    <TD align=right>190</TD>
+    <TD align=right>1</TD>
+    <TD align=right>925</TD>
+    <TD>.000000</TD>
+    <TD>.000015</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>89.000</TD>
+    <TD align=right>10000</TD>
+    <TD>460(1)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>22(0)</TD>
+    <TD>721</TD>
+    <TD align=right>158</TD>
+    <TD align=right>0</TD>
+    <TD align=right>126</TD>
+    <TD>.000004</TD>
+    <TD>.000002</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>89.000</TD>
+    <TD align=right>1000</TD>
+    <TD>228(1)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>25(0)</TD>
+    <TD>721</TD>
+    <TD align=right>857</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>89.000</TD>
+    <TD align=right>0</TD>
+    <TD align=right>&nbsp;0(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>–(–)</TD>
+    <TD>721</TD>
+    <TD>1219</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>89.000</TD>
+    <TD align=right><FONT face=symbol>-</FONT>1000</TD>
+    <TD>431(3)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>64(0)</TD>
+    <TD>721</TD>
+    <TD>1836</TD>
+    <TD align=right>0</TD>
+    <TD align=right>1</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000001</TD></TR>
+  <TR>
+    <TD>70.000</TD>
+    <TD align=right>100000</TD>
+    <TD align=right>89(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD>550</TD>
+    <TD align=right>112</TD>
+    <TD>248</TD>
+    <TD>13722</TD>
+    <TD>.000021</TD>
+    <TD>.000017</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>70.000</TD>
+    <TD align=right>10000</TD>
+    <TD>377(1)</TD>
+    <TD align=right>1(0)</TD>
+    <TD align=right>10(0)</TD>
+    <TD>635</TD>
+    <TD align=right>105</TD>
+    <TD>105</TD>
+    <TD align=right>2094</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>70.000</TD>
+    <TD align=right>1000</TD>
+    <TD>187(1)</TD>
+    <TD align=right>6(0)</TD>
+    <TD align=right>11(0)</TD>
+    <TD>660</TD>
+    <TD align=right>370</TD>
+    <TD align=right>5</TD>
+    <TD align=right>6</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD align=right>70.000</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>9(0)</TD>
+    <TD align=right>–(–)</TD>
+    <TD>646</TD>
+    <TD align=right>506</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>70.000</TD>
+    <TD align=right><FONT face=symbol>-</FONT>1000</TD>
+    <TD>353(2)</TD>
+    <TD align=right>12(0)</TD>
+    <TD align=right>29(0)</TD>
+    <TD align=right>611</TD>
+    <TD align=right>734</TD>
+    <TD align=right>10</TD>
+    <TD align=right>34</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD></TR>
+  <TR>
+    <TD>45.000</TD>
+    <TD align=right>100000</TD>
+    <TD align=right>30(0)</TD>
+    <TD align=right>1(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD>167</TD>
+    <TD align=right>24</TD>
+    <TD>452</TD>
+    <TD>10075</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>45.000</TD>
+    <TD align=right>10000</TD>
+    <TD>128(0)</TD>
+    <TD align=right>37(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD>365</TD>
+    <TD align=right>5</TD>
+    <TD>191</TD>
+    <TD align=right>2683</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>45.000</TD>
+    <TD align=right>1000</TD>
+    <TD align=right>63(0)</TD>
+    <TD>181(1)</TD>
+    <TD align=right>0(0)</TD>
+    <TD>587</TD>
+    <TD align=right>215</TD>
+    <TD align=right>9</TD>
+    <TD align=right>14</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000001</TD></TR>
+  <TR>
+    <TD>45.000</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0(0)</TD>
+    <TD>242(1)</TD>
+    <TD align=right>–(–)</TD>
+    <TD>636</TD>
+    <TD align=right>327</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>45.000</TD>
+    <TD align=right><FONT face=symbol>-</FONT>1000</TD>
+    <TD>120(0)</TD>
+    <TD>340(1)</TD>
+    <TD align=right>0(0)</TD>
+    <TD>695</TD>
+    <TD align=right>519</TD>
+    <TD align=right>18</TD>
+    <TD align=right>81</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD>20.000</TD>
+    <TD align=right>100000</TD>
+    <TD align=right>2(0)</TD>
+    <TD align=right>2(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>13</TD>
+    <TD align=right>22</TD>
+    <TD align=right>91</TD>
+    <TD>13641</TD>
+    <TD>.000007</TD>
+    <TD>.000000</TD>
+    <TD>.000015</TD></TR>
+  <TR>
+    <TD>20.000</TD>
+    <TD align=right>10000</TD>
+    <TD align=right>7(0)</TD>
+    <TD align=right>73(0)</TD>
+    <TD align=right>10(0)</TD>
+    <TD>118</TD>
+    <TD align=right>25</TD>
+    <TD align=right>38</TD>
+    <TD align=right>2090</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000002</TD></TR>
+  <TR>
+    <TD>20.000</TD>
+    <TD align=right>1000</TD>
+    <TD align=right>3(0)</TD>
+    <TD>358(2)</TD>
+    <TD align=right>11(0)</TD>
+    <TD>424</TD>
+    <TD align=right>72</TD>
+    <TD align=right>2</TD>
+    <TD align=right>7</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000001</TD></TR>
+  <TR>
+    <TD>20.000</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0(0)</TD>
+    <TD>478(3)</TD>
+    <TD align=right>–(–)</TD>
+    <TD>546</TD>
+    <TD align=right>121</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000001</TD></TR>
+  <TR>
+    <TD>20.000</TD>
+    <TD align=right><FONT face=symbol>-</FONT>1000</TD>
+    <TD align=right>6(0)</TD>
+    <TD>672(5)</TD>
+    <TD align=right>28(0)</TD>
+    <TD>736</TD>
+    <TD align=right>205</TD>
+    <TD align=right>4</TD>
+    <TD align=right>35</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD align=right>1.000</TD>
+    <TD align=right>100000</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>1(0)</TD>
+    <TD align=right>0</TD>
+    <TD align=right>1</TD>
+    <TD align=right>0</TD>
+    <TD align=right>922</TD>
+    <TD>.000015</TD>
+    <TD>.000015</TD>
+    <TD>.000009</TD></TR>
+  <TR>
+    <TD align=right>1.000</TD>
+    <TD align=right>10000</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>5(0)</TD>
+    <TD align=right>22(0)</TD>
+    <TD align=right>5</TD>
+    <TD align=right>1</TD>
+    <TD align=right>0</TD>
+    <TD align=right>126</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD align=right>1.000</TD>
+    <TD align=right>1000</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>25(0)</TD>
+    <TD align=right>24(0)</TD>
+    <TD align=right>25</TD>
+    <TD align=right>10</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD align=right>1.000</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>33(0)</TD>
+    <TD align=right>–(–)</TD>
+    <TD align=right>33</TD>
+    <TD align=right>17</TD>
+    <TD align=right>0</TD>
+    <TD align=right>0</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD align=right>1.000</TD>
+    <TD align=right><FONT face=symbol>-</FONT>1000</TD>
+    <TD align=right>0(0)</TD>
+    <TD align=right>47(0)</TD>
+    <TD align=right>63(0)</TD>
+    <TD align=right>47</TD>
+    <TD align=right>27</TD>
+    <TD align=right>0</TD>
+    <TD align=right>1</TD>
+    <TD>.000000</TD>
+    <TD>.000001</TD>
+    <TD>.000000</TD></TR>
+  <TR>
+    <TD colSpan=2></TD></TR>
+  <TR>
+    <TD align=right colSpan=2>Exec. time:&nbsp;</TD>
+    <TD>56(78)</TD>
+    <TD>51(70)</TD>
+    <TD>50(63)</TD>
+    <TD align=middle>44</TD>
+    <TD align=middle>34</TD>
+    <TD align=middle>46</TD>
+    <TD align=middle>146</TD>
+    <TD align=middle>74</TD>
+    <TD align=middle>56</TD>
+    <TD align=middle>63</TD></TR>
+  <TR>
+    <TD colSpan=2></TD></TR></TBODY></TABLE>
+<P><BR><BR>We have tested our exact algorithm, as embodied in Eqs. (10) through 
+(19), over wide range of (r,z) plane (save the z-axis, where the quantities E 
+and F are obviously indeterminate) without encountering any problems. As to the 
+round-off errors, they are certainly not serious for practical applications (we 
+have always used the DOUBLE PRECISION arithmetic in FORTRAN programming 
+language), though we found them considerably larger in a close vicinity of the r 
+and z axes than elsewhere. The main source of these errors belongs to evaluation 
+of Eq. (14a), which involves the difference of cubic roots (computed as the 
+exponent of one third of the natural logarithm). The simple way to circumvent 
+this problem is to correct a result obtained from Eq. (14a), say v<FONT 
+face=symbol>˘</FONT>, by using the cubic resolvent (of which v<FONT 
+face=symbol>˘</FONT> is one of the three roots): 
+<P>
+<TABLE width="95%">
+  <TBODY>
+  <TR>
+    <TD align=middle>v = <FONT face=symbol>-</FONT>(v<FONT 
+      face=symbol>˘</FONT><SUP>3</SUP> + 2Q)/(3P). </TD>
+    <TD align=right width=40>(20) </TD></TR></TBODY></TABLE>
+<P>It can be easily proved that v from the above equation is more accurate than 
+v<FONT face=symbol>˘</FONT> if v<SUP>2</SUP> &lt; P, which is the case 
+everywhere outside the radial distance from the Earth's centre of about 70 km. 
+The solution of Heikkinen (1982), which also involves the cubic root operation, 
+is free from the considered weakness, however, it is not designed to handle the 
+case of D &lt; 0. For D &gt; 0 and with the correction (20) in our algorithm the 
+two solutions can be considered equally good. 
+<P>To compare the effectiveness of the discussed algorithms we have measured the 
+amount of CPU time required on an IBM PC type machine using the Lahey Computer 
+Systems FORTRAN compiler. The results, given in units of 0.1 ms in the last row 
+of Table 1, show that all times are comparable despite considerable differences 
+in complexity of the algorithms. This is so, because the main contribution to 
+the computation time is due to the trigonometric functions and they are a few in 
+number in each algorithm. For example, the evaluation of the cosine function 
+takes about 0.6 ms, or 6 units of Table 1. Since the computing is really cheap, 
+no special attempt was undertaken to optimize the execution times. Also, sizes 
+of the algorithms in our implementation are comparable and range from 7 to 15 
+FORTRAN cards, with the single exception of Pick's solution, which anyway seems 
+to be the worst in every respect. 
+<P>To conclude, we find that the iterative algorithms, such like these published 
+by Heiskanen and Moritz (1967) or in <I>Astronomical Almanac</I> (1987), are the 
+simplest to program and give acceptable results with 3 to 4 iterations. With one 
+or two additional iterations they can also be used when higher accuracy is 
+required. However, due to round-off errors attempting more than 6 iterations may 
+not improve the result obtained so far, which may be slightly worse than the one 
+obtainable with algorithms based on exact solutions. In this case the two 
+algorithms presented in this paper, or the one of Heikkinen (1982), seem to be 
+more appropriate. They guarantee accuracies a few orders below 1 mm over all 
+practically useful area on the (r,z)-plane, from as close as a few tens of 
+kilometers from the very centre of the Earth to many Earth's radii out into the 
+space. For that matter the correction (20) to our mathematically exact solution 
+may be safely omitted. For more general solutions of the transformation between 
+the Cartesian and geodetic coordinates the only readily available algorithm is 
+our exact solution (presented originally in full detail, unfortunately with an 
+annoying misprint in the equation corresponding to Eq. (12), in Borkowski 
+(1987)). 
+<P>FORTRAN listings of all algorithms analysed in this report may be requested 
+from the author. 
+<P><BR><BR><B>Acknowledgements</B> 
+<P><BR>I would like to thank dr B . Benciolini for helpful comments on an 
+earlier version of this report. This work was financially supported through the 
+Polish Government research problem RPBR No. RR.I.11/2. 
+<P><BR><BR>
+<TABLE align=center border=0>
+  <TBODY>
+  <TR>
+    <TD><B>REFERENCES </B></TD></TR></TBODY></TABLE>
+<P><BR><EM>Astronomical Almanac for the Year 1987</EM>, USNO and RGO, Washington 
+and London, p. K11. 
+<P>V.N. BARANOV <I>et al.</I>, 1986, <EM>Space Geodesy</EM>, Nedra, Moskva (in 
+Russian), p. 27. 
+<P>N . BARTELME, P . MEISSL, 1975, <EM>Ein einfaches, rasches und numerisch 
+stabiles Verfahren zur Bestimmung des kürzesten Abstandes eines Punktes von 
+einen sphäroidischen Rotationsellipsoid</EM>, <I>AVN</I>, Heft 12, p. 436–439 
+(Wichmann, Karlsruhe) (in German). 
+<P>W. BENNING, 1974, <EM>Der Kürzeste Abstand eines in rechtwinkeligen 
+Koordinaten gegebenen Aussenpunktes vom Ellipsoid</EM>, AVN, Heft 11, (Wichmann, 
+Karlsruhe) (in German). 
+<P>K.M. BORKOWSKI, 1987, <A 
+href="http://www.astro.uni.torun.pl/~kb/Papers/ASS/Geod-ASS.htm"><EM>Transformation 
+of Geocentric to Geodetic Coordinates without Approximations</EM></A>, 
+<I>Astrophys. Space Sci.</I>, <B>139</B>, 1–4. 
+<P>D.R. HEDGLEY, 1976, <EM>An Exact Transformation from Geocentric to Geodetic 
+Coordinates for Nonzero Altitudes, <I>NASA Techn. Rep.</I></EM> R–458. 
+<P>M. HEIKKINEN, 1982, <EM>Geschlossene Formeln zur Berechnung raumlicher 
+geodätischer Koordinaten aus rechtwinkligen Koordinaten</EM>, <I>Zeitschrift 
+Vermess.</I> (in German), 107, 207–211 . 
+<P>W.A. HEISKANEN and H. MORITZ, 1967, <EM>Physical Geodesy</EM>, W.H. Freeman 
+and Co., San Francisco, p. 181. 
+<P>R.HLIBOWICKI (ed.), 1981, <EM>Higher Geodesy and Geodetic Astronomy</EM>, 
+PWN, Warszawa (in Polish), p. 273. 
+<P>A.A. IZOTOV <I>et al.</I>, 1974, <EM>Fundamentals of Satellite Geodesy</EM>, 
+Nedra, Moskva (in Russian), p. 34. 
+<P>G.A. KORN and T.M. KORN, 1961, <EM>Mathematical Handbook for Scientists and 
+Engineers</EM>, McGraw–Hill, New York, p. 24. 
+<P>S.A.T. LONG, 1975, <EM>General Altitude Transformation between Geocentric and 
+Geodetic Coordinates, <I>Celestial Mech.</I></EM>, 12, 225–230. 
+<P>J. MORRISON and S. PINES, 1961, <EM>The Reduction from Geocentric to Geodetic 
+Coordinates, <I>Astron. J.</I></EM>, <B>66</B>, 15–16. 
+<P>M.K. PAUL, 1973, <EM>A Note on Computation of Geodetic Coordinates from 
+Geocentric (Cartesian) Coordinates, <I>Bull. Géod., Nouv. Ser.</I></EM>, No 108, 
+135–139. 
+<P>M . PICK, 1985, <EM>Closed Formulae for Transformation of the Cartesian 
+Coordinate System into a System of Geodetic Coordinates, <I>Studia geoph. et 
+geod.</I></EM>, <B>29</B>, 112–119. 
+<P>L.G. TAFF, 1985, <EM>Celestial Mechanics. A Computational Guide for the 
+Practitioner</EM>, J . Wiley and Sons, New York, ch. 3. 
+<P>M.S. URMAEV, 1981, <EM>Orbital Methods of Space Geodesy</EM>, Nedra, Moskva 
+(in Russian), p . 14. 
+<P>P . VANIČEK and E.J. KRAKIWSKI, 1982, <EM>Geodesy: The Concepts</EM>, North 
+Holland Publ. Co., Amsterdam, p . 324. 
+<P>E.W. WOOLARD and G.M. CLEMENCE, 1966, <EM>Spherical Astronomy</EM>, Academic 
+Press, New York, ch. 3. 
+<P>
+<HR align=center width="40%">
+
+<P><SMALL>&nbsp;&nbsp;&nbsp;Received : 01.06.1988.<BR>&nbsp;&nbsp;&nbsp;Accepted 
+: 23.09.1988.</SMALL> 
+<P></FONT><BR>
+<HR>
+<SMALL>File translated from T<SUB><FONT size=-1>E</FONT></SUB>X by <A 
+href="http://hutchinson.belmont.ma.us/tth/">T<SUB><FONT 
+size=-1>T</FONT></SUB>H</A>, version 3.12 on 26 July 2002.</SMALL> <BR>
+<HR SIZE=5>
+
+<P><BR>
+<TABLE width="80%" align=center>
+  <TBODY>
+  <TR>
+    <TD>
+      <P align=center><B>ADDENDUM to the paper</B>
+      <P><I>The following FORTRAN code is included here for convenience of those 
+      interested in practical implementation of the exact algorithm presented. 
+      Be aware however that it does not belong to the original article — it 
+      comes from a <A 
+      href="http://www.astro.uni.torun.pl/~kb/Papers/geod/Geod-GK.htm">Polish 
+      version</A> of the above paper, where you can find also a figure (Rys. 1.) 
+      illustrating the geometry involved.</I></P></TR></TBODY></TABLE>
+<P>
+<TABLE align=center bgColor=#b9d9bd>
+  <TBODY>
+  <TR>
+    <TD><PRE>      subroutine GEOD(r,z,fi,h)
+c Program to transform Cartesian to geodetic coordinates
+c Input:   r, z = equatorial [m] and polar [m] components
+c Output: fi, h = geodetic coord's (latitude [rad], height [m])
+      implicit real*8(a-h,o-z)
+c IAU ellipsoid: semimajor axis and inverse flattening
+      data a,frec /6378140.d0,298.257d0/
+      b=dsign(a-a/frec,z)
+        if(r.eq.0d0) return
+      E=((z+b)*b/a-a)/r
+      F=((z-b)*b/a+a)/r
+      P=(E*F+1.)*4d0/3.
+      Q=(E*E-F*F)*2.
+      D=P*P*P+Q*Q
+        if(D.ge.0d0) then
+       s=dsqrt(D)+Q
+       s=dsign(dexp(dlog(dabs(s))/3d0),s)
+       v=P/s-s
+       v=-(Q+Q+v*v*v)/(3*P)
+        else
+       v=2.*dsqrt(-P)*dcos(dacos(Q/P/dsqrt(-P))/3.)
+        endif
+      G=.5*(E+dsqrt(E*E+v))
+      t=dsqrt(G*G+(F-v*G)/(G+G-E))-G
+      fi=datan((1.-t*t)*a/(2*b*t))
+      h=(r-a*t)*dcos(fi)+(z-b)*dsin(fi)
+      end
+
+Test data:
+   r         z              fi               h
+4000000.  6000000.  0.985526645027216  847786.688189974
+4000.000 -6000.000  -1.48883906081174 -6350591.52477262
+</PRE></TR></TBODY></TABLE>
+<P>
+<HR width="80%" SIZE=6>
+</BODY></HTML>

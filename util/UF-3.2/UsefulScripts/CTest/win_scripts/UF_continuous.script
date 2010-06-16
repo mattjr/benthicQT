@@ -1,0 +1,55 @@
+# ---------------------------------------------------------
+# Contact: a.maclean@cas.edu.au
+# ---------------------------------------------------------
+
+SET(CTEST_BUILD_TYPE Continuous)
+SET(CTEST_SOURCE_NAME UF${CTEST_BUILD_TYPE})
+SET(CTEST_BINARY_NAME ${CTEST_SOURCE_NAME}Build)
+SET(CTEST_DASHBOARD_ROOT "C:/development/Testing/UFTest")
+SET(CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_SOURCE_NAME}")
+SET(CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_BINARY_NAME}")
+
+# The continuous duration is 10 hours.
+SET(CTEST_CONTINUOUS_DURATION 600)
+# Minumum interval between continuous checks.
+SET(CTEST_CONTINUOUS_MINIMUM_INTERVAL 5)
+# Remove the binary tree once the first continuous is run.
+SET(CTEST_START_WITH_EMPTY_BINARY_DIRECTORY_ONCE TRUE)
+
+
+# which ctest command to use for running the dashboard
+SET (CTEST_COMMAND
+  "\"C:/Program Files/CMake24/bin/ctest.exe\" -D ${CTEST_BUILD_TYPE} -A \"${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}\""
+  )
+
+# what cmake command to use for configuring this dashboard
+SET(CTEST_CMAKE_COMMAND
+  "\"C:/Program Files/CMake24/bin/cmake.exe\""
+  )
+
+# This is the initial cache to use for the binary tree, be careful to escape
+# any quotes inside of this string if you use it
+SET(CTEST_INITIAL_CACHE "
+
+SITE:STRING=devwin.acfr.usyd.edu.au
+BUILDNAME:STRING=Win32-vs8.0
+
+CVSCOMMAND:FILEPATH=C:/Program Files/Subversion/bin/svn.exe
+
+#CMAKE_GENERATOR:INTERNAL=Visual Studio 8 .NET 2005
+MAKECOMMAND:STRING=\"C:/Program Files/Microsoft Visual Studio 8/Common7/IDE/devenv.com\" \"UF.sln\" /build Release /project ALL_BUILD
+
+BUILD_SHARED_LIBS:BOOL=OFF
+USE_BOOST:BOOL=OFF
+USE_VTK:BOOL=ON
+Boost_INCLUDE_DIR:FILEPATH=C:/development/Boost/include/boost-1_33_1
+VTK_DIR:FILEPATH=C:/development/VTK/build/vtk
+")
+
+
+# set any extra environment variables here
+#SET (CTEST_ENVIRONMENT
+#  )
+
+
+

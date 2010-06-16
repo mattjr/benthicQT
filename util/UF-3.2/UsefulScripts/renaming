@@ -1,0 +1,9 @@
+#!/bin/sh
+wd=`pwd`
+for f in `find . -type d`; do
+  d=$wd/$f
+  # Copy *.h and *.cpp files in this directory putting in a leading uf.
+  cd $d
+  for g in *.cpp; do if [ -f "$g" ]; then cp "$g" "uf$g"; fi; done
+  for g in *.h; do if [ -f "$g" ]; then cp "$g" "uf$g"; fi; done
+done

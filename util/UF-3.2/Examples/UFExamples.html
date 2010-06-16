@@ -1,0 +1,144 @@
+<html>
+
+<head>
+<h1>UF Examples</h1>
+</head>
+
+<body>
+
+<h2>Introduction</h2>
+
+<p>These examples are intended to provide a series of example programs that show how to use the UF library. Generally they mirror or extend the tests in the UF library. However there are also extra examples present that may or may not use the UF library. A case in point is ReadXYZRGB. If you have any questions please contact <a href="mailto:a.maclean@cas.edu.au?subject=UF%20Examples" title="Andrew Maclean">Andrew Maclean</a>.</p>
+
+
+<table  cellspacing="1" cellpadding="1" rules="all" frame="border">
+<caption>Example subdirectories and their broad functional areas.</caption>
+  <thead>
+    <tr>
+      <th>Subdirectory</th>
+      <th>Functional Area.</th>
+    </tr>
+  </thead>  <tbody>
+    <tr>
+      <td><strong>Colour</strong></td>
+      <td>Manipulates RGB values.</td>
+    </tr>
+    <tr>
+      <td><strong>ColourPickerComboBox</strong></td>
+      <td>An MFC application that shows how to manipulate the various functions in the Color classes. It also demonstrates how to derive from CComboBox to produce a combo box with named colour patches and how to derive from CEdit to produce a coloured edit control.</td>
+    </tr>
+    <tr>
+      <td><strong>Conversions</strong></td>
+      <td>Shows how to effect conversions for output, translating between different formats, rotations and homogenous coordinates.</td>
+    </tr>
+    <tr>
+      <td><strong>CSVParser</strong></td>
+      <td>Demonstrates a comma-separated value parser.</td>
+    </tr>
+    <tr>
+      <td><strong>CuboidDecomposition</strong></td>
+      <td>Shows the decomposition of a cuboid into tetrahedera.</td>
+    </tr>
+    <tr>
+      <td><strong>DateTime</strong></td>
+      <td>Demonstrates date, system time and time conversions.</td>
+    </tr>
+    <tr>
+      <td><strong>DTM</strong></td>
+      <td>Digital Terrain Modelling - routines for calculating volume.</td>
+    </tr>
+    <tr>
+      <td><strong>FileUtilities</strong></td>
+      <td>Demonstrates how to search for a file and list all files in directories. It will recursively search subdirectories.</td>
+    </tr>
+    <tr>
+      <td><strong>GeographicConversions</strong></td>
+      <td>Demonstrates conversions to and from the various geographic coordinate systems in use.</td>
+    </tr>
+    <tr>
+      <td><strong>GPSNavigation</strong></td>
+      <td>Demonstrates how to store and hold routes, points and tracks.</td>
+    </tr>
+    <tr>
+      <td><strong>GPSParser</strong></td>
+      <td>Demonstrates parsing and producing NMEA messages.</td>
+    </tr>
+    <tr>
+      <td><strong>Logger</strong></td>
+      <td>Demonstrates how to log data to/from files.</td>
+    </tr>
+    <tr>
+      <td><strong>ReadXYZRGB</strong></td>
+      <td>Reads a text file containing particle positions and their RGB colour value. It produces an output file and also displays the data.</td>
+    </tr>
+    <tr>
+      <td><strong>Statistics</strong></td>
+      <td>Demonstrates some statistical routines.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>When using the library, note that all the library .h and .cpp files are prefixed with &quot;<strong>uf</strong>&quot;. Thus is it easy to identify the headers and libraries that belong to this collection of libraries.</p>
+
+<h2>Operating Systems</h2>
+
+<p>This code will compile in Windows, Linux and QNX. What is actually compiles is determined by the following factors:</p>
+<ul>
+<li>The way the UF Library was compiled, in particular whether Boost or VTK were used.</li>
+<li>The type of platform. E.g. It makes little sense to compile MFC code in Linux.</li>
+</ul>
+
+<h2>Building</h2>
+
+Assume the directory structure looks something like this:</p>
+
+<table cellspacing="1" cellpadding="1" frame="border">
+  <tbody>
+    <tr>
+      <td>MyDevelopmentPath</td>
+      <td>/UF</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/UFBuild</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/UFExamplesBuild</td>
+    </tr>
+  </tbody>
+</table>
+
+If UF was installed, then the path structure will be something like this:
+<table cellspacing="1" cellpadding="1" frame="border">
+  <tbody>
+    <tr>
+      <td>CMAKE_INSTALL_PREFIX</td>
+      <td>/bin</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/include/uf-x.y</td>
+   </tr>
+    <tr>
+      <td></td>
+      <td>/lib</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>/lib/uf-x.y</td>
+    </tr>
+  </tbody>
+</table>
+<p>Where CMAKE_INSTALL_PREFIX is /usr/local in Linux or c:\Program Files\uf in Windows by default.
+<p>The CMakeLists.txt file in this directory will show you how to incorporate this library in your own code. This file requires FindUF.cmake to locate the UF library and to set the include and linker paths correctly. It also uses the values of UF_USE_BOOST and UF_USE_VTK to determine if Boost and VTK are needed.</p>
+
+<p>If you get an error regarding Boost, edit CMakeLists.txt to relfect the path to where BoostConfig.cmake is, or copy BoostConfig.cmake to the examples directory and modify the path to find it in the CMakeLists.txt file accordingly. Currently the path is set to ${PROJECT_SOURCE_DIR}/.. because this directory is a subdirectory of UF.</p>
+
+<p>If in Linux, <strong><em>cd</em></strong> to <strong><em>UFExamplesBuild</em></strong> and type <strong><em>ccmake ../UF/Examples</em></strong>. If UF is not found you will get a message to that effect. Then just set UF_DIR to <strong><em>MyDevelopmentPath/BuildUF</em></strong> or to <strong><em>CMAKE_INSTALL_PREFIX/lib/uf-x.y</em></strong>. Press "c" and finally "g". Make sure you are in the directory and then type <strong><em>make</em></strong> and finally <strong><em>make install</em></strong>.</p>
+
+<p>If you are in Windows, the procedure is similar to that in Linux except it is GUI based when using CMake. IF you are using Visual Studio, then right-click on <strong><em>ALL_BUILD</em></strong> and select <strong><em>build</em></strong>. Finally right-click on <strong><em>INSTALL</em></strong> and select <strong><em>build</em></strong>.</p>
+
+</body>
+
+</html>

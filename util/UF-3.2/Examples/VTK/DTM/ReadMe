@@ -1,0 +1,21 @@
+Data/Plane.txt and  Data/SplitSphere.txt are copied to bin/DTMData in the build directory.
+
+To construct the structured grids used in volume estimation:
+bin/DTMConverter bin/DTMData/Plane.txt Plane.bin
+bin/DTMConverter bin/DTMData/SplitSphere.txt SplitSphere.bin
+This will produce Plane.bin, Plane.txt and SplitSphere.bin, SplitSphere.txt in your current directory.
+
+Then estimate the volume by doing:
+bin/DTMVolume ./Plane.bin ./SplitSphere.bin
+This will produce:
+FIIK0.vtp - no cuboids.
+FIIK1.vtp - all cuboids.
+FIIK2.vtp - cuboids lying above or on the reference surface.
+FIIK3.vtp - cuboids lying below or on the reference surface.
+FIIK4.vtp - cuboids lying above and below reference surface.
+
+Run PraView and load FIIK0.vtp, then you can step through the frames.
+
+You can look at the data in the structured grids by doing this:
+bin/ReadDTM SplitSphere.bin some_file
+It will produce a file containing all the scalars in a human-readable format.

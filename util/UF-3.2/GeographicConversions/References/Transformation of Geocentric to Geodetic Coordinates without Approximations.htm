@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0057)http://www.astro.uni.torun.pl/~kb/Papers/ASS/Geod-ASS.htm -->
+<HTML><HEAD><TITLE>Transformation of Geocentric to Geodetic Coordinates without Approximations</TITLE>
+<META http-equiv=Content-type content=text/html;charset=windows-1250>
+<META content="MSHTML 6.00.6001.18099" name=GENERATOR></HEAD>
+<BODY text=black bgColor=#ffd782><SMALL>
+<P align=right><I><A 
+href="http://www.kluweronline.com/issn/0004-640X">Astrophysics and Space 
+Science</A></I>, <B>139</B> (1987), 1–4 <BR>[Erratum: vol. <B>146</B>, 
+(No.&nbsp;1, July 1988), 201]</P></SMALL><BR>
+<H3 align=center>TRANSFORMATION OF GEOCENTRIC TO GEODETIC<BR>COORDINATES WITHOUT 
+APPROXIMATIONS</H3><BR><BR>
+<P align=center><A 
+href="http://www.astro.uni.torun.pl/~kb/personal.html">KAZIMIERZ M. 
+BORKOWSKI</A></P>
+<P align=center><I><A href="http://www.astro.uni.torun.pl/index_trao.html">Toruń 
+Radio Astronomy Observatory</A>, Nicolaus Copernicus University, Toruń, 
+Poland</I><BR><BR><BR>(Received 27 July, 1987)</P><BR>
+<TABLE cellSpacing=0 cellPadding=8 width="90%" align=center bgColor=#f0d7a2 
+border=1>
+  <TBODY>
+  <TR>
+    <TD><B>Abstract.</B> An exact and relatively simple analytical transform 
+      of the rectangular coordinates to the geodetic coordinates is presented. 
+      It does not involve any approximation and the accuracy of practical 
+      calculations depends exclusively on the round-off errors. The algorithm is 
+      based on one solution to the quartic equation in tg(45° <FONT 
+      face=symbol>- y</FONT>/2), where <FONT face=symbol>y</FONT> is the 
+      parametric (or eccentric) latitude.</TD></TR></TBODY></TABLE><BR><BR>Present-day 
+astrogeodetic work requires a consistent pair of transforms between geocentric 
+and geodetic coordinates whose high accuracy holds for any altitude and 
+latitude. The geocentric coordinates are known to be directly calculable from 
+geodetic coordinates through the use of simple formulae (e.g. Equations (1) 
+below). It is not so with the reverse transformation. Until recently there 
+prevailed a widespread believe that the reverse transformation has not any 
+elementary solution (e.g. Woolard and Clemence 1966, Heiskanen and Moritz 1967, 
+Izotov et al. 1974, Lang 1974, Hlibowicki 1981, Taff 1985, Pick 1985, Baranov et 
+al. 1986, <I>The Astronomical Almanac for the Year 1987</I> (p. K11)). Thus a 
+rich variety of different algorithms have been devised to find an approximation 
+to the geodetic latitude, <FONT face=symbol>f</FONT>, and the vertical hight 
+(altitude) above a reference ellipsoid, h, given the geocentric coordinates: the 
+equatorial, r, and the polar, z, component. Paul (1973) seems to have been the 
+first to demonstrate the existance of exact analytical solutions to the geodetic 
+coordinates. His algorithm was later considerably improved by Heikkinen (1982) 
+while Hedgley (1976) presented a solution based on entirely different approach. 
+The common feature of these three algorithms is solving of a full quartic 
+(biquadratic) equation in some variable (see also Vaníček and Krakiwsky 1982). 
+This is normally tedious work though a final practical procedure may sometimes 
+be reduced to acceptable number of formulas (e.g. Heikkinen 1982). 
+<P></P>Unaware of the existance of the above mentioned publications concerning 
+the exact analytical solutions I set up to work out one. Now it seems to be 
+considerably simpler than the three of Paul (1973), Hedgley (1976) and Heikkinen 
+(1982) both in derivation and in practical implementation. Thus it carries the 
+potential of becoming a standard in future references. The simplicity of my 
+solution comes from the fact that of the five coefficients of the quartic 
+equation only two are different from zero or one (in the absolute value). In the 
+following we shall preset first a complete derivation and then give rules for 
+practical use. 
+<P></P>The standard formulae relating the geodetic and geocentric coordinates 
+are: 
+<P></P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>r = (C + h) cos <FONT face=symbol>f</FONT></TD>
+    <TD align=right>(1a)</TD></TR></TBODY></TABLE>
+<P>and </P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>z = (Cb<SUP>2</SUP>/a<SUP>2</SUP> + h) sin <FONT 
+    face=symbol>f</FONT>,</TD>
+    <TD align=right>(1b)</TD></TR></TBODY></TABLE>
+<P></P>where 
+<P></P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>C = a<SUP>2</SUP>/<FONT face=symbol>Ö</FONT>[(a cos <FONT 
+      face=symbol>f</FONT>)<SUP>2</SUP> + (b sin <FONT 
+      face=symbol>f</FONT>)<SUP>2</SUP>] </TD>
+    <TD align=right>(2)</TD></TR></TBODY></TABLE>
+<P></P>is known as the radius of curveture of the reference ellipse at the 
+direction defined by <FONT face=symbol>f</FONT>, and a and b are the semiaxes of 
+the ellipse. 
+<P></P>Eliminating the h parameter from Equations (1) directly leads to (e.g. 
+Vaníček and Krakiwsky, 1982) 
+<P></P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>r – z/tg <FONT face=symbol>f</FONT> = (a<SUP>2</SUP> – 
+      b<SUP>2</SUP>)/<FONT face=symbol>Ö</FONT>[a<SUP>2</SUP> + (b tg <FONT 
+      face=symbol>f</FONT>)<SUP>2</SUP>].</TD>
+    <TD align=right>(3)</TD></TR></TBODY></TABLE>
+<P>This is the equation that, under somewhat different representa- tions, served 
+to derive many of approximations met in practice. It is easy to chack that the 
+substitution: 
+<P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>tg <FONT face=symbol>f</FONT> = a(1 – t<SUP>2</SUP>)/(2bt) </TD>
+    <TD align=right>(4)</TD></TR></TBODY></TABLE>
+<P>transforms Equation (3) into the following quartic equation 
+<P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>t<SUP>4</SUP> + 2Et<SUP>3</SUP> + 2Ft – 1 = 0,</TD>
+    <TD align=right>(5)</TD></TR></TBODY></TABLE>where 
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>E = [bz – (a<SUP>2</SUP> – b<SUP>2</SUP>)]/(ar)</TD>
+    <TD align=right>(6)</TD></TR></TBODY></TABLE>and<BR>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>F = [bz + (a<SUP>2</SUP> – b<SUP>2</SUP>)]/(ar).</TD>
+    <TD align=right>(7)</TD></TR></TBODY></TABLE>
+<P></P>As is well known, the fourth-degree polynomials can always be solved 
+using only elementary functions, though these general algorithms often prove 
+impractical. In our case the simple form of Equation (5) suits well the 
+procedure known as the Ferrari's solution (e.g. Korn and Korn 1961). It uses one 
+of the three roots of the qubic resolvent: 
+<P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>v<SUP>3</SUP> + 3Pv + 2Q = 0,</TD>
+    <TD align=right>(8)</TD></TR></TBODY></TABLE>where <BR>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>P = (4/3)(EF + 1)</TD>
+    <TD align=right>(9)</TD></TR></TBODY></TABLE>and <BR>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>Q = 2(E<SUP>2</SUP> – F<SUP>2</SUP>),</TD>
+    <TD align=right>(10)</TD></TR></TBODY></TABLE>
+<P>to solve for all four roots of the quartic equation. A real root of Equation 
+(8) is 
+<P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>v = –(Q + <FONT face=symbol>Ö</FONT>D)<SUP>1/3</SUP> – (Q – <FONT 
+      face=symbol>Ö</FONT>D)<SUP>1/3</SUP> ,</TD>
+    <TD align=right>(11a)</TD></TR></TBODY></TABLE>where <BR>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>D = P<SUP>3</SUP> + Q<SUP>2</SUP>.</TD>
+    <TD align=right>(12)</TD></TR></TBODY></TABLE><BR>For D &lt; 0 the expression 
+(11a) is equivalent to 
+<P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>v = 2 <FONT face=symbol>Ö</FONT>(–P) 
+      cos{(1/3)arccos[–Q/(–P)<SUP>3/2</SUP>]},</TD>
+    <TD align=right>(11b)</TD></TR></TBODY></TABLE><BR>which avoids the complex 
+arithmetic. Since the case of D &lt; 0 envelopes points not further than about 
+45 km from the center of geodetic reference ellipsoids, it is rather unimportant 
+for practical applications but remains a valuable tool in discussion of the 
+general properties of the transform. 
+<P></P>Now, having calculated v, the four roots of Equation (5) can be found 
+from 
+<P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>t = <FONT face=symbol>±Ö</FONT>[G<SUP>2</SUP> + (F – vG)/(2G – E)] – 
+    G,</TD>
+    <TD align=right>(13)</TD></TR></TBODY></TABLE>where <BR>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>G = [<FONT face=symbol>±Ö</FONT>(E<SUP>2</SUP> + v) + E]/2.</TD>
+    <TD align=right>(14)</TD></TR></TBODY></TABLE>
+<P>Of the solutions defined by Equations (13) and (14) all are real for D <FONT 
+face=symbol>Ł</FONT> 0, and two are real for D &gt; 0. Any one of the real 
+solutions can serve to find a distinct geodetic coordinate set through Equations 
+(4) and (1): 
+<P>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD><FONT face=symbol>f</FONT> = arctg[a(1 – t<SUP>2</SUP>)/(2bt)],</TD>
+    <TD align=right>(15a)</TD></TR></TBODY></TABLE>and e.g. <BR>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD width=40></TD>
+    <TD>h = (r – at) cos<FONT face=symbol>f</FONT> + (z – b) sin<FONT 
+      face=symbol>f</FONT>,</TD>
+    <TD align=right>(15b)</TD></TR></TBODY></TABLE><BR>and all of them satisfy 
+Equations (1). This completes our derivation, but a few more comments are now in 
+order. 
+<P></P>Among the four solutions there is always one real which falls outside the 
+range [–90°,+90°], the normal range of latitudes, therefore generally the value 
+of <FONT face=symbol>f</FONT> of Equation (15a) should be placed in the right 
+quarter by taking into account relative signs of the numerator and denominator 
+of the argument of the arctangent function. 
+<P></P>The rules can be given to select the single conventional solution, which 
+corresponds to that value of <FONT face=symbol>f</FONT> which lies in the same 
+quarter as does the geocentric latitude (arctg z/r), and it can be demonstrated 
+that there is only one such solution among the four. However, we find it more 
+practical to restrict the considerations to the almost obvious case of a &gt; b, 
+and to the northern latitudes (positive or zero z value), which together greatly 
+simplify the rules: just skip the lower signs of the double signs in Equations 
+(13) and (14) to take the positive square roots only. On the southern hemisphere 
+the solutions are of course the same, save the sign reversed, thus the second 
+restriction does not really limit practical usefulness of our algorithm. 
+<P></P>Worth noticing is the fact that the presented algorithm lacks symmetry 
+about the equatorial plane though, of course, it gives symmetric analytical 
+results. It means that the numerical results will have different round-off 
+errors on either side of the equator. This may be indicative of a potential for 
+improvement of the procedure, however, at this stage it is not clear how it 
+could be utilized. 
+<P></P>The auxiliary parameter t can be shown to be the tangent function of one 
+half of the complement to 90° of the eccentric latitude (called also the 
+parametric or reduced latitude), <FONT face=symbol>y</FONT>. An algorithm 
+exactly analogous to the presented above can be obtained by constructing a 
+quartic equation in tg(<FONT face=symbol>y</FONT>/2). Such a version exhibit a 
+singularity at the equator (for z&nbsp;=&nbsp;0), instead of at the poles as in 
+our case. 
+<P></P>The fact that there are three other solutions besides the desired one 
+makes practically all iterative procedures sensitive to the starting value for 
+<FONT face=symbol>f</FONT>. If the geocentric latitude is chosen for the start, 
+a reasonable choice, there will always be regions on the (r,z) plane (inside the 
+curve D = 0) such that the iterations will converge to a wrong solution. For 
+example, the point (r[m],z[m]) = (16000,2000) when referred to the present IAU 
+ellipsoid may be represented by the following (<FONT 
+face=symbol>f</FONT>[deg],h[m]) coordinates: (69.1546512,–6351904.5), 
+(–4.3033845,–6362215.0), (–66.8170389,–6355613.9) and (–178.0477051,–6394174.1). 
+In this example the second solution for geodetic latitude lies much closer to 
+the geocentric latitude (about +7 degrees) than the first (which is 
+conventionally the only right). 
+<P>The described algorithm, as embodied in Equations (6), (7) and (9) through 
+(15), has been implemented in FORTRAN programming language, and extensively 
+tested against the forward transform (Equations (1)) for rectangular coordinates 
+spanning a range of from single meters to more than 500&nbsp;000 km in both 
+coordinates. Except for the mentioned singularity at the poles no other 
+practical limitation was found. The program, in the form of a subroutine named 
+<A 
+href="http://www.astro.uni.torun.pl/~kb/Papers/geod/Geod-GK.htm#GEOD">GEOD</A>, 
+can be obtained from the author on request. 
+<P></P><BR>
+<P align=center><B>Acknowledgements</B></P>The author wishes to express his 
+gratitude for financial support from the Nicolaus Copernicus Astronomical Center 
+of the Polish Academy of Sciences under contract CPBP-01.11.
+<P><BR><BR>
+<P align=center><B>References</B></P>Baranov V.N., Bojko, E.G., Krasnorylov, 
+I.I., Mashimov, M.M., Plokhov, Yu.V., Urmaev, M.S., and Yashin, S.N.: 1986, 
+<I>Space Geodesy</I>, Nedra, Moscow, p.&nbsp;27 (in Russian). 
+<P>Hedgley, D.R.: 1976, <I>NASA Techn. Rep.</I> R-<B>458</B>. 
+<P>Heikkinen, M.: 1982, <I>Zeitschrift f. Vermess</I>. <B>107</B>, 207 (in 
+German). 
+<P>Heiskanen, W.A. and Moritz, H.: 1967, <I>Physical Geodesy</I>, 
+W.H.&nbsp;Freeman and&nbsp;Co., San Francisco, p.&nbsp;181. 
+<P>Hlibowicki, R. (ed.): 1981, <I>Higher Geodesy and Geodetic Astronomy</I>, 
+PWN, Warszawa, p.&nbsp;273 (in Polish). 
+<P>Izotov, A.A. (ed.): 1974, <I>Fundamentals of Satellite Geodesy</I>, Nedra, 
+Moscow (in Russian), p.&nbsp;34. 
+<P>Korn, G.A. and Korn, T.M.: 1961, <I>Mathematical Handbook for Scientists and 
+Engineers</I>, McGraw-Hill, New York, p.&nbsp;24. 
+<P>Lang, K.R.: 1974, <I>Astrophysical Formulae</I>, Springer-Verlag, Berlin, 
+p.&nbsp;497. 
+<P>Paul, M.K.: 1973, <I>Bull. Géod.</I>, Nouv. Ser., No. <B>108</B>, 135. 
+<P>Pick, M.: 1985, <I>Studia Geoph. Geod.</I>, <B>29</B>, 112. 
+<P>Taff, L.G.: 1985, <I>Celestial Mechanics. A Computational Guide for the 
+Practitioner</I>, J. Wiley and Sons, New York, Ch.&nbsp;3. 
+<P>Urmaev, M.S.: 1981, <I>Orbital Methods of Space Geodesy</I>, Nedra, Moscow, 
+p.&nbsp;14 (in Russian). 
+<P>Vaníček, P. and Krakiwsky, E.J.: 1982, <I>Geodesy: The Concepts</I>, North 
+Holland Publ. Co., Amsterdam, p.&nbsp;324. 
+<P>Woolard, E.W. and Clemence, G.M.: 1966, <I>Spherical Astronomy</I>, Academic 
+Press, New York, Ch.&nbsp;3. 
+<P>
+<HR>
+
+<DIV align=right>[See also <A 
+href="http://www.astro.uni.torun.pl/~kb/Papers/geod/Geod-BG.htm">this 
+paper</A>.]</DIV></BODY></HTML>
