@@ -44,8 +44,8 @@ RTree *loadBBox(const char *str){
             bb.edges[1].first  = y1;
             bb.edges[1].second = y2;
 
-            bb.edges[2].first  = z1-zepi;
-            bb.edges[2].second = z2+zepi;
+            bb.edges[2].first  = z1;
+            bb.edges[2].second = z2;
 
             /*printf("\n%.1f -- %.1f\n",x1,x2);
             printf("%.1f -- %.1f\n",y1,y2);
@@ -73,7 +73,7 @@ bool find_closet_img_idx(RTree *tree,osg::Vec3 pt,bbox_map_info &boxinfo){
     if(!tree)
         return false;
 
-    double epi=0.5;
+    double epi=0.01;
     BoundingBox bb;
 
     bb.edges[0].first  = pt[2];

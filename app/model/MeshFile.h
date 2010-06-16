@@ -53,6 +53,7 @@ namespace ews {
                 void loadMesh();
                 double getLatOrigin(){return latOrigin;}
                 double getLongOrigin(){return longOrigin;}
+                void updateGlobal(osg::Vec3 v);
 
                 void updateImage(osg::Vec3 v);
 

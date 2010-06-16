@@ -68,10 +68,17 @@ namespace ews {
                                    const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
                                    osg::Vec3 cursor_pos=intersection.getWorldIntersectPoint();
                                    osg::Vec3d world=cursor_pos;
-                                   if(projWGS84)
+                                   if(projWGS84){
                                       projWGS84->calc_geo_coords(cursor_pos.x(),cursor_pos.y(),world.x(),world.y());
+                                      _mf->updateGlobal(world);
 
-                                    _mf->updateImage(cursor_pos);
+
+                                  }else
+                                      _mf->updateGlobal(cursor_pos);
+
+                                   _mf->updateImage(cursor_pos);
+
+
                                 }
                             }
                                 break;

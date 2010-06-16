@@ -78,7 +78,7 @@ namespace ews {
                     it++;
                 }
                 QUrl url;
-                QString fullpath=string(path+reldir+"/"+curr_img.toStdString()).c_str();
+                QString fullpath=string(path+"/"+reldir+"/"+curr_img.toStdString()).c_str();
                 qDebug() << fullpath<<"\n";
                 if(curr_img.size())
                     url.setUrl(fullpath);
@@ -98,8 +98,12 @@ namespace ews {
                     //qDebug()<<"No img at " << v[0] << " " << v[1] << " "<<v[2];
                 }
 
-                emit posChanged(v);
             }
+            void MeshFile::updateGlobal(osg::Vec3 v){
+                emit posChanged(v);
+
+            }
+
             void MeshFile::setShaderOut(int index) {
                 if(shared_shader_out)
                     shared_shader_out->set(index);

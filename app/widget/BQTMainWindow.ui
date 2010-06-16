@@ -137,17 +137,9 @@
     <addaction name="actionProjectWebsite"/>
     <addaction name="actionAbout"/>
    </widget>
-   <widget class="QMenu" name="menuData">
-    <property name="title">
-     <string>Data</string>
-    </property>
-    <addaction name="actionCopy_Images_Names"/>
-    <addaction name="actionOpen_Images"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuItems"/>
    <addaction name="menuHelp"/>
-   <addaction name="menuData"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="windowTitle">
