@@ -26,8 +26,7 @@ set(BQT_ORGANIZATION_NAME "ACFR")
 set(APP_ICON_RC "${CMAKE_CURRENT_SOURCE_DIR}/images/benthicQT.ico")
 # Add to search path our custom scripts
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts;${CMAKE_MODULE_PATH}")
-
-
+subdirs(util/UF-3.2)
 add_definitions("-g")
 #----------------------------------------------------------------------
 # Macro to get the current date, from:
@@ -61,7 +60,7 @@ file(GLOB BQT_PHYS_SRC physics/*.cpp)
 #--------------------------------------------------------------------------------
 # This is the list of source files that need to be compiled
 #--------------------------------------------------------------------------------
-file(GLOB BQT_SRCS main.cpp app/widget/*.cpp app/model/*.cpp app/drawable/*.cpp physics/*.cpp)
+file(GLOB BQT_SRCS main.cpp app/widget/*.cpp app/model/*.cpp app/drawable/*.cpp physics/*.cpp util/*.cpp)
 #--------------------------------------------------------------------------------
 #FFMPEG
 #--------------------------------------------------------------------------------
@@ -313,6 +312,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON) # Adds binary dir.
 include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${BQT_MODULES}
+  util/UF-3.2
+  ${UF_BINARY_DIR}
 )
 
 #--------------------------------------------------------------------------------
@@ -372,7 +373,7 @@ set(ALL_QT_OSG_LIBS
 
 ##message("libs:  ${ALL_QT_OSG_LIBS}")
 
-target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS})
+target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions)
 
 #--------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------

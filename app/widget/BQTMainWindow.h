@@ -56,7 +56,7 @@ namespace ews {
                 
                 /** Overidden to trap polish request for final initialization. */
                 virtual bool event(QEvent* event);
-                
+                 bool eventFilter(QObject * watched, QEvent * event);
                 /** Get the number of milliseconds the rendering timer is set to 
                  * trigger.
                  */
@@ -76,6 +76,7 @@ namespace ews {
                 void stop();
                 void startRecording();
                 void stopRecording();
+                void showContextMenu(const QPoint &p);
 
                 /** Reset simulation state to initial conditions. */
                 void reset();
@@ -116,6 +117,7 @@ namespace ews {
                 enum { MaxRecentFiles = 5 };
                 QAction *recentFileActs[MaxRecentFiles];
                 bool firstRunRecord;
+                QMenu *conMenu;
             };
         }
     }

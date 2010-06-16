@@ -22,6 +22,7 @@
 //#include "SimulationState.h"
 #include <osg/Vec2>
 #include <osg/ref_ptr>
+#include <QDesktopServices>
 #include "BQTDebug.h"
 
 namespace ews {
@@ -59,15 +60,38 @@ namespace ews {
             MeshFile::~MeshFile() {
             }
 
-            void MeshFile::updatePos(osg::Vec3 v)
+            void MeshFile::openCurrentImage()
+            {
+                std::string imgdir_file;
+                char reldir[1024];
+                string path;
+                QStringList list=getFileNames();
+                QStringList::Iterator it = list.begin();
+                while( it != list.end() ) {
+                     path=osgDB::getFilePath(it->toStdString());
+                    imgdir_file=string(path+"/imgpath.txt");
+                    FILE *fp=fopen(imgdir_file.c_str(),"r");
+                    if(fp)
+                        fscanf(fp,"%s\n",reldir);
+                    else
+                        printf("Can't open %s",imgdir_file.c_str());
+                    it++;
+                }
+                QUrl url;
+                QString fullpath=string(path+reldir+"/"+curr_img.toStdString()).c_str();
+                qDebug() << fullpath<<"\n";
+                if(curr_img.size())
+                    url.setUrl(fullpath);
+                QDesktopServices::openUrl(url);
+            }
+            void MeshFile::updateImage(osg::Vec3 v)
             {
                 bbox_map_info info;
                 if(find_closet_img_idx(_tree,v,info)){
-                    QString s;
-                    s=(info.leftname).c_str();
-                    emit imgLabelChanged(s);
-                    // qDebug()<< info.leftname.c_str();
+                    curr_img=(info.leftname).c_str();
+                    emit imgLabelChanged(curr_img);
                 }else{
+                    curr_img="";
                     QString s;
                     s=string("N/A").c_str();
                     emit imgLabelChanged(s);

@@ -47,10 +47,15 @@ namespace ews {
             class MeshFile :  public QObject  {
                 Q_OBJECT
                 Q_PROPERTY(QStringList filenames READ getFileNames WRITE setFileNames)
-                
+            public slots:
+                        void openCurrentImage();
             public:
+                void loadMesh();
+                double getLatOrigin(){return latOrigin;}
+                double getLongOrigin(){return longOrigin;}
 
-                 void loadMesh();
+                void updateImage(osg::Vec3 v);
+
                 /**
                  * Default constructor.
                  * @param parent BarrierSet this Barrier belongs to.
@@ -94,12 +99,30 @@ namespace ews {
                         it++;
                     }
                 }
+                void updateOrigin(){
+                    QStringList list=getFileNames();
+                    QStringList::Iterator it = list.begin();
+                    while( it != list.end() ) {
+                        string path=osgDB::getFilePath(it->toStdString());
+                        FILE *fp=fopen(string(path+"/origin.txt").c_str(),"r");
+                        if(fp){
+                            fscanf(fp,"%lf %lf\n",&latOrigin,&longOrigin);
+                            qDebug() << "Sucessfully loaded shaderout";
+                            fclose(fp);
+                        }else{
+                            latOrigin=0;
+                            longOrigin=0;
+
+                        }
+                        it++;
+                    }
+                }
                 void setFileNames(QStringList files) {
                     filenames = files;
 //                    qDebug() << "SizeFM " << files.size();
                     updateBoxes();
                     updateShaders();
-
+                    updateOrigin();
                     //emit dataChanged();
                 }
             void setShaderOut(int index);
@@ -136,11 +159,13 @@ namespace ews {
                 void posChanged(osg::Vec3);
                 void imgLabelChanged(QString);
 
+
             private slots:
               //  void generatePotential();
                 
             private:
                 Q_DISABLE_COPY(MeshFile)
+                QString curr_img;
 
                 //bool _enabled;
                 QStringList filenames;
@@ -148,6 +173,7 @@ namespace ews {
                 QProgressDialog *progress;
                 osg::Uniform* shared_shader_out;
                 int num_shader_out;
+                double latOrigin, longOrigin;
                  std::vector<string>  shader_names;
             };
         }

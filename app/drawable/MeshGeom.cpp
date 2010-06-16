@@ -54,7 +54,7 @@ namespace ews {
                 addChild(_switch.get());
                 _switch->addChild(_meshGeom.get());
 
-                addEventCallback(new PositionHandler(&_dataModel));
+                addEventCallback(new PositionHandler(&_dataModel,_dataModel.getLatOrigin(),_dataModel.getLongOrigin()));
                 
               updateGeom();
 //                qDebug() << "In contstrt mesh gerom";

@@ -19,6 +19,7 @@
 #include "Barrier.h"
 #include "BarrierEditor.h"
 #include "BarrierTableModel.h"
+#include <QDesktopServices>
 
 #include <QTableView>
 #include <QModelIndex>
@@ -92,7 +93,7 @@ namespace ews {
                 QObject* sender = QObject::sender();
                 if(sender) {
                     char tmp[1024];
-                    sprintf(tmp,"X: %3.2f Y: %3.2f Z: %3.2f",pos[0],pos[1],pos[2]);
+                    sprintf(tmp,"Lat: %3.8f Long: %3.8f Z: %3.2f",pos[0],pos[1],pos[2]);
                     posString=tmp;
                     _ui->label_2->setText(posString);
 

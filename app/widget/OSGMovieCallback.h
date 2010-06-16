@@ -8,7 +8,7 @@
 #include <string.h>
 #include "IVideoStreamer.h"
 #include <osg/Version>
-#if OSG_MIN_VERSION_REQUIRED(2,9,0)  
+#if OPENSCENEGRAPH_MAJOR_VERSION>2 || OPENSCENEGRAPH_MAJOR_VERSION==2&&OPENSCENEGRAPH_MINOR_VERSION>=9
 #define  BufferObject GLBufferObject
 #endif
 

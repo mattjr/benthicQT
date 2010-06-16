@@ -81,7 +81,6 @@ namespace ews {
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720x480()));
                 QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
                 QObject::connect(_ui->actionSet_to_960x540, SIGNAL(triggered()), this, SLOT(resize960x540()));
-
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
 
                 // Setup sync between samplers and plot.
@@ -112,6 +111,14 @@ namespace ews {
                     _ui->actionSetup_Recording->setEnabled(false);
 
                 }
+               // _ui->renderer->
+                _ui->renderer->installEventFilter(this);
+              //  installEventFilter(this);
+                      //  setContextMenuPolicy(Qt::ActionsContextMenu);
+                //_ui->renderer->
+                        //addAction(_ui->actionOpen);
+                conMenu=new QMenu;
+               conMenu->addAction(_ui->actionOpen_Images);
 
                 if(_ui->renderer->movieCallback && OSGVideoStreamer::enabled){
                     OSGVideoStreamer *iv=_ui->renderer->movieCallback->getRecorder(_ui->renderer->_gw);
@@ -165,7 +172,10 @@ namespace ews {
                 QSize diff =fullWin-_ui->renderer->size();
                 return diff+target;
             }
-
+            void EWSMainWindow::showContextMenu(const QPoint &p)
+            {
+                conMenu->popup(p);
+            }
             void EWSMainWindow::reset() {
                 _state->reset();
 
@@ -182,7 +192,17 @@ namespace ews {
                 
                 updateMenusEnabledState();       
             }
-            
+
+            bool EWSMainWindow::eventFilter(QObject * watched, QEvent * event){
+                if(event->type() == QEvent::MouseButtonPress){
+                    if(((QMouseEvent*)event)->button() == Qt::MidButton){
+                        showContextMenu(((QMouseEvent*)event)->globalPos());
+                        return true;
+                    }
+                }
+                return QObject::eventFilter(watched, event);
+            }
+
             /** Detect when we should perform post realization initialization() */
             bool EWSMainWindow::event(QEvent* event) {
                 int retval = QWidget::event(event);
@@ -281,6 +301,7 @@ namespace ews {
                 QApplication::restoreOverrideCursor();
                 setCurrentFile(first);
 
+                QObject::connect(_ui->actionOpen_Images, SIGNAL(triggered()), &_state->getMeshFiles(), SLOT(openCurrentImage()));
 
 
 

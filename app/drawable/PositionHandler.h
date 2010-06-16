@@ -27,6 +27,7 @@
 #include <osgViewer/View>
 #include "BQTDebug.h"
 #include "MeshFile.h"
+#include "auv_map_projection.hpp"
 namespace ews {
     namespace app {
         namespace drawable {
@@ -44,7 +45,9 @@ namespace ews {
                 
             public:
                 
-                PositionHandler(MeshFile *mf) : GUIEventHandler(), activeDragger(NULL),_mf(mf) { }
+                PositionHandler(MeshFile *mf,double latOrigin,double longOrigin) : GUIEventHandler(), activeDragger(NULL),_mf(mf) {
+                    projWGS84 =new Local_WGS84_TM_Projection(latOrigin,longOrigin);
+                }
                 
                 /** Handle GUI event. */
                 virtual bool handle(const GUIEventAdapter& ea,
@@ -64,7 +67,11 @@ namespace ews {
                                     
                                    const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
                                    osg::Vec3 cursor_pos=intersection.getWorldIntersectPoint();
-                                    _mf->updatePos(cursor_pos);
+                                   osg::Vec3d world=cursor_pos;
+                                   if(projWGS84)
+                                      projWGS84->calc_geo_coords(cursor_pos.x(),cursor_pos.y(),world.x(),world.y());
+
+                                    _mf->updateImage(cursor_pos);
                                 }
                             }
                                 break;
@@ -99,6 +106,7 @@ namespace ews {
                 PointerInfo pointerInfo;
                 Dragger* activeDragger;
                 MeshFile *_mf;
+                Local_WGS84_TM_Projection *projWGS84;
 
             };
             

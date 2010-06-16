@@ -25,20 +25,20 @@
 #include <string>
 #include <sstream>
 
-
+#define BBOX_DATA_TYPE double
 template <std::size_t dimensions>
 struct RStarBoundingBox {
 
 	// edges[x].first is low value, edges[x].second is high value
-	std::pair<int, int> edges[dimensions];
+        std::pair<BBOX_DATA_TYPE, BBOX_DATA_TYPE> edges[dimensions];
 	
 	// forces all edges to their extremes so we can stretch() it
 	void reset()
 	{
 		for (std::size_t axis = 0; axis < dimensions; axis++)
 		{
-			edges[axis].first = std::numeric_limits<int>::max();
-			edges[axis].second = std::numeric_limits<int>::min();
+                        edges[axis].first = std::numeric_limits<BBOX_DATA_TYPE>::max();
+                        edges[axis].second = std::numeric_limits<BBOX_DATA_TYPE>::min();
 		}
 	}
 	
@@ -76,9 +76,9 @@ struct RStarBoundingBox {
 	}
 	
 	// the sum of all deltas between edges
-	inline int edgeDeltas() const
+        inline BBOX_DATA_TYPE edgeDeltas() const
 	{
-		int distance = 0;
+                BBOX_DATA_TYPE distance = 0;
 		for (std::size_t axis = 0; axis < dimensions; axis++)
 			distance += edges[axis].second - edges[axis].first;
 			
@@ -127,10 +127,10 @@ struct RStarBoundingBox {
 		for (std::size_t axis = 0; area && axis < dimensions; axis++)
 		{
 			// this makes it easier to understand
-			const int x1 = edges[axis].first;
-			const int x2 = edges[axis].second;
-			const int y1 = bb.edges[axis].first;
-			const int y2 = bb.edges[axis].second;
+                        const BBOX_DATA_TYPE x1 = edges[axis].first;
+                        const BBOX_DATA_TYPE x2 = edges[axis].second;
+                        const BBOX_DATA_TYPE y1 = bb.edges[axis].first;
+                        const BBOX_DATA_TYPE y2 = bb.edges[axis].second;
 		
 			// left edge outside left edge
 			if (x1 < y1)

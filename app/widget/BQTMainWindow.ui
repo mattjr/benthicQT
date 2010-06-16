@@ -101,7 +101,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -137,9 +137,17 @@
     <addaction name="actionProjectWebsite"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuData">
+    <property name="title">
+     <string>Data</string>
+    </property>
+    <addaction name="actionCopy_Images_Names"/>
+    <addaction name="actionOpen_Images"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuItems"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuData"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="windowTitle">
@@ -304,6 +312,16 @@
    </property>
    <property name="toolTip">
     <string>Set to 960x540</string>
+   </property>
+  </action>
+  <action name="actionCopy_Images_Names">
+   <property name="text">
+    <string>Copy Images Names</string>
+   </property>
+  </action>
+  <action name="actionOpen_Images">
+   <property name="text">
+    <string>Open Images</string>
    </property>
   </action>
  </widget>
