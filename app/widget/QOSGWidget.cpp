@@ -157,7 +157,7 @@ namespace ews {
             void QOSGWidget::computeHomePosition() {
                 //using ews::app::drawable::CameraController;
                 
-                osgGA::MatrixManipulator* mat = getCameraManipulator();
+                MANIP_INHERIT* mat = getCameraManipulator();
                /* CameraController* ctrl;
                 if(ctrl = dynamic_cast<CameraController*> (mat)) {
                     ctrl->computeHomePosition();

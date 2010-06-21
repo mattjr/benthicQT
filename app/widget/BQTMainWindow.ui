@@ -123,6 +123,7 @@
      <string>Recording</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionSavedCamera"/>
     <addaction name="actionSetup_Recording"/>
     <addaction name="actionStart_Recording"/>
     <addaction name="actionStop_Recording"/>
@@ -314,6 +315,20 @@
   <action name="actionOpen_Images">
    <property name="text">
     <string>Open Images</string>
+   </property>
+  </action>
+  <action name="actionSavedCamera">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Saved Camera Position Dialog</string>
+   </property>
+   <property name="toolTip">
+    <string>Saved Camera Position</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
    </property>
   </action>
  </widget>

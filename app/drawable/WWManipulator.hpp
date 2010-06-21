@@ -13,6 +13,14 @@
 
 #ifndef WORLDWINDMANIPULATORNEW
 #define WORLDWINDMANIPULATORNEW 1
+#include <osg/Version>
+#if OPENSCENEGRAPH_MAJOR_VERSION>2 || OPENSCENEGRAPH_MAJOR_VERSION==2&&OPENSCENEGRAPH_MINOR_VERSION>=9
+#define MANIP_INHERIT osgGA::CameraManipulator
+#include <osgGA/CameraManipulator>
+#else
+#define MANIP_INHERIT osgGA::MatrixManipulator
+#include <osgGA/MatrixManipulator>
+#endif
 
 #include <osgGA/MatrixManipulator>
 #include <osg/Quat>
@@ -23,7 +31,7 @@
 using namespace osgGA;
 using namespace osg;
 
-class WorldWindManipulatorNew : public MatrixManipulator
+class WorldWindManipulatorNew : public MANIP_INHERIT
 {
     public:
   WorldWindManipulatorNew(osgViewer::Viewer *viewer,osgText::Text *text, bool invertMouse,osg::Matrixd *mat);

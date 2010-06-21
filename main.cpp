@@ -125,6 +125,8 @@ int main(int argc, char *argv[]) {
     w.show();
     
     splash.finish(&w);
+    if (QApplication::arguments().size() > 1)
+            w.loadFile(QApplication::arguments().mid(1,-1));
 
 
     return a.exec();

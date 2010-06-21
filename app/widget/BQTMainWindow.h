@@ -82,6 +82,7 @@ namespace ews {
                 void reset();
                 /** Show the preferences dialog. */
                 void preferences();
+                void saved_camera_dialog();
                 /** Show the about window. */
                 void about();
                 /** Request platform to open url to project website. */
@@ -93,11 +94,12 @@ namespace ews {
                 void updateOverlayWidget(MeshFile &data);
                 bool runRecDlg();
                 void toggleRecGui();
+                void loadFile(QStringList files);
+
             private slots:
                 /** Do any final connecting of components after rest of application is connected.*/
                 void init();
                 void openRecentFile();
-                void loadFile(QStringList files);
                 /** Update the enabled state of menu items.*/
                 void updateMenusEnabledState();
                 void resize640(){resize(computerWindowSizeForRenderSize(QSize(640,480)));}

@@ -155,7 +155,7 @@ private:
 
 void set_libx264Opt(AVCodecContext *videoContext);
 
-#if LIBAVFORMAT_VERSION_MAJOR < 52
+#if LIBAVFORMAT_VERSION_MAJOR <= 52
 #define avformat_right_guess_version guess_stream_format
 #else
 #define avformat_right_guess_version av_guess_format

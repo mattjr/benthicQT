@@ -34,6 +34,7 @@
 #include "PositionHandler.h"
 #include <iostream>
 #include "GLPreCompile.h"
+#include "SavedCameraWidget.h"
 #include "RecordDialog.h"
 
 namespace ews {
@@ -84,8 +85,9 @@ namespace ews {
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720x480()));
                 QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
                 QObject::connect(_ui->actionSet_to_960x540, SIGNAL(triggered()), this, SLOT(resize960x540()));
+                QObject::connect(_ui->actionSavedCamera, SIGNAL(triggered()), this, SLOT(saved_camera_dialog()));
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
-
+_ui->actionSavedCamera->setEnabled(true);
                 // Setup sync between samplers and plot.
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerAdded(int,PointSampler*)), 
                 //               _ui->amplitudePlot, SLOT(addSampleSource(int, PointSampler*)));
@@ -236,6 +238,11 @@ namespace ews {
                 p->show();
             }
             
+            /** Prefs dialog. */
+            void EWSMainWindow::saved_camera_dialog() {
+                SavedCameraWidget* s = new SavedCameraWidget(this);
+                s->show();
+            }
             /** Show the about box. */
             void EWSMainWindow::about() {
                 using ews::util::loadTextResource;
@@ -261,7 +268,7 @@ namespace ews {
                 QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
                 QString selectedFilter;
 
-                QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive)",&selectedFilter,options);
+                QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive *.osgb *.osga)",&selectedFilter,options);
 
                 loadFile( files);
                 setInterFrameDelay(fd);
@@ -366,7 +373,7 @@ namespace ews {
             {
                 QFileInfo p(fullFileName);
                 QStringList dirs = p.path().split( "/");
-                return dirs[dirs.size()-1]+"/"+p.fileName();
+                return dirs[dirs.size()-2]+" ("+p.fileName()+")";
             }
              void EWSMainWindow::updateOverlayWidget(MeshFile &data){
                           overlay->clear();
