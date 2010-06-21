@@ -52,7 +52,7 @@ namespace ews {
                 // Config actions
                 //_ui->actionPause->setEnabled(false);
                 _ui->actionOpen->setEnabled(true);
-                
+                setInterFrameDelay(15);
 
                 _ui->menuItems->setEnabled(OSGVideoStreamer::enabled);
                 // Config barrier editor.
@@ -65,6 +65,9 @@ namespace ews {
                 _sceneRoot = new SceneRoot(this);
                 // renderer is an instance (the only one) of QOSGWidget
                 _ui->renderer->setSceneData(_sceneRoot);
+                _ui->renderer->getDatabasePager()->setDrawablePolicy(osgDB::DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS);
+                _ui->renderer->getDatabasePager()->setDoPreCompile(true);
+
                 osg::Vec3 weights(6.24,0.79,0.3);
                 int num_shader_out=2;
                 overlay=new QComboBox;
