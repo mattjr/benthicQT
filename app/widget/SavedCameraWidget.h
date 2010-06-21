@@ -2,6 +2,7 @@
 #define SAVEDCAMERAWIDGET_H
 
 #include <QDockWidget>
+#include "WWManipulator.hpp"
 
 namespace Ui {
     class SavedCameraWidget;
@@ -10,7 +11,7 @@ namespace Ui {
 class SavedCameraWidget : public QDockWidget {
     Q_OBJECT
 public:
-    SavedCameraWidget(QWidget *parent = 0);
+    SavedCameraWidget(WorldWindManipulatorNew *manip,QWidget *parent = 0);
     ~SavedCameraWidget();
 
 protected:
@@ -18,6 +19,10 @@ protected:
 
 private:
     Ui::SavedCameraWidget *ui;
+    WorldWindManipulatorNew *_manip;
+
+private slots:
+    void on_addSaved_clicked();
 };
 
 #endif // SAVEDCAMERAWIDGET_H
