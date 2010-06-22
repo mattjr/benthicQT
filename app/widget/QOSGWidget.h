@@ -27,7 +27,8 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include "OSGMovieCallback.h"
-
+#include "AnimationPathPlayer.hpp"
+#include "WWManipulator.hpp"
 namespace ews {
     namespace app {
         namespace widget {
@@ -83,7 +84,9 @@ namespace ews {
                 virtual void homePosition();
                 void computeHomePosition();
                 WindowCaptureCallback *movieCallback;
+                MyAnimationPath *_ap;
 
+                void switchToFromAniManip();
             public slots:
                 void startRecording();
                 void stopRecording();
@@ -101,6 +104,8 @@ namespace ews {
                 virtual void closeEvent( QCloseEvent * event );
                 virtual void destroyEvent( bool destroyWindow = true, bool destroySubWindows = true);
                 virtual void initializeGL();
+                WorldWindManipulatorNew *_wwManip;
+                AnimationPathPlayer *_animationManip;
             public:
                 osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 

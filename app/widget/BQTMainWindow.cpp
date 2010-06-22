@@ -240,19 +240,11 @@ _ui->actionSavedCamera->setEnabled(true);
             
             /** Prefs dialog. */
             void EWSMainWindow::saved_camera_dialog() {
-                MANIP_INHERIT* mat = _ui->renderer->getCameraManipulator();
-               /* CameraController* ctrl;
-                if(ctrl = dynamic_cast<CameraController*> (mat)) {
-                    ctrl->computeHomePosition();
-                }*/
-                WorldWindManipulatorNew *ctrl;
-                 if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
-                     SavedCameraWidget* s = new SavedCameraWidget(ctrl,this);
-                     s->setFloating(true);
-                     s->show();
-                 }else{
-                     _ui->actionSavedCamera->setEnabled(false);
-                 }
+
+                SavedCameraWidget* s = new SavedCameraWidget(_ui->renderer,this);
+                s->setFloating(true);
+                s->show();
+
 
             }
             /** Show the about box. */

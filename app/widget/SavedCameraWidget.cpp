@@ -2,11 +2,12 @@
 #include "ui_SavedCameraWidget.h"
 #include <stdio.h>
 
-SavedCameraWidget::SavedCameraWidget(WorldWindManipulatorNew *manip,QWidget *parent) :
-    QDockWidget(parent),_manip(manip),
-    ui(new Ui::SavedCameraWidget)
+SavedCameraWidget::SavedCameraWidget(ews::app::widget::QOSGWidget *qosgWidget,QWidget *parent) :
+    QDockWidget(parent),_qosgWidget(qosgWidget),
+    ui(new Ui::SavedCameraWidget),_maxTime(0.0)
 {
     ui->setupUi(this);
+    _ap = _qosgWidget->_ap;
 }
 
 SavedCameraWidget::~SavedCameraWidget()
@@ -28,9 +29,35 @@ void SavedCameraWidget::changeEvent(QEvent *e)
 
 void SavedCameraWidget::on_addSaved_clicked()
 {
-    osg::Vec3 pos=_manip->getTargetCenter();
-    char tmp[1024];
-    sprintf(tmp,"Lat: %3.8f Long: %3.8f Z: %3.2f",pos[0],pos[1],pos[2]);
-    QString posStr=tmp;
-    ui->listWidget->addItem(posStr);
+    WorldWindManipulatorNew *ctrl;
+    if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+
+        osg::Vec3 pos=ctrl->getTargetCenter();
+        MyAnimationPath::ControlPoint cp(ctrl->getTargetCenter(),ctrl->getTargetOrientation(),
+                                         ctrl->getTargetDistance(),ctrl->getTargetTilt());
+        _ap->insert(_maxTime++,cp);
+    }
+    updateList();
+}
+
+void SavedCameraWidget::updateList(){
+    MyAnimationPath::TimeControlPointMap &tcpm=_ap->getTimeControlPointMap();
+    MyAnimationPath::TimeControlPointMap::iterator iter;
+    ui->listWidget->clear();
+
+    for(iter=tcpm.begin(); iter != tcpm.end(); iter++){
+           QListWidgetItem *qtItem = new QListWidgetItem();
+           char tmp[1024];
+           osg::Vec3 pos=iter->second.getCenter();
+           sprintf(tmp,"Time %.1f X: %3.8f Y: %3.8f Z: %3.2f",iter->first,pos[0],pos[1],pos[2]);
+           QString posStr=tmp;
+           qtItem->setText(posStr);
+           ui->listWidget->addItem(qtItem);
+    }
+}
+
+void SavedCameraWidget::on_pushButton_2_clicked()
+{
+    _qosgWidget->switchToFromAniManip();
+
 }

@@ -2,7 +2,8 @@
 #define SAVEDCAMERAWIDGET_H
 
 #include <QDockWidget>
-#include "WWManipulator.hpp"
+#include "QOSGWidget.h"
+#include <osg/AnimationPath>
 
 namespace Ui {
     class SavedCameraWidget;
@@ -11,17 +12,22 @@ namespace Ui {
 class SavedCameraWidget : public QDockWidget {
     Q_OBJECT
 public:
-    SavedCameraWidget(WorldWindManipulatorNew *manip,QWidget *parent = 0);
+    SavedCameraWidget(ews::app::widget::QOSGWidget *qosgWidget,QWidget *parent = 0);
     ~SavedCameraWidget();
 
 protected:
     void changeEvent(QEvent *e);
+    void updateList();
 
 private:
     Ui::SavedCameraWidget *ui;
-    WorldWindManipulatorNew *_manip;
+    ews::app::widget::QOSGWidget *_qosgWidget;
+    MyAnimationPath *_ap;
+    double _maxTime;
+
 
 private slots:
+    void on_pushButton_2_clicked();
     void on_addSaved_clicked();
 };
 

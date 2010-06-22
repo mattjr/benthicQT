@@ -29,7 +29,6 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/MatrixTransform>
 
-#include "WWManipulator.hpp"
 #include "BQTDebug.h"
 
 namespace ews {
@@ -58,11 +57,13 @@ namespace ews {
                 setThreadingModel(osgViewer::Viewer::SingleThreaded);
                 osg::Matrixd *mat=NULL;
                 bool inverseMouse=false;
-                WorldWindManipulatorNew *wwManip = new WorldWindManipulatorNew(this,
+                _wwManip = new WorldWindManipulatorNew(this,
                                                                        NULL,
                                                                        inverseMouse,
                                                                        mat);
-                setCameraManipulator(wwManip);//new ws::app::drawable::CameraController);
+                setCameraManipulator(_wwManip);//new ws::app::drawable::CameraController);
+                _ap=new MyAnimationPath;
+                _animationManip=new AnimationPathPlayer(_ap);
                 
 #if defined(QT_DEBUG)                      
                 addEventHandler(new osgViewer::StatsHandler);
@@ -169,6 +170,22 @@ namespace ews {
                     ctrl->computeHomePosition();
                 }
             }
+
+            void QOSGWidget::switchToFromAniManip(){
+                MANIP_INHERIT* mat = getCameraManipulator();
+                WorldWindManipulatorNew *ctrl;
+                AnimationPathPlayer *ani_manip;
+                 if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
+                   setCameraManipulator(_animationManip);
+                }else{
+                    if(ani_manip = dynamic_cast<AnimationPathPlayer*> (mat))
+                        setCameraManipulator(_wwManip);
+                }
+            }
+
+            /*void QOSGWidget::startPlayBack(){
+               _animationManip->
+            }*/
             
             void QOSGWidget::homePosition() {
                 // HACK: Happen to know that the CameraController responds
