@@ -95,7 +95,18 @@ class WorldWindManipulatorNew : public MANIP_INHERIT
 
         /** Get the center of the trackball. */
         const osg::Vec3d& getCenter() const { return _center; }
+        void moveTo(const osg::Vec3d& center, const osg::Quat& orientation, const double distance, const double tilt){
+            _center=center;
+            m_Orientation=orientation;
+            _distance=distance;
+            _tilt=tilt;
 
+            _targetCenter=center;
+            _targetOrientation=orientation;
+            _targetDistance=distance;
+            _targetTilt=tilt;
+
+        }
         /** Set the rotation of the trackball. */
         void setRotation(const osg::Quat& rotation) { m_Orientation = rotation; }
 

@@ -318,6 +318,9 @@
    </property>
   </action>
   <action name="actionSavedCamera">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="enabled">
     <bool>false</bool>
    </property>

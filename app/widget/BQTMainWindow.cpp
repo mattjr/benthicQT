@@ -17,7 +17,6 @@
  */
 
 #include "BQTMainWindow.h"
-
 #include "BarrierEditor.h"
 
 #include "DrawableFactory.h"
@@ -85,7 +84,7 @@ namespace ews {
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720x480()));
                 QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
                 QObject::connect(_ui->actionSet_to_960x540, SIGNAL(triggered()), this, SLOT(resize960x540()));
-                QObject::connect(_ui->actionSavedCamera, SIGNAL(triggered()), this, SLOT(saved_camera_dialog()));
+                QObject::connect(_ui->actionSavedCamera, SIGNAL(triggered()), this, SLOT(toggle_saved_camera_dialog()));
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
 _ui->actionSavedCamera->setEnabled(true);
                 // Setup sync between samplers and plot.
@@ -105,7 +104,7 @@ _ui->actionSavedCamera->setEnabled(true);
                 }
                 separatorAct = _ui->menuFile->addSeparator();
                 _ui->actionStop_Recording->setEnabled(false);
-
+                _saved_camera_dialog = new SavedCameraWidget(_ui->renderer);
                 updateRecentFileActions();
                 setWindowTitle(tr("BenthicQT"));
                 if(!OSGVideoStreamer::enabled){
@@ -142,6 +141,8 @@ _ui->actionSavedCamera->setEnabled(true);
             
             EWSMainWindow::~EWSMainWindow() {
                 _ui->renderer->setSceneData(NULL);
+                _saved_camera_dialog->close();
+                delete _saved_camera_dialog;
                 delete _ui;
             }
             
@@ -239,11 +240,16 @@ _ui->actionSavedCamera->setEnabled(true);
             }
             
             /** Prefs dialog. */
-            void EWSMainWindow::saved_camera_dialog() {
+            void EWSMainWindow::toggle_saved_camera_dialog() {
 
-                SavedCameraWidget* s = new SavedCameraWidget(_ui->renderer,this);
-                s->setFloating(true);
-                s->show();
+
+               //s->setFloating(true);
+                if(_ui->actionSavedCamera->isChecked()){
+                    addDockWidget(Qt::RightDockWidgetArea, _saved_camera_dialog);
+                    _saved_camera_dialog->show();
+                }
+                else
+                    removeDockWidget(_saved_camera_dialog);
 
 
             }

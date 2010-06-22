@@ -28,6 +28,8 @@
 #include <QComboBox>
 #include "SimulationState.h"
 #include <QFileDialog>
+#include "SavedCameraEditor.h"
+#include "SavedCameraWidget.h"
 
 /** Forward declaration of generated UI class. */
 /** @cond */
@@ -82,7 +84,7 @@ namespace ews {
                 void reset();
                 /** Show the preferences dialog. */
                 void preferences();
-                void saved_camera_dialog();
+                void toggle_saved_camera_dialog();
                 /** Show the about window. */
                 void about();
                 /** Request platform to open url to project website. */
@@ -119,6 +121,7 @@ namespace ews {
                 enum { MaxRecentFiles = 5 };
                 QAction *recentFileActs[MaxRecentFiles];
                 bool firstRunRecord;
+                SavedCameraWidget* _saved_camera_dialog;
                 QMenu *conMenu;
             };
         }

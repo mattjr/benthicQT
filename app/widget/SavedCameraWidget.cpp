@@ -1,5 +1,7 @@
 #include "SavedCameraWidget.h"
 #include "ui_SavedCameraWidget.h"
+#include <QtCore/QDebug>
+
 #include <stdio.h>
 
 SavedCameraWidget::SavedCameraWidget(ews::app::widget::QOSGWidget *qosgWidget,QWidget *parent) :
@@ -59,5 +61,30 @@ void SavedCameraWidget::updateList(){
 void SavedCameraWidget::on_pushButton_2_clicked()
 {
     _qosgWidget->switchToFromAniManip();
+
+}
+
+void SavedCameraWidget::on_listWidget_currentRowChanged(int currentRow)
+{
+    double timeProxy=currentRow;
+    osg::Matrix mat;
+    if (_ap->getTimeControlPointMap().count(timeProxy)){
+        MyAnimationPath::ControlPoint cp=_ap->getTimeControlPointMap()[timeProxy];
+
+        _ap->getMatrix(timeProxy,mat);
+        WorldWindManipulatorNew *ctrl;
+        if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+            ctrl->moveTo(cp.getCenter(),cp.getOrientation(),cp.getDistance(),cp.getTilt());
+      /*              ctrl->setCenter(cp.getCenter());
+            ctrl->setTargetOrientation(cp.getOrientation());
+            ctrl->setTargetDistance(cp.getDistance());
+            ctrl->setTargetTilt(cp.getTilt());*/
+        }
+    }
+    qDebug() << "Current row " << currentRow <<"\n";
+}
+
+void SavedCameraWidget::on_deleteButton_clicked()
+{
 
 }
