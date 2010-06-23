@@ -29,6 +29,7 @@
 #include "MeshFile.h"
 #include "DrawableQtAdapter.h"
 #include <QErrorMessage>
+#include "ScreenTools.h"
 namespace ews {
     /**
      * Parent namespace for GUI-related code.
@@ -78,6 +79,7 @@ namespace ews {
                 ref_ptr<Switch> _switch;
                 ref_ptr<PositionAttitudeTransform> _meshGeom;
                 QErrorMessage errorD;
+                ref_ptr<Switch> _mapSwitch;
             };
         }
     }

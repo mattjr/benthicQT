@@ -77,7 +77,7 @@ namespace ews {
                  */
                 virtual void paintGL();
                 
-                
+                WorldWindManipulatorNew * getWWManip(){return _wwManip;}
                 /**
                  * Resets the camera to its original "home" position.
                  */

@@ -81,7 +81,7 @@ void SavedCameraWidget::on_listWidget_currentRowChanged(int currentRow)
             ctrl->setTargetTilt(cp.getTilt());*/
         }
     }
-    qDebug() << "Current row " << currentRow <<"\n";
+  //  qDebug() << "Current row " << currentRow <<"\n";
 }
 
 void SavedCameraWidget::on_deleteButton_clicked()

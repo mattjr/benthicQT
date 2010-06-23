@@ -24,6 +24,7 @@
 #include <osg/ref_ptr>
 #include <QDesktopServices>
 #include "BQTDebug.h"
+#include "BQTMainWindow.h"
 
 namespace ews {
     namespace app {
@@ -33,7 +34,7 @@ namespace ews {
         namespace model {
 
             
-            MeshFile::MeshFile()
+            MeshFile::MeshFile(QOSGWidget *renderer): _renderer(renderer)
                     //            : QObject(parent)
             {
                 //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));
@@ -46,6 +47,7 @@ namespace ews {
                 shader_names.push_back("Label");
                 shader_names.push_back("Overlay");
                 shader_names.push_back("Shaded");
+                //_manip=
 
             }
             

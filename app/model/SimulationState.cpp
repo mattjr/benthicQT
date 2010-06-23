@@ -25,7 +25,7 @@ namespace ews {
             
             SimulationState::SimulationState(QObject * parent) 
             : QObject(parent),
-            _barriers(this) {
+            _barriers(this),_mesh_files(NULL) {
                 // We need to forward/create objectAdded events
                 // from the BarrierSet.
                 

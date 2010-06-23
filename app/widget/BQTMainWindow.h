@@ -28,7 +28,6 @@
 #include <QComboBox>
 #include "SimulationState.h"
 #include <QFileDialog>
-#include "SavedCameraEditor.h"
 #include "SavedCameraWidget.h"
 
 /** Forward declaration of generated UI class. */

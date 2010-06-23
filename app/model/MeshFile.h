@@ -33,11 +33,12 @@ using osg::ref_ptr;
 #include "Bboxes.hpp"
 #include <osg/Uniform>
 #include <QProgressDialog>
+#include "QOSGWidget.h"
 namespace ews {
     namespace app {
         namespace model {
             using osg::Vec2;
-
+            using namespace ews::app::widget;
                         
             
             /**
@@ -54,14 +55,15 @@ namespace ews {
                 double getLatOrigin(){return latOrigin;}
                 double getLongOrigin(){return longOrigin;}
                 void updateGlobal(osg::Vec3 v);
-
+                QOSGWidget * getRenderer(){return _renderer;}
+                void setRenderer(QOSGWidget *r){_renderer=r;}
                 void updateImage(osg::Vec3 v);
 
                 /**
                  * Default constructor.
                  * @param parent BarrierSet this Barrier belongs to.
                  */
-                explicit MeshFile();
+                explicit MeshFile(QOSGWidget *render);
                 
                 virtual ~MeshFile();
 
@@ -176,6 +178,7 @@ namespace ews {
                 int num_shader_out;
                 double latOrigin, longOrigin;
                  std::vector<string>  shader_names;
+                 QOSGWidget *_renderer;
             };
         }
     }

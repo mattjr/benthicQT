@@ -44,7 +44,7 @@ namespace ews {
             
             /** Primary constructor. */
             MeshGeom::MeshGeom(MeshFile& dataModel)
-            : DrawableQtAdapter(), _dataModel(dataModel), _switch(new Switch),
+            : DrawableQtAdapter(), _dataModel(dataModel), _switch(new Switch),_mapSwitch(new Switch),
             _meshGeom(new PositionAttitudeTransform)
        {
                 
@@ -57,6 +57,15 @@ namespace ews {
                 addEventCallback(new PositionHandler(&_dataModel,_dataModel.getLatOrigin(),_dataModel.getLongOrigin()));
                 
               updateGeom();
+              osg::Vec4 color =  _dataModel.getRenderer()->getCamera()->getClearColor();
+              color.r() *= 0.5f;
+              color.g() *= 0.5f;
+              color.b() *= 0.5f;
+
+             _mapSwitch->addChild(createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
+                                                  _dataModel.getRenderer()->width(),_dataModel.getRenderer()->height()));
+             _mapSwitch->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF );
+              _switch->addChild(_mapSwitch);
 //                qDebug() << "In contstrt mesh gerom";
                 // Callback to detect when we've been moved
                 // and update the databmodel.

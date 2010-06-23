@@ -303,6 +303,8 @@ _ui->actionSavedCamera->setEnabled(true);
                 _state->getMeshFiles().getPBarD()->show();
                 //  sseh->setShaderOutUniform(_state->getMeshFiles().getShaderOutUniform());
                 _state->getMeshFiles().setFileNames(files);
+                _state->getMeshFiles().setRenderer(_ui->renderer);
+
                 _state->emitSignalsForLoad();
 
                 _ui->renderer->computeHomePosition();
