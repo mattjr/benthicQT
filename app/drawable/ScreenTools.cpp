@@ -133,9 +133,9 @@ void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& 
 	 
 	    osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
 
-	    if(texture && texshow){
+/*	    if(texture && texshow){
 	      texshow->show(texture);
-	    }
+            }*/
 	  unsigned int i1 = indices[0];
 	  unsigned int i2 = indices[1];
 	  unsigned int i3 = indices[2];

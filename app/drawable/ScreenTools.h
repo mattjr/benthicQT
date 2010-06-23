@@ -17,6 +17,7 @@
 #include <osg/MatrixTransform>
 #include <osg/PolygonMode>
 #include <osg/CullFace>
+#include "MeshFile.h"
 #include <stdio.h>
 using namespace std;
 extern osg::Geode* measure_geode;
@@ -283,10 +284,10 @@ protected:
 };
 
 class PickHandler : public osgGA::GUIEventHandler {
-public: 
 
-  PickHandler(tex_show_box *texshow,osg::Group *group=NULL):
-    texshow(texshow),measure_anchor(NULL),group(group),measure_anchored(false),measure_added(false){
+public: 
+  PickHandler(ews::app::model::MeshFile *mf,osg::Group *group=NULL):
+    _mf(mf),measure_anchor(NULL),group(group),measure_anchored(false),measure_added(false){
     measureGeom=new osg::Geometry();
     measureGeom->setDataVariance(osg::Object::DYNAMIC);
 
@@ -353,7 +354,7 @@ public:
   virtual void pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea);
 
 protected:
-  tex_show_box  *texshow;
+  ews::app::model::MeshFile  *_mf;
   osg::Vec3Array *measure_vertices;
   osg::Vec3 *measure_anchor;
   osg::Geometry *measureGeom;
