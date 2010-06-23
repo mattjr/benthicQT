@@ -99,6 +99,7 @@ namespace ews {
 
             private slots:
                 /** Do any final connecting of components after rest of application is connected.*/
+                void on_actionMesurement_Tool_triggered();
                 void init();
                 void openRecentFile();
                 /** Update the enabled state of menu items.*/

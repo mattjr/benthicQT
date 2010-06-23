@@ -35,7 +35,7 @@
 #include "GLPreCompile.h"
 #include "SavedCameraWidget.h"
 #include "RecordDialog.h"
-
+#include "ScreenTools.h"
 namespace ews {
     namespace app {
         namespace widget {
@@ -453,3 +453,8 @@ namespace ews {
     }
 }
 
+
+void ews::app::widget::EWSMainWindow::on_actionMesurement_Tool_triggered()
+{
+    measuring_tool_on=_ui->actionMesurement_Tool->isChecked();
+}

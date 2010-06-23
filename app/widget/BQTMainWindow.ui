@@ -181,6 +181,7 @@
    <addaction name="actionStart_Recording"/>
    <addaction name="actionStop_Recording"/>
    <addaction name="separator"/>
+   <addaction name="actionMesurement_Tool"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -353,6 +354,20 @@
    </property>
    <property name="toolTip">
     <string>Toggle Minimap</string>
+   </property>
+  </action>
+  <action name="actionMesurement_Tool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Mesurement Tool</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Mesurement Tool</string>
    </property>
   </action>
  </widget>

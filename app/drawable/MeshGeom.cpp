@@ -56,8 +56,9 @@ namespace ews {
                 _switch->addChild(_meshGeom.get());
 
                 addEventCallback(new PositionHandler(&_dataModel,_dataModel.getLatOrigin(),_dataModel.getLongOrigin()));
-                
               updateGeom();
+              addEventCallback(new PickHandler(NULL,_meshGeom.get()));
+
               osg::Vec4 color =  _dataModel.getRenderer()->getCamera()->getClearColor();
               color.r() *= 0.5f;
               color.g() *= 0.5f;
