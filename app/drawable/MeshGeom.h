@@ -64,6 +64,7 @@ namespace ews {
             public slots:
                 /** Recompute geometric representation to match data model. */
                 void updateGeom();
+
                 
             protected:
                 /** Protected to enforce use with ref_ptr. */
@@ -79,7 +80,6 @@ namespace ews {
                 ref_ptr<Switch> _switch;
                 ref_ptr<PositionAttitudeTransform> _meshGeom;
                 QErrorMessage errorD;
-                ref_ptr<Switch> _mapSwitch;
             };
         }
     }

@@ -50,14 +50,17 @@ namespace ews {
                 Q_PROPERTY(QStringList filenames READ getFileNames WRITE setFileNames)
             public slots:
                         void openCurrentImage();
+                void switchMinimap(bool enabled);
+;
             public:
                 void loadMesh();
                 double getLatOrigin(){return latOrigin;}
                 double getLongOrigin(){return longOrigin;}
                 void updateGlobal(osg::Vec3 v);
                 QOSGWidget * getRenderer(){return _renderer;}
-                void setRenderer(QOSGWidget *r){_renderer=r;}
+                void setRenderer(QOSGWidget *r){_renderer=r;} 
                 void updateImage(osg::Vec3 v);
+                osg::ref_ptr<osg::Switch> _mapSwitch;
 
                 /**
                  * Default constructor.
@@ -154,6 +157,7 @@ namespace ews {
                // void dataChanged();
                 //void potentialChanged();
                 void loadNewMeshes(MeshFile *);
+                void enableMinimap(bool);
 
                 /**
                  * General signal for case when number of items in the
@@ -179,6 +183,7 @@ namespace ews {
                 double latOrigin, longOrigin;
                  std::vector<string>  shader_names;
                  QOSGWidget *_renderer;
+
             };
         }
     }

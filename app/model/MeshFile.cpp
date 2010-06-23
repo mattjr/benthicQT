@@ -106,6 +106,16 @@ namespace ews {
 
             }
 
+            void MeshFile::switchMinimap(bool enabled){
+                    if(enabled) {
+                        _mapSwitch->setAllChildrenOn();
+                    }
+                    else {
+                        _mapSwitch->setAllChildrenOff();
+                    }
+
+            }
+
             void MeshFile::setShaderOut(int index) {
                 if(shared_shader_out)
                     shared_shader_out->set(index);

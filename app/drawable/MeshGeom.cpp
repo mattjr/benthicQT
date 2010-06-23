@@ -44,11 +44,12 @@ namespace ews {
             
             /** Primary constructor. */
             MeshGeom::MeshGeom(MeshFile& dataModel)
-            : DrawableQtAdapter(), _dataModel(dataModel), _switch(new Switch),_mapSwitch(new Switch),
+            : DrawableQtAdapter(), _dataModel(dataModel), _switch(new Switch),
             _meshGeom(new PositionAttitudeTransform)
        {
                 
 //qDebug() << " In Mesh Geom const";
+         //       QObject::connect(_dataModel, SIGNAL(enableMinimap (bool)), this, SLOT(setEnabledMinimap()));
 
                 _switch->setNewChildDefaultValue(true);
                 addChild(_switch.get());
@@ -61,11 +62,11 @@ namespace ews {
               color.r() *= 0.5f;
               color.g() *= 0.5f;
               color.b() *= 0.5f;
-
-             _mapSwitch->addChild(createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
+              _dataModel._mapSwitch=new Switch;
+             _dataModel._mapSwitch->addChild(createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
                                                   _dataModel.getRenderer()->width(),_dataModel.getRenderer()->height()));
-             _mapSwitch->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF );
-              _switch->addChild(_mapSwitch);
+             _dataModel._mapSwitch->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF );
+              _switch->addChild(_dataModel._mapSwitch);
 //                qDebug() << "In contstrt mesh gerom";
                 // Callback to detect when we've been moved
                 // and update the databmodel.
@@ -92,6 +93,7 @@ namespace ews {
         void MeshGeom::changeOverlay(int){
 
         }
+
 
             void MeshGeom::setEnabled(bool enabled) {
                 if(enabled) {

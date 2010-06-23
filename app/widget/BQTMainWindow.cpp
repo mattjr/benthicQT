@@ -84,9 +84,11 @@ namespace ews {
                 QObject::connect(_ui->actionSet_to_720x480, SIGNAL(triggered()), this, SLOT(resize720x480()));
                 QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
                 QObject::connect(_ui->actionSet_to_960x540, SIGNAL(triggered()), this, SLOT(resize960x540()));
-                QObject::connect(_ui->actionSavedCamera, SIGNAL(triggered()), this, SLOT(toggle_saved_camera_dialog()));
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
-_ui->actionSavedCamera->setEnabled(true);
+                QObject::connect(_ui->actionSavedCamera, SIGNAL(triggered()), this, SLOT(toggle_saved_camera_dialog()));
+                _ui->actionSavedCamera->setEnabled(true);
+
+
                 // Setup sync between samplers and plot.
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerAdded(int,PointSampler*)), 
                 //               _ui->amplitudePlot, SLOT(addSampleSource(int, PointSampler*)));
@@ -324,6 +326,7 @@ _ui->actionSavedCamera->setEnabled(true);
                 setCurrentFile(first);
 
                 QObject::connect(_ui->actionOpen_Images, SIGNAL(triggered()), &_state->getMeshFiles(), SLOT(openCurrentImage()));
+                QObject::connect(_ui->actionToggleMinimap, SIGNAL(triggered(bool)), &_state->getMeshFiles(), SLOT(switchMinimap(bool)));
 
 
 
