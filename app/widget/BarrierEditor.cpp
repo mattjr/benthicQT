@@ -65,6 +65,13 @@ namespace ews {
                     blockSignals(false);
                 }*/
             }
+            void BarrierEditor::displayMeasure(osg::Vec3 dist,osg::Vec3 diff){
+                char tmp[1024];
+                sprintf(tmp,"Dist: %.2f X: %.2f Y: %.2f Z: %.2f\n",dist[0],diff[0],diff[1],diff[2]);
+                QString statusStr=tmp;
+                _ui->status_line->setText(statusStr);
+
+            }
 
             /** Apply datamodel to editor. */
             void BarrierEditor::setDataModel(MeshFile* mf) {
@@ -72,7 +79,7 @@ namespace ews {
 
                   QObject::connect(_dataModel, SIGNAL(posChanged(osg::Vec3)), this, SLOT(updatePos(osg::Vec3)));
                  QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
-                 QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
+        //         QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
 
 
                 syncUI();

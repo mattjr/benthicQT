@@ -370,6 +370,20 @@
     <string>Toggle Mesurement Tool</string>
    </property>
   </action>
+  <action name="actionCopyImageNames">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Copy Images Names</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy Images Names</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

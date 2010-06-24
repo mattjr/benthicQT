@@ -102,10 +102,12 @@ void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& 
 	  double dist=sqrt(pow(diff[0],2)+pow(diff[1],2)+pow(diff[2],2));
 	  
 	  char text_str[255];
-	  sprintf(text_str,"Dist: %f\nX: %f\nY: %f\nZ: %f\n",dist,diff[0],diff[1],diff[2]);
+          sprintf(text_str,"Dist: %.2f\nX: %.2f\nY: %.2f\nZ: %.2f\n",dist,diff[0],diff[1],diff[2]);
 	  text_ptr->setText(string(text_str));
 	  text_ptr->setPosition(end+osg::Vec3(0,-0.5,0));
 	  measure_anchored=false;
+          osg::Vec3 distV(dist,dist,dist);
+          _mf->measureResultsEmit(distV,diff);
 	}
       }
       if(ea.getButtonMask() ==GUIEventAdapter::MIDDLE_MOUSE_BUTTON){

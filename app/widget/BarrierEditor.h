@@ -64,6 +64,7 @@ namespace ews {
                 void updatePos(osg::Vec3);
                 void updateImgLabel(QString);
                 void changeOverlay(int index);
+                void displayMeasure(osg::Vec3,osg::Vec3);
 
              signals:
                /**

@@ -51,6 +51,7 @@ namespace ews {
             public slots:
                         void openCurrentImage();
                 void switchMinimap(bool enabled);
+                void copyCurrentImageClipboard();
 ;
             public:
                 void loadMesh();
@@ -153,18 +154,23 @@ namespace ews {
                 QProgressDialog *getPBarD(void){
                         return progress;
                     }
+                void measureResultsEmit(osg::Vec3 v,osg::Vec3 v2){
+                    emit measureResults(v,v2);
+
+                }
+
             signals:
                // void dataChanged();
                 //void potentialChanged();
                 void loadNewMeshes(MeshFile *);
                 void enableMinimap(bool);
-
                 /**
                  * General signal for case when number of items in the
                  * set has changed. Parameter is the new number of items.
                  */
                 void posChanged(osg::Vec3);
                 void imgLabelChanged(QString);
+                void measureResults(osg::Vec3,osg::Vec3);
 
 
             private slots:

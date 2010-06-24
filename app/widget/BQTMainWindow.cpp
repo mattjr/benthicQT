@@ -88,6 +88,7 @@ namespace ews {
                 QObject::connect(_ui->actionSavedCamera, SIGNAL(triggered()), this, SLOT(toggle_saved_camera_dialog()));
                 _ui->actionSavedCamera->setEnabled(true);
 
+             //   QObject::connect(&_state->getMeshFiles(), SIGNAL(measureResults(osg::Vec3,osg::Vec3)), this, SLOT(showMeasureText(osg::Vec3,osg::Vec3)));
 
                 // Setup sync between samplers and plot.
                 //QObject::connect(&_state->getSamplers(), SIGNAL(samplerAdded(int,PointSampler*)), 
@@ -125,6 +126,7 @@ namespace ews {
                         //addAction(_ui->actionOpen);
                 conMenu=new QMenu;
                conMenu->addAction(_ui->actionOpen_Images);
+               conMenu->addAction(_ui->actionCopyImageNames);
 
                 if(_ui->renderer->movieCallback && OSGVideoStreamer::enabled){
                     OSGVideoStreamer *iv=_ui->renderer->movieCallback->getRecorder(_ui->renderer->_gw);
@@ -328,6 +330,9 @@ namespace ews {
                 QObject::connect(_ui->actionOpen_Images, SIGNAL(triggered()), &_state->getMeshFiles(), SLOT(openCurrentImage()));
                 QObject::connect(_ui->actionToggleMinimap, SIGNAL(triggered(bool)), &_state->getMeshFiles(), SLOT(switchMinimap(bool)));
 
+                QObject::connect( &_state->getMeshFiles(), SIGNAL(measureResults(osg::Vec3,osg::Vec3)),_ui->barrierEditor, SLOT(displayMeasure(osg::Vec3,osg::Vec3)));
+                QObject::connect(_ui->actionOpen_Images, SIGNAL(triggered()), &_state->getMeshFiles(), SLOT(openCurrentImage()));
+                QObject::connect(_ui->actionCopy_Images_Names, SIGNAL(triggered()), &_state->getMeshFiles(), SLOT(copyCurrentImageClipboard()));
 
 
 
@@ -449,12 +454,17 @@ namespace ews {
                     _ui->actionStart_Recording->setEnabled(!_ui->actionStart_Recording->isEnabled());
                     _ui->actionStop_Recording->setEnabled(!_ui->actionStart_Recording->isEnabled());
               }
+              void EWSMainWindow::showMeasureText(osg::Vec3 p,osg::Vec3 v){
+
+              }
+              void EWSMainWindow::on_actionMesurement_Tool_triggered()
+              {
+                  measuring_tool_on=_ui->actionMesurement_Tool->isChecked();
+              }
+
+
          }
     }
 }
 
 
-void ews::app::widget::EWSMainWindow::on_actionMesurement_Tool_triggered()
-{
-    measuring_tool_on=_ui->actionMesurement_Tool->isChecked();
-}

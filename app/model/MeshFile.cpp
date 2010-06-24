@@ -24,8 +24,9 @@
 #include <osg/ref_ptr>
 #include <QDesktopServices>
 #include "BQTDebug.h"
+#include <QtGui/QApplication>
 #include "BQTMainWindow.h"
-
+#include <QtGui/QClipboard>
 namespace ews {
     namespace app {
         /**
@@ -60,6 +61,11 @@ namespace ews {
 
             }
             MeshFile::~MeshFile() {
+            }
+            void MeshFile::copyCurrentImageClipboard(){
+                QClipboard *clipboard = QApplication::clipboard();
+
+                clipboard->setText(curr_img);
             }
 
             void MeshFile::openCurrentImage()

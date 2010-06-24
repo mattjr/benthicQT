@@ -108,7 +108,7 @@ namespace ews {
                 void resize720x480(){resize(computerWindowSizeForRenderSize(QSize(720,480)));}
                 void resize720x576(){resize(computerWindowSizeForRenderSize(QSize(720,576)));}
                 void resize960x540(){resize(computerWindowSizeForRenderSize(QSize(960,540)));}
-
+                void showMeasureText(osg::Vec3 p,osg::Vec3 v);
             private:
                 Q_DISABLE_COPY(EWSMainWindow)
                 Ui::EWSMainWindowForm* _ui;
