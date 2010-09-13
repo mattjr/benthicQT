@@ -69,6 +69,7 @@ namespace ews {
                                    osg::Vec3 cursor_pos=intersection.getWorldIntersectPoint();
                                    osg::Vec3d world=cursor_pos;
                                    if(projWGS84){
+                                      world.z() = world.y();
                                       projWGS84->calc_geo_coords(cursor_pos.x(),cursor_pos.y(),world.x(),world.y());
                                       _mf->updateGlobal(world);
 
