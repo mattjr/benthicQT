@@ -21,7 +21,6 @@
 #include <QtGui/QKeyEvent>
 #include <QErrorMessage>
 #include <osgGA/StateSetManipulator>
-#include <osgGA/MatrixManipulator>
 #include <osg/Geometry>
 #include <osg/Shape>
 #include <osg/ShapeDrawable>

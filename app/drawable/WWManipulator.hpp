@@ -22,7 +22,6 @@
 #include <osgGA/MatrixManipulator>
 #endif
 
-#include <osgGA/MatrixManipulator>
 #include <osg/Quat>
 #include <osgViewer/Viewer>
 #include <osgSim/HeightAboveTerrain>
