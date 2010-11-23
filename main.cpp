@@ -116,9 +116,9 @@ int main(int argc, char *argv[]) {
     EWSMainWindow w(&state);
     w.setWindowTitle(EWS_APP_NAME);
 #if defined(__APPLE__)
-    w.setWindowIcon(QIcon(":/images/appicon"));
+  //  w.setWindowIcon(QIcon(":/images/appicon.png"));
 #else    
-    QApplication::setWindowIcon(QIcon(":/images/appicon"));    
+    QApplication::setWindowIcon(QIcon(":/images/appicon"));
 #endif    
 
 
