@@ -69,7 +69,6 @@ IF(NOT WIN32)
 
 include(FindFFmpeg)
 FIND_PACKAGE(FFmpeg)
-message("Thing ${FFMPEG_LIBAVFORMAT_LIBRARIES_DIRS}")
 ENDIF(NOT WIN32)
 
 
