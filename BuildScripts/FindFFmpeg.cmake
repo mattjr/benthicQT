@@ -39,7 +39,8 @@ IF(PKG_CONFIG_FOUND)
              ${FFMPEG_LIBAVCODEC_LIBRARIES}
                ${FFMPEG_LIBAVUTIL_LIBRARIES}
                  ${FFMPEG_LIBSWSCALE_LIBRARIES})
-                   ENDIF()
+    SET(FFMPEG_LIBRARY_DIRS ${FFMPEG_LIBAVFORMAT_LIBRARY_DIRS})
+  ENDIF()
 ENDIF()
 
 IF(FFMPEG_FOUND MATCHES "NO")
@@ -85,6 +86,25 @@ MACRO(FFMPEG_FIND varname shortname headername)
     )
 
     FIND_LIBRARY(FFMPEG_${varname}_LIBRARIES
+        NAMES ${shortname}
+        PATHS
+        ${FFMPEG_ROOT}/lib
+        $ENV{FFMPEG_DIR}/lib
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/lib
+        /usr/local/lib64
+        /usr/lib
+        /usr/lib64
+        /sw/lib
+        /opt/local/lib
+        /opt/csw/lib
+        /opt/lib
+        /usr/freeware/lib64
+        DOC "Location of FFMPEG Libraries"
+    )
+
+    FIND_PATH(FFMPEG_${varname}_LIBRARY_DIRS
         NAMES ${shortname}
         PATHS
         ${FFMPEG_ROOT}/lib

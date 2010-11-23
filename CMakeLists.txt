@@ -69,7 +69,7 @@ IF(NOT WIN32)
 
 include(FindFFmpeg)
 FIND_PACKAGE(FFmpeg)
-
+message("Thing ${FFMPEG_LIBAVFORMAT_LIBRARIES_DIRS}")
 ENDIF(NOT WIN32)
 
 
@@ -388,7 +388,7 @@ target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} 
 
 set(QT_CONF_DEST "bin")
 set(QT_PLUGIN_DEST "bin/plugins")
-SET(OSGPLUGINS osgdb_ive osgdb_freetype)
+SET(OSGPLUGINS osgdb_ive osgdb_serializers_osg osgdb_osg osgdb_freetype)
 
 if(APPLE)
     set(QT_PLUGIN_DEST "${EXE_TARGET_NAME}.app/Contents/MacOS/plugins")  
@@ -396,11 +396,13 @@ if(APPLE)
     get_filename_component(OSG_LIBRARY_DIR ${OSG_LIBRARY} PATH)
     set(OSG_PLUGINS_DIR "${OSG_LIBRARY_DIR}/osgPlugins-${OPENSCENEGRAPH_VERSION}")
     foreach(ITEM ${OSGPLUGINS})
-      set(OSG_INSTALLED_PLUGINS "${OSG_PLUGINS_DIR}/${ITEM}.so;${OSG_INSTALLED_PLUGINS}")
+      set(OSG_INSTALLED_PLUGINS "${CMAKE_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/${ITEM}.so;${OSG_INSTALLED_PLUGINS}")
+    INSTALL(FILES "${OSG_PLUGINS_DIR}/${ITEM}.so"
+    DESTINATION
+    "${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
+#    "${EXE_TARGET_NAME}.app/Contents/MacOS")
     endforeach()
-    #INSTALL(FILES "${OSG_PLUGINS_DIR}/osgdb_ive.so"
-    #DESTINATION
-    # "${EXE_TARGET_NAME}.app/Contents/PlugIns/osgPlugins-${OPENSCENEGRAPH_VERSION}/")
+
 endif()
 
 install(TARGETS ${EXE_TARGET_NAME} 
