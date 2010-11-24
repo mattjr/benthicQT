@@ -35,9 +35,12 @@ macro (curr_date RESULT)
     if(UNIX)
         execute_process(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE CMD_OUT)
         string(REGEX REPLACE "(..)/(..)/(....).*" "\\3\\2\\1" ${RESULT} ${CMD_OUT})
-    elseif (WIN32)
-        execute_process(COMMAND "cmd" "/C" "date" "/T" OUTPUT_VARIABLE CMD_OUT)
-        string(REGEX REPLACE ".*(..)/(..)/(....).*" "\\3\\2\\1" ${RESULT} ${CMD_OUT})    
+elseif(CMAKE_CROSSCOMPILING)
+        execute_process(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE CMD_OUT)
+        string(REGEX REPLACE "(..)/(..)/(....).*" "\\3\\2\\1" ${RESULT} ${CMD_OUT})
+  # elseif (WIN32)
+#        execute_process(COMMAND "cmd" "/C" "date" "/T" OUTPUT_VARIABLE CMD_OUT)
+#        string(REGEX REPLACE ".*(..)/(..)/(....).*" "\\3\\2\\1" ${RESULT} ${CMD_OUT})    
     else()
         message(SEND_ERROR "date not available")
         set(${RESULT} 000000)
@@ -46,7 +49,8 @@ endmacro()
 curr_date(BQT_BUILD_DATE)
 
 option(TESTING "build unit tests and include 'test' target" ON)
-
+set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/../bin CACHE PATH
+  "Single output directory for building all executables.")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
 
 
@@ -172,16 +176,26 @@ endif (WIN32)
 # this command finds Qt4 libraries and sets all required variables
 # note that it's Qt4, not QT4 or qt4
 set(QT_COMPONENTS QtCore QtGui QtOpenGL QtSvg QtXml)
-find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
+set(OSG_COMPONENTS osg osgUtil osgViewer osgGA osgManipulator osgText osgDB)
+if(CMAKE_CROSSCOMPILING)
+	set(QT_HEADERS_DIR /home/mattjr/.wine/drive_c/Qt/2010.05/qt/include)
+	foreach(module QtCore QtGui QtSvg QtNetwork QtScript QtHelp QtWebKit QtTest QtXml QtSql QtCLucene QtOpenGL)
+	  set(QT_HEADERS_DIR "/home/mattjr/.wine/drive_c/Qt/2010.05/qt/include/${module};${QT_HEADERS_DIR}")
+	endforeach()
+find_package(Qt4)
 
+message("Cross compiling")
+else()
+# Add OpenSceneGraph suppport
+find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
+find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
+endif()
 #-------------------------------------------------------------------------------
 # QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to
 # a CMake script that sets up this directory for building with Qt4
 include( ${QT_USE_FILE} )
 #-------------------------------------------------------------------------------
-# Add OpenSceneGraph suppport
-set(OSG_COMPONENTS osg osgUtil osgViewer osgGA osgManipulator osgText osgDB)
-find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
+
 #-------------------------------------------------------------------------------
 
 if(WIN32)

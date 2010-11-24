@@ -174,8 +174,8 @@ set(UF_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 #-----------------------------------------------------------------------------
 # Path to where the executable is.
 
-set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH
-   "Single output directory for building all executables.")
+#set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH
+ #  "Single output directory for building all executables.")
 
 #-----------------------------------------------------------------------------
 # If we are building DLLs in windows, we need to keep the dlls with the executables.
@@ -353,7 +353,7 @@ add_custom_target(uninstall
 #-----------------------------------------------------------------------------
 # Build the CPack Installer.
 #-----------------------------------------------------------------------------
-include(${CMAKE_FILE_DIR}/ufCPack.cmake)
+#include(${CMAKE_FILE_DIR}/ufCPack.cmake)
 
 #-----------------------------------------------------------------------------
 include(CTest)

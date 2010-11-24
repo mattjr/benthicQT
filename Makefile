@@ -57,9 +57,9 @@ xcode-test:
 	(mkdir -p ${XBLDT}; cd ${XBLDT}; cmake .. -G"Xcode"; open VisualizePhysics-Wave.xcodeproj)
 WBLD=build-win32
 win32pkg:
-	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make ${ARGS} package)
+	(mkdir -p ${WBLD}; cd ${WBLD}; cmake -DCMAKE_TOOLCHAIN_FILE=../BuildScripts/crosscompile.cmake .. -DWIN32=1;  make ${ARGS} package)
 win32cross:
-	(mkdir -p ${WBLD}; cd ${WBLD}; cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain.cmake .. -DWIN32=1;  make ${ARGS} install)
+	(mkdir -p ${WBLD}; cd ${WBLD}; cmake -DCMAKE_TOOLCHAIN_FILE=../BuildScripts/crosscompile.cmake .. -DWIN32=1;  make ${ARGS} install)
 
 VSBLD=build-vs
 vs:
