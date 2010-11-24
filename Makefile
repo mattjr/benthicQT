@@ -17,6 +17,23 @@
 #
 # @author <a href="mailto:ben.hocking@mseedsoft.com">Ashlie B. Hocking</a>
 # Makefile
+ifndef OSTYPE
+   OSTYPE = $(shell uname)
+endif
+
+
+# Get the number of processors
+ifeq ("$(OSTYPE)","Darwin")
+   CPU_COUNT=2
+else
+   CPU_COUNT := $(shell cat /proc/cpuinfo | grep -P "processor\t" | wc -l)
+   ifeq ($(CPU_COUNT),0)
+      CPU_COUNT=1
+   endif
+endif
+
+# Set the number of build threads to the number of processors
+ARGS=-j ${CPU_COUNT}
 
 ifeq ($(TERM),msys)
 	CMAKE_FLAGS = -G "MSYS Makefiles"
@@ -26,7 +43,7 @@ BLD=build
 .PHONY: default test xcode vs clean
 
 default:
-	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..; make -j 4)
+	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..; make ${ARGS})
 
 test: $(BLD)
 	(cd $(BLD); make test)
@@ -40,9 +57,9 @@ xcode-test:
 	(mkdir -p ${XBLDT}; cd ${XBLDT}; cmake .. -G"Xcode"; open VisualizePhysics-Wave.xcodeproj)
 WBLD=build-win32
 win32pkg:
-	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make -j 4 package)
+	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make ${ARGS} package)
 win32cross:
-	(mkdir -p ${WBLD}; cd ${WBLD}; cmake .. -DWIN32=1;  make -j 4 install)
+	(mkdir -p ${WBLD}; cd ${WBLD}; cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain.cmake .. -DWIN32=1;  make ${ARGS} install)
 
 VSBLD=build-vs
 vs:
@@ -52,7 +69,7 @@ clean:
 	rm -rf $(BLD) $(XBLD) $(VSBLD) $(XBLDT)
 
 install:
-	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..;  make install)
+	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..;  make ${ARGS} install)
 
 package:
-	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..;  make package)
+	(mkdir -p $(BLD); cd $(BLD); cmake $(CMAKE_FLAGS) ..;  make ${ARGS} package)
