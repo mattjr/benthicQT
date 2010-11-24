@@ -266,17 +266,17 @@ set (UF_LIBRARY_PROPERTIES  ${UF_LIBRARY_PROPERTIES} DEBUG_POSTFIX "-d")
 
 #-----------------------------------------------------------------------------
 # Build the components of the library.
-add_subdirectory(Angle)
-add_subdirectory(Colour)
-add_subdirectory(Conversions)
-add_subdirectory(CSVParser)
-add_subdirectory(DateTime)
+#add_subdirectory(Angle)
+#add_subdirectory(Colour)
+#add_subdirectory(Conversions)
+#add_subdirectory(CSVParser)
+#add_subdirectory(DateTime)
 add_subdirectory(GeographicConversions)
-add_subdirectory(Navigation)
-add_subdirectory(GPSParser)
-add_subdirectory(Logger)
-add_subdirectory(Macros)
-add_subdirectory(Statistics)
+#add_subdirectory(Navigation)
+#add_subdirectory(GPSParser)
+#add_subdirectory(Logger)
+#add_subdirectory(Macros)
+#add_subdirectory(Statistics)
 
 #if(BUILD_TESTING)
 #  enable_testing()
@@ -324,20 +324,20 @@ export_library_dependencies(${UF_BINARY_DIR}/UFLibraryDepends.cmake)
 #-----------------------------------------------------------------------------
 # Install some files.
 #-----------------------------------------------------------------------------
-install(
-  FILES
-    "${PROJECT_BINARY_DIR}/ufConfigure.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/ufWin32Header.h"
-  DESTINATION ${UF_INSTALL_INCLUDE_DIR}
-)
+#install(
+#  FILES
+#    "${PROJECT_BINARY_DIR}/ufConfigure.h"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/ufWin32Header.h"
+#  DESTINATION ${UF_INSTALL_INCLUDE_DIR}
+#)
 # Install these also.
-install(
-  FILES
-    "${UF_BINARY_DIR}/UseUF.cmake"
+#install(
+#  FILES
+#    "${UF_BINARY_DIR}/UseUF.cmake"
 #    "${UF_BINARY_DIR}/UFLibraryDepends.cmake"
 #    "${UF_BINARY_DIR}/ufBuildSettings.cmake"
-  DESTINATION ${UF_INSTALL_PACKAGE_DIR}
-)
+ # DESTINATION ${UF_INSTALL_PACKAGE_DIR}
+#)
 
 #-----------------------------------------------------------------------------
 # Create an uninstall target.

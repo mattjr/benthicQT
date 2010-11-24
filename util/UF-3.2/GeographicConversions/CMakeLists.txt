@@ -37,10 +37,10 @@ SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES ${UF_LIBRARY_PROPERTIES})
 
 #-----------------------------------------------------------------------------
 # Installing
-install(FILES ${${KIT}_INCS} DESTINATION ${UF_INSTALL_INCLUDE_DIR}/${KIT})
-install(TARGETS ${LIB_NAME}
-  RUNTIME DESTINATION bin COMPONENT Runtime     # .exe, .dll
-  LIBRARY DESTINATION lib COMPONENT Runtime     # .so, mod.dll
-  ARCHIVE DESTINATION lib COMPONENT Development # .a, .lib
-)
+#install(FILES ${${KIT}_INCS} DESTINATION ${UF_INSTALL_INCLUDE_DIR}/${KIT})
+#install(TARGETS ${LIB_NAME}
+#  RUNTIME DESTINATION bin COMPONENT Runtime     # .exe, .dll
+#  LIBRARY DESTINATION lib COMPONENT Runtime     # .so, mod.dll
+#  ARCHIVE DESTINATION lib COMPONENT Development # .a, .lib
+#)
 

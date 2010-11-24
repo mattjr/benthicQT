@@ -4,7 +4,7 @@
 #ifndef __UFWIN32Header_h
 #define __UFWIN32Header_h
 
-#include "ufConfigure.h"
+//#include "ufConfigure.h"
 
 //
 // Windows specific stuff------------------------------------------
