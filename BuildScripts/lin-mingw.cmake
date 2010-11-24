@@ -10,13 +10,12 @@ if(WIN32)
 
 	#set the default pathes, should be changed to match your setup.
 	set(WIN32_BASE "/home/mattjr/.wine/drive_c/")
-	set(QT_BASE ${WIN32_BASE}/Qt/4.6.2)
-	set(OSG_BASE ${WIN32_BASE}/OSG)
+	set(QT_BASE ${WIN32_BASE}/Qt/2010.05/qt)
+        set(OSG_BASE ${WIN32_BASE}/OSG)
 	set(APP_ICON_RC ${CMAKE_CURRENT_SOURCE_DIR}/winrez.rc)
 	SET(QT_DLL_PATH ${QT_BASE}/bin/)
 	SET(OSG_DLL_PATH ${OSG_BASE}/bin/)
 	set(MINGW_PREFIX "i586-mingw32msvc-")
-
 	# set "sane" default cxxflags for windows, the -mwindows so it wouldn't open a command dos window.
 	set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -march=pentium4 -mtune=pentium4 -mwindows -O2")
 	# we need -static-libgcc otherwise we'll link against libgcc_s_sjlj-1.dll.
@@ -54,7 +53,8 @@ if(WIN32)
 #		endif()
 	endforeach()
 	SET(OPENSCENEGRAPH_LIBRARIES  ${OSG_BASE}/bin/libOpenThreads.dll;${OSG_BASE}/bin/libosg.dll;${OSG_BASE}/bin/libosgUtil.dll;${OSG_BASE}/bin/libosgViewer.dll;${OSG_BASE}/bin/libosgGA.dll;${OSG_BASE}/bin/libosgManipulator.dll;${OSG_BASE}/bin/libosgText.dll;${OSG_BASE}/bin/libosgDB.dll)
-	set(QT_INCLUDES ${QT_BASE}/include/)
+	set(QT_INCLUDES ${QT_HEADERS_DIR})
+#${QT_BASE}/include/)
 	set(OPENSCENEGRAPH_INCLUDE_DIRS ${OSG_BASE}/include)
 	set(OSG_INCLUDE_DIR ${OSG_BASE}/include)
 	include(GetOSGVersion)
