@@ -85,6 +85,10 @@ if(WIN32)
 			DESTINATION bin 
 			COMPONENT Runtime
 		)
+	      install(FILES ${OSG_DLL_PATH}/libfreetype-6.dll
+			DESTINATION bin 
+			COMPONENT Runtime
+		)
 	      foreach(ITEM ${OSGPLUGINS})
 		install(FILES ${OSG_DLL_PATH}/osgPlugins-${OPENSCENEGRAPH_VERSION}/mingw_${ITEM}.dll
 		  DESTINATION bin/osgPlugins-${OPENSCENEGRAPH_VERSION}/
