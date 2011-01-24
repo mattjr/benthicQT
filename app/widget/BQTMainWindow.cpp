@@ -279,7 +279,7 @@ namespace ews {
                 Uint fd=getInterFrameDelay();
                 setInterFrameDelay(INT_MAX);
                 ///
-                QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
+                QFileDialog::Options options;// = QFileDialog::DontUseNativeDialog;
                 QString selectedFilter;
 
                 QStringList files = qf->getOpenFileNames(this,"Choose Mesh","","Meshes (*.ive *.osgb *.osga)",&selectedFilter,options);

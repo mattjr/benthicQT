@@ -77,8 +77,12 @@ void WorldWindManipulatorNew::setNode(osg::Node* node)
   if (_node.get()){
     const osg::BoundingSphere& boundingSphere=_node->getBound();
     _modelScale = boundingSphere._radius;
+    _homeEye=  osg::Vec3(boundingSphere.center()+osg::Vec3(0,0,-3.5*boundingSphere.radius()));
+    _homeCenter=boundingSphere.center();
+    _homeUp= osg::Vec3d(0.0f,0.0f,1.0f);
   }
-  if (getAutoComputeHomePosition()) computeHomePosition();
+//  if (getAutoComputeHomePosition()) computeHomePosition();
+
   computePosition(_homeEye, _homeCenter, _homeUp);
   _homeDist=_distance;
   _targetOrientation =m_Orientation;
@@ -103,8 +107,13 @@ osg::Node* WorldWindManipulatorNew::getNode()
 
 void WorldWindManipulatorNew::home(double /*currentTime*/)
 {
-  
-  if (getAutoComputeHomePosition()) computeHomePosition();
+    if (_node.get()){
+      const osg::BoundingSphere& boundingSphere=_node->getBound();
+      _modelScale = boundingSphere._radius;
+      _homeEye=  osg::Vec3(boundingSphere.center()+osg::Vec3(0,0,-3.5*boundingSphere.radius()));
+      _homeCenter=boundingSphere.center();
+      _homeUp= osg::Vec3d(0.0f,0.0f,1.0f);
+    }else if (getAutoComputeHomePosition()) computeHomePosition();
   computePosition(_homeEye, _homeCenter, _homeUp);
   _targetOrientation =m_Orientation;
   _targetCenter=_center;

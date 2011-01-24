@@ -455,12 +455,16 @@ osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, Wo
   
   const osg::BoundingSphere& bs = subgraph->getBound();
   osg::Matrix viewMatrix;
-  viewMatrix.makeLookAt(bs.center()-osg::Vec3(0.0,2.0f*bs.radius(),0.0),
-			bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
-  
-  camera->setProjectionMatrixAsOrtho(-(bs.radius()+bs.radius()/2),
+  viewMatrix.makeLookAt(bs.center()+osg::Vec3(0.0f,-1.0f,-3.5f)*bs.radius(),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+
+  //viewMatrix.makeLookAt(bs.center()+osg::Vec3(0.0,0.0,3.5f*bs.radius()),
+        //		bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
+ // viewMatrix.makeTranslate(bs.center()+osg::Vec3(0.0,0.0,3.5f*bs.radius()));
+  /*camera->setProjectionMatrixAsOrtho(-(bs.radius()+bs.radius()/2),
 				     bs.radius()+bs.radius()/2,
-				     -bs.radius(), bs.radius(),0, 0);
+                                     -bs.radius(), bs.radius(),0, 0);*/
+  camera->setProjectionMatrixAsOrtho2D(-bs.radius(),bs.radius(),-bs.radius(),bs.radius());
+
   camera->setViewMatrix(viewMatrix);
   // set clear the color and depth buffer
   camera->setClearColor(clearColour);
