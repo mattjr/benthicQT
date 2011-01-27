@@ -22,6 +22,8 @@
 using namespace std;
 extern osg::Geode* measure_geode;
 extern bool measuring_tool_on;
+extern bool oldmesh;
+
 class GetUniformStateSetsListVisitor : public osg::NodeVisitor
 {
 public:
