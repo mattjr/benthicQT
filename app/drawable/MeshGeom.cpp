@@ -152,6 +152,7 @@ namespace ews {
                     ss->addUniform(_dataModel.getShaderOutUniform());
                     _meshGeom->addChild(node.get());
                     setEnabled(true);
+                    _dataModel.setStateSet(ss);
 
                 }else{
                     if (rr.error()) {

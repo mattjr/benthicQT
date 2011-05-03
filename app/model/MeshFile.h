@@ -54,6 +54,8 @@ namespace ews {
                 void copyCurrentImageClipboard();
 ;
             public:
+                void setStateSet(osg::StateSet *state);
+
                 void loadMesh();
                 double getLatOrigin(){return latOrigin;}
                 double getLongOrigin(){return longOrigin;}
@@ -189,6 +191,7 @@ namespace ews {
                 double latOrigin, longOrigin;
                  std::vector<string>  shader_names;
                  QOSGWidget *_renderer;
+                 osg::StateSet *_stateset;
 
             };
         }

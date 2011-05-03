@@ -49,6 +49,7 @@ namespace ews {
                 shader_names.push_back("Overlay");
                 shader_names.push_back("Shaded");
                 //_manip=
+                _stateset=NULL;
 
             }
             
@@ -76,7 +77,7 @@ namespace ews {
                 QStringList list=getFileNames();
                 QStringList::Iterator it = list.begin();
                 while( it != list.end() ) {
-                     path=osgDB::getFilePath(it->toStdString());
+                    path=osgDB::getFilePath(it->toStdString());
                     imgdir_file=string(path+"/imgpath.txt");
                     FILE *fp=fopen(imgdir_file.c_str(),"r");
                     if(fp)
@@ -113,19 +114,35 @@ namespace ews {
             }
 
             void MeshFile::switchMinimap(bool enabled){
-                    if(enabled) {
-                        _mapSwitch->setAllChildrenOn();
-                    }
-                    else {
-                        _mapSwitch->setAllChildrenOff();
-                    }
+                if(enabled) {
+                    _mapSwitch->setAllChildrenOn();
+                }
+                else {
+                    _mapSwitch->setAllChildrenOff();
+                }
 
+            }
+            void MeshFile::setStateSet(osg::StateSet *state){
+                _stateset=state;
             }
 
             void MeshFile::setShaderOut(int index) {
                 if(shared_shader_out)
                     shared_shader_out->set(index);
+                if(_stateset){
+                    unsigned int mode = osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF;
+                    if ( index ==0 ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
+                    for( unsigned int ii=0; ii<4; ii++ )
+                    {
+                        _stateset->setTextureMode( ii, GL_TEXTURE_2D, mode );
+                        _stateset->setTextureMode( ii, GL_TEXTURE_3D, mode );
+                        _stateset->setTextureMode( ii, GL_TEXTURE_RECTANGLE, mode );
+                        _stateset->setTextureMode( ii, GL_TEXTURE_CUBE_MAP, mode);
+                    }
+                }
             }
+
+
 
             
 
