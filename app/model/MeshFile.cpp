@@ -135,9 +135,7 @@ namespace ews {
                     for( unsigned int ii=0; ii<4; ii++ )
                     {
                         _stateset->setTextureMode( ii, GL_TEXTURE_2D, mode );
-                        _stateset->setTextureMode( ii, GL_TEXTURE_3D, mode );
-                        _stateset->setTextureMode( ii, GL_TEXTURE_RECTANGLE, mode );
-                        _stateset->setTextureMode( ii, GL_TEXTURE_CUBE_MAP, mode);
+
                     }
                 }
             }
