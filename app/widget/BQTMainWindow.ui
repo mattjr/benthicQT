@@ -101,7 +101,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -337,9 +337,6 @@
    </property>
    <property name="toolTip">
     <string>Saved Camera Position</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
    </property>
   </action>
   <action name="actionToggleMinimap">
