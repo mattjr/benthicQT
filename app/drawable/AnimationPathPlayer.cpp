@@ -14,7 +14,7 @@ bool MyAnimationPath::getInterpolatedControlPoint(double time,ControlPoint& cont
 
     switch(_loopMode)
     {
-        case(SWING):
+    case(SWING):
         {
             double modulated_time = (time - getFirstTime())/(getPeriod()*2.0);
             double fraction_part = modulated_time - floor(modulated_time);
@@ -23,16 +23,16 @@ bool MyAnimationPath::getInterpolatedControlPoint(double time,ControlPoint& cont
             time = getFirstTime()+(fraction_part*2.0) * getPeriod();
             break;
         }
-        case(LOOP):
+    case(LOOP):
         {
             double modulated_time = (time - getFirstTime())/getPeriod();
             double fraction_part = modulated_time - floor(modulated_time);
             time = getFirstTime()+fraction_part * getPeriod();
             break;
         }
-        case(NO_LOOPING):
-            // no need to modulate the time.
-            break;
+    case(NO_LOOPING):
+        // no need to modulate the time.
+        break;
     }
 
 
@@ -57,8 +57,8 @@ bool MyAnimationPath::getInterpolatedControlPoint(double time,ControlPoint& cont
         else
         {
             controlPoint.interpolate((time - first->first)/delta_time,
-                            first->second,
-                            second->second);
+                                     first->second,
+                                     second->second);
         }
     }
     else // (second==_timeControlPointMap.end())
@@ -122,68 +122,69 @@ bool AnimationPathPlayer::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActi
         }
         return false;
     case GUIEventAdapter::KEYDOWN:
-            if (ea.getKey()==' ')
+        if (ea.getKey()==' ')
+        {
+            _isPaused = false;
+            _timeScale = 1.0;
+
+            home(ea,us);
+            us.requestRedraw();
+            us.requestContinuousUpdate(false);
+
+            return true;
+        }
+        else if (ea.getKey()==')')
+        {
+            double time = _isPaused ? _pauseTime : ea.getTime();
+            double animationTime = (time+_timeOffset)*_timeScale;
+
+            _timeScale *= 1.1;
+
+            OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+
+            // adjust timeOffset so the current animationTime does change.
+            _timeOffset = animationTime/_timeScale - time;
+
+            return true;
+        }
+        else if (ea.getKey()=='(')
+        {
+            double time = _isPaused ? _pauseTime : ea.getTime();
+            double animationTime = (time+_timeOffset)*_timeScale;
+
+            _timeScale /= 1.1;
+
+            OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+
+            // adjust timeOffset so the current animationTime does change.
+            _timeOffset = animationTime/_timeScale - time;
+
+            return true;
+        }
+        else if(ea.getKey() == 'p')
+        {
+            if( _isPaused )
             {
                 _isPaused = false;
-                _timeScale = 1.0;
-
-                home(ea,us);
-                us.requestRedraw();
-                us.requestContinuousUpdate(false);
-
-                return true;
+                _timeOffset -= ea.getTime() - _pauseTime;
             }
-            else if (ea.getKey()==')')
+            else
             {
-                double time = _isPaused ? _pauseTime : ea.getTime();
-                double animationTime = (time+_timeOffset)*_timeScale;
-
-                _timeScale *= 1.1;
-
-                OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
-
-                // adjust timeOffset so the current animationTime does change.
-                _timeOffset = animationTime/_timeScale - time;
-
-                return true;
+                _isPaused = true;
+                _pauseTime = ea.getTime();
             }
-            else if (ea.getKey()=='(')
-            {
-                double time = _isPaused ? _pauseTime : ea.getTime();
-                double animationTime = (time+_timeOffset)*_timeScale;
-
-                _timeScale /= 1.1;
-
-                OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
-
-                // adjust timeOffset so the current animationTime does change.
-                _timeOffset = animationTime/_timeScale - time;
-
-                return true;
-            }
-            else if(ea.getKey() == 'p')
-            {
-                if( _isPaused )
-                {
-                    _isPaused = false;
-                    _timeOffset -= ea.getTime() - _pauseTime;
-                }
-                else
-                {
-                    _isPaused = true;
-                    _pauseTime = ea.getTime();
-                }
-                us.requestRedraw();
-                us.requestContinuousUpdate(false);
-                return true;
-            }
+            us.requestRedraw();
+            us.requestContinuousUpdate(false);
+            return true;
+        }
 
         break;
         default:
-            break;
+        break;
     }
     return false;
 }
+
 
 void AnimationPathPlayer::getUsage(osg::ApplicationUsage& usage) const
 {

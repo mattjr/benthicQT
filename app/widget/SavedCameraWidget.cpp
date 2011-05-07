@@ -88,3 +88,24 @@ void SavedCameraWidget::on_deleteButton_clicked()
 {
 
 }
+
+void SavedCameraWidget::on_cameraPlayButton_clicked()
+{
+    _qosgWidget->switchToFromAniManip(ews::app::widget::QOSGWidget::ANIM_MANIP);
+
+}
+
+void SavedCameraWidget::on_cameraPauseButton_clicked()
+{
+
+                _qosgWidget->pauseAnim();
+
+   // _qosgWidget->_animationManip->s
+//_ap
+}
+
+void SavedCameraWidget::on_cameraStopButton_clicked()
+{
+    _qosgWidget->switchToFromAniManip(ews::app::widget::QOSGWidget::WW_MANIP);
+
+}

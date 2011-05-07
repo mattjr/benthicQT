@@ -27,6 +27,9 @@ private:
 
 
 private slots:
+    void on_cameraStopButton_clicked();
+    void on_cameraPauseButton_clicked();
+    void on_cameraPlayButton_clicked();
     void on_deleteButton_clicked();
     void on_listWidget_currentRowChanged(int currentRow);
     void on_pushButton_2_clicked();

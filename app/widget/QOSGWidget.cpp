@@ -27,27 +27,27 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/MatrixTransform>
-
+#include <osg/GLExtensions>
 #include "BQTDebug.h"
 
 namespace ews {
     namespace app {
         namespace widget {
             QOSGWidget::QOSGWidget(QWidget* parent)
-            : QGLWidget(parent), osgViewer::Viewer(), _gw(0), _timer() {
+                : QGLWidget(parent), osgViewer::Viewer(), _gw(0), _timer() {
 
                 _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
                 
                 setFocusPolicy(Qt::StrongFocus);
                 setMouseTracking(true);
-#if defined(GL_MULTISAMPLE_ARB)
+                /*#if defined(GL_MULTISAMPLE_ARB)
                 QGLFormat fmt; 
                 QGLFormat::setDefaultFormat(fmt); 
                 fmt.setSamples(4); 
                 fmt.setSampleBuffers(true); 
                 setFormat(fmt);                    
 #endif // GL_MULTISAMPLE_ARB
-                
+  */
                 osg::Camera* c = getCamera();
                 c->setViewport(new osg::Viewport(0,0,width(),height()));
                 c->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width())/static_cast<double>(height()), 1.0f, 10000.0f);
@@ -57,9 +57,9 @@ namespace ews {
                 osg::Matrixd *mat=NULL;
                 bool inverseMouse=false;
                 _wwManip = new WorldWindManipulatorNew(this,
-                                                                       NULL,
-                                                                       inverseMouse,
-                                                                       mat);
+                                                       NULL,
+                                                       inverseMouse,
+                                                       mat);
                 setCameraManipulator(_wwManip);//new ws::app::drawable::CameraController);
                 _ap=new MyAnimationPath;
                 _animationManip=new AnimationPathPlayer(_ap);
@@ -110,7 +110,9 @@ namespace ews {
                 _gw->makeCurrent();
                 if(_gw->valid()) {
                     contextID = _gw->getState()->getContextID();
-                    osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID, true);
+                    osg::Texture::Extensions* extensions = new  osg::Texture::Extensions(contextID);
+                    float ver = extensions ? osg::getGLVersionNumber() : -1;
+                    /* osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID, true);
                     float ver = gl2ext ? gl2ext->getGlVersion() : -1;
                     
                     if( gl2ext ) {
@@ -118,18 +120,26 @@ namespace ews {
                             errorMessage = "GLSL not supported by OpenGL driver.";
                         }
                         
-                        GLint numVertexTexUnits = 0;
-                        glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
-                        if( numVertexTexUnits <= 0 )  {
-                            errorMessage = "Vertex texturing not supported by OpenGL driver.";
-                        }
+                      //  GLint numVertexTexUnits = 0;
+                       // glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
+                       // if( numVertexTexUnits <= 0 )  {
+                        //    errorMessage = "Vertex texturing not supported by OpenGL driver.";
+                        //}
                     }
                     else  {
                         errorMessage = "GLSL not supported.";
                     }
-                    
+                    */
+                    if(extensions){
+                        if(!extensions->isTextureCompressionS3TCSupported()){
+                            errorMessage = "s3tc texture compression is not supported by OpenGL driver.";
+                        }
+                    }else
+                    {
+                        errorMessage = "OpenGL Version too low";
+                    }
                     if(errorMessage.length() > 0) {
-                        qCritical() << qPrintable(errorMessage) << "\nYou need to have NVIDIA graphics hardware with OpenGL 2.0 support.";
+                        qCritical() << qPrintable(errorMessage) << "\nYou need to have  graphics hardware with OpenGL 1.2 texture compression support support.";
                     }
                     else {
                         qDebug() << "Passed required support. GL version: " << ver;
@@ -158,28 +168,37 @@ namespace ews {
                 //using ews::app::drawable::CameraController;
                 
                 MANIP_INHERIT* mat = getCameraManipulator();
-               /* CameraController* ctrl;
+                /* CameraController* ctrl;
                 if(ctrl = dynamic_cast<CameraController*> (mat)) {
                     ctrl->computeHomePosition();
                 }*/
                 WorldWindManipulatorNew *ctrl;
-                 if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
+                if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
                     //qDebug() << "Actual ww manip";
                     ctrl->setNode(this->getSceneData());
                     ctrl->computeHomePosition();
                 }
             }
 
-            void QOSGWidget::switchToFromAniManip(){
+            void QOSGWidget::switchToFromAniManip(int switchTo){
                 MANIP_INHERIT* mat = getCameraManipulator();
                 WorldWindManipulatorNew *ctrl;
                 AnimationPathPlayer *ani_manip;
-                 if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
-                   setCameraManipulator(_animationManip);
-                }else{
-                    if(ani_manip = dynamic_cast<AnimationPathPlayer*> (mat))
-                        setCameraManipulator(_wwManip);
+                if(switchTo == TOGGLE_MANIP){
+                    if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
+                        setCameraManipulator(_animationManip);
+                    }else{
+                        if(ani_manip = dynamic_cast<AnimationPathPlayer*> (mat))
+                            setCameraManipulator(_wwManip);
+                    }
+                }else if(switchTo == ANIM_MANIP){
+                    setCameraManipulator(_animationManip);
+                }else if(switchTo == WW_MANIP){
+                    setCameraManipulator(_wwManip,false);
                 }
+            }
+            void QOSGWidget::pauseAnim(){
+                _gw->getEventQueue()->keyPress('p' ) ;
             }
 
             /*void QOSGWidget::startPlayBack(){
@@ -227,11 +246,11 @@ namespace ews {
             void QOSGWidget::mousePressEvent( QMouseEvent* event ) {
                 int button = 0;
                 switch(event->button()) {
-                    case(Qt::LeftButton): button = 1; break;
-                    case(Qt::MidButton): button = 2; break;
-                    case(Qt::RightButton): button = 3; break;
-                    case(Qt::NoButton): button = 0; break;
-                    default: button = 0; break;
+                case(Qt::LeftButton): button = 1; break;
+                case(Qt::MidButton): button = 2; break;
+                case(Qt::RightButton): button = 3; break;
+                case(Qt::NoButton): button = 0; break;
+                default: button = 0; break;
                 }
                 _gw->getEventQueue()->mouseButtonPress(event->x(), event->y(), button);
             }
@@ -239,11 +258,11 @@ namespace ews {
             void QOSGWidget::mouseDoubleClickEvent( QMouseEvent* event ) {
                 int button = 0;
                 switch(event->button()) {
-                    case(Qt::LeftButton): button = 1; break;
-                    case(Qt::MidButton): button = 2; break;
-                    case(Qt::RightButton): button = 3; break;
-                    case(Qt::NoButton): button = 0; break;
-                    default: button = 0; break;
+                case(Qt::LeftButton): button = 1; break;
+                case(Qt::MidButton): button = 2; break;
+                case(Qt::RightButton): button = 3; break;
+                case(Qt::NoButton): button = 0; break;
+                default: button = 0; break;
                 }
                 _gw->getEventQueue()->mouseDoubleButtonPress(event->x(), event->y(), button);
             }
@@ -255,35 +274,35 @@ namespace ews {
 
                 // masks the SHIFT key with a bitwise OR
                 if (modkey & Qt::ShiftModifier)
-                   mask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
+                    mask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
 
-               // masks the CTRL key with a bitwise OR
-               if (modkey & Qt::ControlModifier)
-                   mask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
+                // masks the CTRL key with a bitwise OR
+                if (modkey & Qt::ControlModifier)
+                    mask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
 
-               // masks the ALT key with a bitwise OR
-               if (modkey & Qt::AltModifier)
-                   mask |= osgGA::GUIEventAdapter::MODKEY_ALT;
+                // masks the ALT key with a bitwise OR
+                if (modkey & Qt::AltModifier)
+                    mask |= osgGA::GUIEventAdapter::MODKEY_ALT;
 
-               // returns the viewers event queue and placing the event on the back of the event queue
-               _gw->getEventQueue()->getCurrentEventState()->setModKeyMask( mask);
+                // returns the viewers event queue and placing the event on the back of the event queue
+                _gw->getEventQueue()->getCurrentEventState()->setModKeyMask( mask);
             }
             void QOSGWidget::wheelEvent(QWheelEvent* event){
-                 // translates the keyboard modifiers for osg
-                   setKeyboardModifiers( event );
+                // translates the keyboard modifiers for osg
+                setKeyboardModifiers( event );
 
-            // returns the viewers event queue and placing the event on the back of the event queue
-            _gw->getEventQueue()->mouseScroll(event->delta()>0 ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN );
+                // returns the viewers event queue and placing the event on the back of the event queue
+                _gw->getEventQueue()->mouseScroll(event->delta()>0 ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN );
             }
             
             void QOSGWidget::mouseReleaseEvent( QMouseEvent* event ) {
                 int button = 0;
                 switch(event->button()) {
-                    case(Qt::LeftButton): button = 1; break;
-                    case(Qt::MidButton): button = 2; break;
-                    case(Qt::RightButton): button = 3; break;
-                    case(Qt::NoButton): button = 0; break;
-                    default: button = 0; break;
+                case(Qt::LeftButton): button = 1; break;
+                case(Qt::MidButton): button = 2; break;
+                case(Qt::RightButton): button = 3; break;
+                case(Qt::NoButton): button = 0; break;
+                default: button = 0; break;
                 }
                 _gw->getEventQueue()->mouseButtonRelease(event->x(), event->y(), button);
             }

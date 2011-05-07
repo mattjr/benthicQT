@@ -83,10 +83,12 @@ namespace ews {
                  */
                 virtual void homePosition();
                 void computeHomePosition();
+                void pauseAnim();
+
                 WindowCaptureCallback *movieCallback;
                 MyAnimationPath *_ap;
-
-                void switchToFromAniManip();
+                enum{TOGGLE_MANIP,WW_MANIP,ANIM_MANIP};
+                void switchToFromAniManip(int switchTo=0);
             public slots:
                 void startRecording();
                 void stopRecording();
