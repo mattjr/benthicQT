@@ -22,6 +22,9 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
+     <widget class="QTableWidget" name="tableWidget"/>
+    </item>
+    <item>
      <widget class="QListWidget" name="listWidget"/>
     </item>
     <item>

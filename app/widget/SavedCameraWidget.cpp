@@ -2,8 +2,49 @@
 #include "ui_SavedCameraWidget.h"
 #include <QtCore/QDebug>
  #include <QDoubleSpinBox>
+#include <QLineEdit>
 #include <stdio.h>
+#include <QTableWidget>
+SpinBoxDelegate::SpinBoxDelegate(QObject *parent)
+     : QItemDelegate(parent)
+ {
+ }
 
+ QWidget *SpinBoxDelegate::createEditor(QWidget *parent,
+     const QStyleOptionViewItem &/* option */,
+     const QModelIndex &/* index */) const
+ {
+     QSpinBox *editor = new QSpinBox(parent);
+     editor->setMinimum(0);
+     editor->setMaximum(100);
+
+     return editor;
+ }
+
+ void SpinBoxDelegate::setEditorData(QWidget *editor,
+                                     const QModelIndex &index) const
+ {
+     int value = index.model()->data(index, Qt::EditRole).toInt();
+
+     QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+     spinBox->setValue(value);
+ }
+
+ void SpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+                                    const QModelIndex &index) const
+ {
+     QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+     spinBox->interpretText();
+     int value = spinBox->value();
+
+     model->setData(index, value, Qt::EditRole);
+ }
+
+ void SpinBoxDelegate::updateEditorGeometry(QWidget *editor,
+     const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+ {
+     editor->setGeometry(option.rect);
+ }
 SavedCameraWidget::SavedCameraWidget(ews::app::widget::QOSGWidget *qosgWidget,QWidget *parent) :
     QDockWidget(parent),_qosgWidget(qosgWidget),
     ui(new Ui::SavedCameraWidget),_maxTime(0.0)
@@ -45,19 +86,34 @@ void SavedCameraWidget::on_addSaved_clicked()
 void SavedCameraWidget::updateList(){
     MyAnimationPath::TimeControlPointMap &tcpm=_ap->getTimeControlPointMap();
     MyAnimationPath::TimeControlPointMap::iterator iter;
-    ui->listWidget->clear();
+    //ui->tableWidget->clear();
+    SpinBoxDelegate* delegate = new SpinBoxDelegate(ui->tableWidget);
+    ui->tableWidget->setItemDelegate(new SpinBoxDelegate);
+       ui->tableWidget->setColumnCount(2);
+       ui->tableWidget->setRowCount(tcpm.size());
 
+int row=0;
     for(iter=tcpm.begin(); iter != tcpm.end(); iter++){
-           QListWidgetItem *qtItem = new QListWidgetItem();
+           QTableWidgetItem *posItem = new QTableWidgetItem();
+           QTableWidgetItem *timeItem = new QTableWidgetItem();
+
            char tmp[1024];
            osg::Vec3 pos=iter->second.getCenter();
-           sprintf(tmp,"Time %.1f X: %3.8f Y: %3.8f Z: %3.2f",iter->first,pos[0],pos[1],pos[2]);
+           sprintf(tmp,"X: %3.8f Y: %3.8f Z: %3.2f",pos[0],pos[1],pos[2]);
            QString posStr=tmp;
-           qtItem->setText(posStr);
-           QDoubleSpinBox *spinbox=new QDoubleSpinBox();
-           spinbox->setValue(iter->first);
-           ui->listWidget->addItem(qtItem);
-             //ui->listWidget->addItem(spinbox);
+           posItem->setText(posStr);
+     //      posItem->setFlags (posItem->flags () | ~Qt::ItemIsEditable);
+           sprintf(tmp,"Time %f",iter->first);
+           QString timeStr=tmp;
+           timeItem->setText(timeStr);
+           timeItem->setFlags (timeItem->flags () | Qt::ItemIsEditable);
+
+           //QModelIndex index = model.index(row, column, QModelIndex());
+             //        model.setData(index, QVariant((row+1) * (column+1)));
+           ui->tableWidget->setItem(row,0,posItem);
+           ui->tableWidget->setItem(row,1,timeItem);
+           row++;
+
     }
 }
 

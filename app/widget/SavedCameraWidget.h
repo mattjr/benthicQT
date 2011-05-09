@@ -4,7 +4,11 @@
 #include <QDockWidget>
 #include "QOSGWidget.h"
 #include <osg/AnimationPath>
-
+#include <QItemDelegate>
+#include <QModelIndex>
+#include <QObject>
+#include <QSize>
+#include <QSpinBox>
 namespace Ui {
     class SavedCameraWidget;
 }
@@ -35,5 +39,21 @@ private slots:
     void on_pushButton_2_clicked();
     void on_addSaved_clicked();
 };
+class SpinBoxDelegate : public QItemDelegate
+ {
+     Q_OBJECT
 
+ public:
+     SpinBoxDelegate(QObject *parent = 0);
+
+     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+
+     void setEditorData(QWidget *editor, const QModelIndex &index) const;
+     void setModelData(QWidget *editor, QAbstractItemModel *model,
+                       const QModelIndex &index) const;
+
+     void updateEditorGeometry(QWidget *editor,
+         const QStyleOptionViewItem &option, const QModelIndex &index) const;
+ };
 #endif // SAVEDCAMERAWIDGET_H
