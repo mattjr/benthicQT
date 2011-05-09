@@ -56,13 +56,14 @@ namespace ews {
                 setThreadingModel(osgViewer::Viewer::SingleThreaded);
                 osg::Matrixd *mat=NULL;
                 bool inverseMouse=false;
+                _ap=new MyAnimationPath;
+
                 _wwManip = new WorldWindManipulatorNew(this,
                                                        NULL,
                                                        inverseMouse,
-                                                       mat);
+                                                       mat,_ap);
                 setCameraManipulator(_wwManip);//new ws::app::drawable::CameraController);
-                _ap=new MyAnimationPath;
-                _animationManip=new AnimationPathPlayer(_ap);
+                //      _animationManip=new AnimationPathPlayer(_ap);
                 
 #if defined(QT_DEBUG)                      
                 addEventHandler(new osgViewer::StatsHandler);
@@ -181,7 +182,7 @@ namespace ews {
             }
 
             void QOSGWidget::switchToFromAniManip(int switchTo){
-                MANIP_INHERIT* mat = getCameraManipulator();
+                /* MANIP_INHERIT* mat = getCameraManipulator();
                 WorldWindManipulatorNew *ctrl;
                 AnimationPathPlayer *ani_manip;
                 if(switchTo == TOGGLE_MANIP){
@@ -194,11 +195,23 @@ namespace ews {
                 }else if(switchTo == ANIM_MANIP){
                     setCameraManipulator(_animationManip);
                 }else if(switchTo == WW_MANIP){
-                    setCameraManipulator(_wwManip,false);
+                    printf("%x\n",_wwManip);
+                    osgGA::CameraManipulator *cam=_wwManip;
+                        setCameraManipulator(_wwManip,false);
+                }*/
+                if(switchTo == TOGGLE_MANIP){
+                    _wwManip->_isAnimating = !_wwManip->_isAnimating;
+                }else if(switchTo == ANIM_MANIP){
+                    if(_wwManip->getPaused())
+                        _wwManip->togglePaused();
+                    _wwManip->_isAnimating=true;
+                }else if(switchTo == WW_MANIP){
+                    _wwManip->_isAnimating=false;
+                    _wwManip->home(0);
                 }
             }
             void QOSGWidget::pauseAnim(){
-                _gw->getEventQueue()->keyPress('p' ) ;
+                _wwManip->togglePaused();
             }
 
             /*void QOSGWidget::startPlayBack(){

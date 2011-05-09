@@ -1,7 +1,7 @@
 #include "SavedCameraWidget.h"
 #include "ui_SavedCameraWidget.h"
 #include <QtCore/QDebug>
-
+ #include <QDoubleSpinBox>
 #include <stdio.h>
 
 SavedCameraWidget::SavedCameraWidget(ews::app::widget::QOSGWidget *qosgWidget,QWidget *parent) :
@@ -54,7 +54,10 @@ void SavedCameraWidget::updateList(){
            sprintf(tmp,"Time %.1f X: %3.8f Y: %3.8f Z: %3.2f",iter->first,pos[0],pos[1],pos[2]);
            QString posStr=tmp;
            qtItem->setText(posStr);
+           QDoubleSpinBox *spinbox=new QDoubleSpinBox();
+           spinbox->setValue(iter->first);
            ui->listWidget->addItem(qtItem);
+             //ui->listWidget->addItem(spinbox);
     }
 }
 
@@ -107,5 +110,6 @@ void SavedCameraWidget::on_cameraPauseButton_clicked()
 void SavedCameraWidget::on_cameraStopButton_clicked()
 {
     _qosgWidget->switchToFromAniManip(ews::app::widget::QOSGWidget::WW_MANIP);
+ //   _qosgWidget->switchToFromAniManip(ews::app::widget::QOSGWidget::ANIM_MANIP);
 
 }

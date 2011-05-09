@@ -32,7 +32,7 @@ struct MyReadCallback : public osgUtil::IntersectionVisitor::ReadCallback
 };
 
 
-WorldWindManipulatorNew::WorldWindManipulatorNew(osgViewer::Viewer* viewer, osgText::Text *text, bool invertMouse,osg::Matrixd *mat) :viewer(viewer), _updateText(text), _loaded_mat(mat) , _invertMouse(invertMouse),old_toggle_geo(NULL),old_toggle_idx(0)
+WorldWindManipulatorNew::WorldWindManipulatorNew(osgViewer::Viewer* viewer, osgText::Text *text, bool invertMouse,osg::Matrixd *mat,MyAnimationPath *animationPath) :viewer(viewer), _updateText(text), _loaded_mat(mat) , _invertMouse(invertMouse),old_toggle_geo(NULL),old_toggle_idx(0)
 {
 
     if(mat){
@@ -64,6 +64,18 @@ WorldWindManipulatorNew::WorldWindManipulatorNew(osgViewer::Viewer* viewer, osgT
     cameraRotationSpeed = 1000.0;
     cameraPanAcceleration=-0.6;
     _minalt=0.0;
+    _pausedChanged=false;
+    _printOutTimingInfo = true;
+
+    _animationPath = animationPath;
+    _timeOffset = 0.0;
+    _timeScale = 1.0;
+    _isPaused = false;
+
+    _realStartOfTimedPeriod = 0.0;
+    _animStartOfTimedPeriod = 0.0;
+    _numOfFramesSinceStartOfTimedPeriod = -1; // need to init.
+    _isAnimating=false;
 }
 
 
@@ -110,8 +122,17 @@ osg::Node* WorldWindManipulatorNew::getNode()
 }
 
 
-void WorldWindManipulatorNew::home(double /*currentTime*/)
+void WorldWindManipulatorNew::home(double currentTime)
 {
+
+    if (_animationPath.valid())
+    {
+        _timeOffset = _animationPath->getFirstTime()-currentTime;
+
+    }
+    // reset the timing of the animation.
+    _numOfFramesSinceStartOfTimedPeriod=-1;
+
     if (_node.get()){
         const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
@@ -152,12 +173,73 @@ void WorldWindManipulatorNew::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("WorldWind: +","When in stereo, increase the fusion distance");
     usage.addKeyboardMouseBinding("WorldWind: -","When in stereo, reduce the fusion distance");
 }
+void WorldWindManipulatorNew::handleFrameAnim( double time )
+{
+    MyAnimationPath::ControlPoint cp;
+
+    double animTime = (time+_timeOffset)*_timeScale;
+    _animationPath->getInterpolatedControlPoint( animTime, cp );
+
+    if (_numOfFramesSinceStartOfTimedPeriod==-1)
+    {
+        _realStartOfTimedPeriod = time;
+        _animStartOfTimedPeriod = animTime;
+
+    }
+
+    ++_numOfFramesSinceStartOfTimedPeriod;
+
+    if (_printOutTimingInfo)
+    {
+        double animDelta = (animTime-_animStartOfTimedPeriod);
+        if (animDelta>=_animationPath->getPeriod())
+        {
+
+            double delta = time-_realStartOfTimedPeriod;
+
+            double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
+            OSG_NOTICE <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
+            OSG_NOTICE <<"             average frame rate = "<<frameRate<<std::endl;
+
+            // reset counters for next loop.
+            _realStartOfTimedPeriod = time;
+            _animStartOfTimedPeriod = animTime;
+
+            _numOfFramesSinceStartOfTimedPeriod = 0;
+        }
+    }
+    //osg::Matrix tmp;
+    //cp.getMatrix( tmp );
+    //setByMatrix(tmp);
+    moveTo(cp.getCenter(),cp.getOrientation(),cp.getDistance(),cp.getTilt());
+
+}
+void WorldWindManipulatorNew::togglePaused(){
+    _pausedChanged=true;
+}
 
 bool WorldWindManipulatorNew::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     switch(ea.getEventType())
     {
     case(GUIEventAdapter::FRAME):
+        if( _pausedChanged )
+        {
+            _pausedChanged=false;
+            if( _isPaused )
+            {
+                _isPaused = false;
+                _timeOffset -= ea.getTime() - _pauseTime;
+            }
+            else
+            {
+                _isPaused = true;
+                _pauseTime = ea.getTime();
+            }
+        }
+        if(_isAnimating && !_isPaused)
+            handleFrameAnim(ea.getTime());
+
         _frame(ea);
         if (_thrown)
 	{
