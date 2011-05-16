@@ -31,6 +31,8 @@ private:
 
 
 private slots:
+    void on_saveButton_clicked();
+    void on_loadButton_clicked();
     void on_cameraStopButton_clicked();
     void on_cameraPauseButton_clicked();
     void on_cameraPlayButton_clicked();
@@ -44,7 +46,7 @@ class SpinBoxDelegate : public QItemDelegate
      Q_OBJECT
 
  public:
-     SpinBoxDelegate(QObject *parent = 0);
+     SpinBoxDelegate( MyAnimationPath::TimeControlPointMap &tcpm,QObject *parent = 0);
 
      QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index) const;
@@ -55,5 +57,7 @@ class SpinBoxDelegate : public QItemDelegate
 
      void updateEditorGeometry(QWidget *editor,
          const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+     MyAnimationPath::TimeControlPointMap &_tcpm;
  };
 #endif // SAVEDCAMERAWIDGET_H

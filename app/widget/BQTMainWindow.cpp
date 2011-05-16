@@ -393,7 +393,9 @@ namespace ews {
             {
                 QFileInfo p(fullFileName);
                 QStringList dirs = p.path().split( "/");
-                int index = max( 0, (int)dirs.size()-2 );
+                int index = max( 0, (int)dirs.size()-1 );
+                if( dirs[index] == "mesh")
+                    index = max(0, (int)dirs.size()-2);
                 return dirs[index]+" ("+p.fileName()+")";
             }
              void EWSMainWindow::updateOverlayWidget(MeshFile &data){

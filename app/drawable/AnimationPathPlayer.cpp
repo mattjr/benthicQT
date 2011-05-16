@@ -1,7 +1,7 @@
 #include "AnimationPathPlayer.hpp"
 
 #include <osgDB/fstream>
-
+#include <osg/io_utils>
 using namespace osgGA;
 void MyAnimationPath::insert(double time,const ControlPoint& controlPoint)
 {
@@ -231,4 +231,41 @@ void AnimationPathPlayer::handleFrame( double time )
     }
 
     cp.getMatrix( _matrix );
+}
+void MyAnimationPath::read(std::istream& in)
+{
+    while (!in.eof())
+    {
+        double time;
+        osg::Vec3d center;
+        osg::Quat orientation;
+        double distance,tilt;
+        in >> time >> center.x() >> center.y() >> center.z() >> orientation.x() >> orientation.y() >> orientation.z() >> orientation.w()>>distance>>tilt;
+        if(!in.eof())
+            insert(time,ControlPoint( center, orientation,  distance, tilt));
+    }
+}
+
+void MyAnimationPath::write(TimeControlPointMap::const_iterator itr, std::ostream& fout) const
+{
+    const ControlPoint& cp = itr->second;
+    fout<<itr->first<<" "<<cp.getCenter()<< " "<< cp.getOrientation() << " "<< cp.getDistance() << " "<<cp.getTilt()<<std::endl;
+
+            //cp.getPosition()<<" "<<cp.getRotation()<<std::endl;
+}
+
+void MyAnimationPath::write(std::ostream& fout) const
+{
+    int prec = fout.precision();
+    fout.precision(15);
+
+    const TimeControlPointMap& tcpm = getTimeControlPointMap();
+    for(TimeControlPointMap::const_iterator tcpmitr=tcpm.begin();
+        tcpmitr!=tcpm.end();
+        ++tcpmitr)
+    {
+        write(tcpmitr, fout);
+    }
+
+    fout.precision(prec);
 }
