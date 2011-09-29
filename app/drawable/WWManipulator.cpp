@@ -6,7 +6,6 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/IntersectVisitor>
 
-
 #include <sstream>
 
 #include <osg/Projection>
@@ -86,8 +85,10 @@ WorldWindManipulatorNew::~WorldWindManipulatorNew()
 
 void WorldWindManipulatorNew::setNode(osg::Node* node)
 {
+   // printf("In set node\n");
     _node = node;
     if (_node.get()){
+
         const osg::BoundingSphere& boundingSphere=_node->getBound();
         _modelScale = boundingSphere._radius;
         if(!oldmesh){
@@ -198,8 +199,8 @@ void WorldWindManipulatorNew::handleFrameAnim( double time )
             double delta = time-_realStartOfTimedPeriod;
 
             double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
-            OSG_NOTICE <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
-            OSG_NOTICE <<"             average frame rate = "<<frameRate<<std::endl;
+             osg::notify(osg::NOTICE) <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
+             osg::notify(osg::NOTICE) <<"             average frame rate = "<<frameRate<<std::endl;
 
             // reset counters for next loop.
             _realStartOfTimedPeriod = time;

@@ -32,7 +32,7 @@
 #include "BarrierSet.h"
 #include "SimulationState.h"
 #include "ProgressBar.h"
-
+#include "FindNode.h"
 namespace ews {
     namespace app {
         namespace drawable {
@@ -146,6 +146,14 @@ namespace ews {
                         std::cerr << errmsg;
                         errorD.showMessage(errStr);
                         errorD.exec();
+                    }
+                    osg::CoordinateSystemNode *pCoordSystem =findTopMostNodeOfType<osg::CoordinateSystemNode>(node.get());
+
+                      if( pCoordSystem ){
+                          printf("New Node type with CSN\n");
+                          osg::MatrixTransform *trans =findTopMostNodeOfType<osg::MatrixTransform>(node.get());
+                          trans->setMatrix(osg::Matrix::identity());
+
                     }
                     osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
                     if(ss)

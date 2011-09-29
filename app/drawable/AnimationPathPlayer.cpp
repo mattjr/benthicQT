@@ -140,7 +140,7 @@ bool AnimationPathPlayer::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActi
 
             _timeScale *= 1.1;
 
-            OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+            osg::notify(osg::NOTICE)<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
 
             // adjust timeOffset so the current animationTime does change.
             _timeOffset = animationTime/_timeScale - time;
@@ -154,7 +154,7 @@ bool AnimationPathPlayer::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActi
 
             _timeScale /= 1.1;
 
-            OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+             osg::notify(osg::NOTICE)<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
 
             // adjust timeOffset so the current animationTime does change.
             _timeOffset = animationTime/_timeScale - time;
@@ -219,8 +219,8 @@ void AnimationPathPlayer::handleFrame( double time )
             double delta = time-_realStartOfTimedPeriod;
 
             double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
-            OSG_NOTICE <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
-            OSG_NOTICE <<"             average frame rate = "<<frameRate<<std::endl;
+             osg::notify(osg::NOTICE) <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
+             osg::notify(osg::NOTICE) <<"             average frame rate = "<<frameRate<<std::endl;
 
             // reset counters for next loop.
             _realStartOfTimedPeriod = time;
