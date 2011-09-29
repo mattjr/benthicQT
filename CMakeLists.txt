@@ -142,6 +142,8 @@ unmoc(Bboxes.hpp)
 unmoc(VideoStreamer.h)
 unmoc(OSGMovieCallback.h)
 unmoc(ScreenTools.h)
+unmoc(FindNode.h)
+
 #message("moc files: ${BQT_MOC_HDRS}")
 
 set_source_files_properties(${BQT_HDRS} PROPERTIES HEADER_FILE_ONLY TRUE) 
