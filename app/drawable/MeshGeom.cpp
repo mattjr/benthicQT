@@ -136,7 +136,7 @@ namespace ews {
                 osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = new osgDB::ReaderWriter::Options;
                 local_opt->setDatabasePath(osgDB::getFilePath(filename));
                 std::istream mis(pb.get());
-
+                osg::MatrixTransform *transRev=new osg::MatrixTransform;
                 osgDB::ReaderWriter::ReadResult rr = rw->readNode(mis,local_opt);
                 if (rr.validNode()) {
                     osg::ref_ptr<osg::Node> node = rr.getNode();
@@ -149,19 +149,23 @@ namespace ews {
                     }
                     osg::CoordinateSystemNode *pCoordSystem =findTopMostNodeOfType<osg::CoordinateSystemNode>(node.get());
 
-                      if( pCoordSystem ){
-                          printf("New Node type with CSN\n");
-                          osg::MatrixTransform *trans =findTopMostNodeOfType<osg::MatrixTransform>(node.get());
-                          trans->setMatrix(osg::Matrix::identity());
 
-                    }
                     osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
                     if(ss)
                     ss->addUniform(_dataModel.getShaderOutUniform());
-                    _meshGeom->addChild(node.get());
-                    setEnabled(true);
-                    _dataModel.setStateSet(ss);
+                    if( pCoordSystem ){
+                        printf("New Node type with CSN\n");
+                        osg::MatrixTransform *trans =findTopMostNodeOfType<osg::MatrixTransform>(node.get());
+                        transRev->setMatrix(osg::Matrix::inverse(trans->getMatrix()));
+                        transRev->addChild(node.get());
+                        _meshGeom->addChild(transRev);
 
+                    }else{
+                    _meshGeom->addChild(node.get());
+
+                }
+                    setEnabled(true);
+                   _dataModel.setStateSet(ss);
                 }else{
                     if (rr.error()) {
                         string errmsg= "Error: could not open file `" + filename +"'" +rr.message();
