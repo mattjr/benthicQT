@@ -243,29 +243,29 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                         "return vec4(tmp.x,tmp.y,tmp.z,1.0);\n"\
                         "}\n"\
                         "vec4 jet(float val){\n"\
-                        " const vec3 keys[9]=const vec3[9]("\
-                        "const vec3(0., 0., .5),\n"\
-                        " const vec3(0., 0., 1.),\n"\
-                        " const vec3(0., .5, 1.), \n"\
-                        "const vec3(0., 1., 1.),\n"\
-                        "const vec3(.5, 1., .5),\n"\
-                        "const vec3(1., 1., 0.), \n"\
-                        "const vec3(1., .5, 0.), \n"\
-                        "const vec3(1., .0, 0.), \n"\
-                        "const vec3(.5, .0, 0.) ); \n"\
+                        " const vec3 keys[9]=vec3[9]("\
+                        "vec3(0., 0., .5),\n"\
+                        " vec3(0., 0., 1.),\n"\
+                        " vec3(0., .5, 1.), \n"\
+                        "vec3(0., 1., 1.),\n"\
+                        "vec3(.5, 1., .5),\n"\
+                        "vec3(1., 1., 0.), \n"\
+                        "vec3(1., .5, 0.), \n"\
+                        "vec3(1., .0, 0.), \n"\
+                        "vec3(.5, .0, 0.) ); \n"\
                         "return doMap(val, keys, 9);\n"\
                         "}\n"\
                         "vec4 hot(float val){\n"\
-                        " const vec3 keys[9]=const vec3[9]("\
-                        "const vec3(0.     , 0.     , 0.),\n"\
-                        " const vec3(1. / 3., 0.     , 0.),\n"\
-                        " const vec3(2. / 3., 0.     , 0.), \n"\
-                        "const vec3(1.     , 0.     , 0.),\n"\
-                        "const vec3(1.     , 1. / 3., 0.),\n"\
-                        "const vec3(1.     , 2. / 3., 0.), \n"\
-                        "const vec3(1.     , 1.     , 0.), \n"\
-                        "const vec3(1.     , 1.     , .5), \n"\
-                        "const vec3(1.     , 1.     , 1.) ); \n"\
+                        " const vec3 keys[9]=vec3[9]("\
+                        "vec3(0.     , 0.     , 0.),\n"\
+                        " vec3(1. / 3., 0.     , 0.),\n"\
+                        " vec3(2. / 3., 0.     , 0.), \n"\
+                        "vec3(1.     , 0.     , 0.),\n"\
+                        "vec3(1.     , 1. / 3., 0.),\n"\
+                        "vec3(1.     , 2. / 3., 0.), \n"\
+                        "vec3(1.     , 1.     , 0.), \n"\
+                        "vec3(1.     , 1.     , .5), \n"\
+                        "vec3(1.     , 1.     , 1.) ); \n"\
                         "return doMap(val, keys, 9);\n"\
                         "}\n"\
                          "vec4 grey(float val){\n"\
@@ -289,50 +289,50 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                        "return vec4(x,1.0-x,1.0,1.0);\n"\
                        "}\n"\
                         "vec4 bone(float val){\n"\
-                        " const vec3 keys[9]=const vec3[9]("\
-                        "const vec3(0.     , 0.     , 0.),\n"\
-                        " const vec3(0.3194, 0.3194, 0.4444),\n"\
-                        " const vec3(0.6528, 0.7778, 0.7778),\n"\
-                        "const vec3(1.    , 1.    , 1.    ),\n"\
-                        "const vec3(0.     , 0.     , 0.),\n"\
-                        "const vec3(0.     , 0.     , 0.),\n"\
-                        "const vec3(0.     , 0.     , 0.),\n"\
-                        "const vec3(0.     , 0.     , 0.),\n"\
-                        "const vec3(0.     , 0.     , 0.) ); \n"\
+                        " const vec3 keys[9]=vec3[9]("\
+                        "vec3(0.     , 0.     , 0.),\n"\
+                        " vec3(0.3194, 0.3194, 0.4444),\n"\
+                        " vec3(0.6528, 0.7778, 0.7778),\n"\
+                        "vec3(1.    , 1.    , 1.    ),\n"\
+                        "vec3(0.     , 0.     , 0.),\n"\
+                        "vec3(0.     , 0.     , 0.),\n"\
+                        "vec3(0.     , 0.     , 0.),\n"\
+                        "vec3(0.     , 0.     , 0.),\n"\
+                        "vec3(0.     , 0.     , 0.) ); \n"\
                         "return doMap(val, keys, 4);\n"\
                         "}\n"\
                         "vec4 rainbow(float val){\n"\
-                        " const vec3 keys[9]=const vec3[9]("\
-                        "const vec3(1., 0., 0.),\n"\
-                        " const vec3(1., 1., 0.),\n"\
-                        " const vec3(0., 1., 0.),\n"\
-                        "const vec3(0., 1., 1.),\n"\
-                        "const vec3(0., 0., 1.),\n"\
-                        "const vec3(1., 0., 1.),\n"\
-                        "const vec3(1., 0., 0.),\n"\
-                        "const vec3(0.     , 0.     , 0.),\n"\
-                        "const vec3(0.     , 0.     , 0.) ); \n"\
+                        " const vec3 keys[9]=vec3[9]("\
+                        "vec3(1., 0., 0.),\n"\
+                        " vec3(1., 1., 0.),\n"\
+                        " vec3(0., 1., 0.),\n"\
+                        "vec3(0., 1., 1.),\n"\
+                        "vec3(0., 0., 1.),\n"\
+                        "vec3(1., 0., 1.),\n"\
+                        "vec3(1., 0., 0.),\n"\
+                        "vec3(0.     , 0.     , 0.),\n"\
+                        "vec3(0.     , 0.     , 0.) ); \n"\
                         "return doMap(val, keys, 7);\n"\
                         "}\n"\
                         "vec4 pink(float val){\n"\
-                        " const vec3 keys[17]=const vec3[17]("\
-                        "const vec3(0.    , 0.    , 0.    ),\n"\
-                                "const vec3(0.2955, 0.1782, 0.1782),\n"\
-                                "const vec3(0.4303, 0.2722, 0.2722),\n"\
-                                "const vec3(0.5320, 0.3412, 0.3412),\n"\
-                                "const vec3(0.6172, 0.3984, 0.3984),\n"\
-                                "const vec3(0.6920, 0.4484, 0.4484),\n"\
-                                "const vec3(0.7594, 0.4933, 0.4933),\n"\
-                                "const vec3(0.7868, 0.5842, 0.5345),\n"\
-                                "const vec3(0.8133, 0.6627, 0.5727),\n"\
-                                "const vec3(0.8389, 0.7328, 0.6086),\n"\
-                                "const vec3(0.8637, 0.7968, 0.6424),\n"\
-                                "const vec3(0.8879, 0.8560, 0.6746),\n"\
-                                "const vec3(0.9114, 0.9114, 0.7052),\n"\
-                                "const vec3(0.9344, 0.9344, 0.7893),\n"\
-                                "const vec3(0.9567, 0.9567, 0.8653),\n"\
-                                "const vec3(0.9786, 0.9786, 0.9351),\n"\
-                                "const vec3(1.    , 1.    , 1.    ));\n"\
+                        " const vec3 keys[17]=vec3[17]("\
+                        "vec3(0.    , 0.    , 0.    ),\n"\
+                                "vec3(0.2955, 0.1782, 0.1782),\n"\
+                                "vec3(0.4303, 0.2722, 0.2722),\n"\
+                                "vec3(0.5320, 0.3412, 0.3412),\n"\
+                                "vec3(0.6172, 0.3984, 0.3984),\n"\
+                                "vec3(0.6920, 0.4484, 0.4484),\n"\
+                                "vec3(0.7594, 0.4933, 0.4933),\n"\
+                                "vec3(0.7868, 0.5842, 0.5345),\n"\
+                                "vec3(0.8133, 0.6627, 0.5727),\n"\
+                                "vec3(0.8389, 0.7328, 0.6086),\n"\
+                                "vec3(0.8637, 0.7968, 0.6424),\n"\
+                                "vec3(0.8879, 0.8560, 0.6746),\n"\
+                                "vec3(0.9114, 0.9114, 0.7052),\n"\
+                                "vec3(0.9344, 0.9344, 0.7893),\n"\
+                                "vec3(0.9567, 0.9567, 0.8653),\n"\
+                                "vec3(0.9786, 0.9786, 0.9351),\n"\
+                                "vec3(1.    , 1.    , 1.    ));\n"\
                         "return doMap17(val, keys, 17);\n"\
                         "}\n"\
                         "vec4 colormapGetColor(float val,int map){\n"\
