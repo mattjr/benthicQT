@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -445,7 +445,7 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
     std::string fragstr = frag.str();
 
     OSG_DEBUG << "MyShaderGenCache Vertex shader:\n" << vertstr << std::endl;
-    OSG_INFO << "MyShaderGenCache Fragment shader:\n" << fragstr << std::endl;
+    OSG_DEBUG << "MyShaderGenCache Fragment shader:\n" << fragstr << std::endl;
 
     program->addShader(new osg::Shader(osg::Shader::VERTEX, vertstr));
     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragstr));
