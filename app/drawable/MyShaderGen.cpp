@@ -221,7 +221,7 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                         "vec4 doMap(float val,const vec3 iMap[9],int iMapSize){\n"\
                         " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
                         " float x0 = floor(x);\n"\
-                        "int i = const int(x0);\n"\
+                        "int i = int(x0);\n"\
                         " if (i == iMapSize - 1)\n"\
                         "{\n"\
                         "return vec4(iMap[i].x,iMap[i].y,iMap[i].z,1.0);\n"\
@@ -233,7 +233,7 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                         "vec4 doMap17(float val,const vec3 iMap[17],int iMapSize){\n"\
                         " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
                         " float x0 = floor(x);\n"\
-                        "int i = const int(x0);\n"\
+                        "int i = int(x0);\n"\
                         " if (i == iMapSize - 1)\n"\
                         "{\n"\
                         "return vec4(iMap[i].x,iMap[i].y,iMap[i].z,1.0);\n"\
