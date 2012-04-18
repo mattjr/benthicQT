@@ -79,7 +79,7 @@ struct AVStream;
 struct AVFormatContext;
 struct AVFrame;
 enum PixelFormat;
-typedef uint8_t unsigned __int8   ;
+//typedef uint8_t unsigned __int8   ;
 class VideoStreamer;
 class WorkThread : public OpenThreads::Thread
 {

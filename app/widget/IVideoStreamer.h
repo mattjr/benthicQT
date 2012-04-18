@@ -44,8 +44,8 @@ struct IVideoStreamer
 
 class NullVideoStreamer: public IVideoStreamer{
     public:
-    virtual int  OpenVideo(void) {}
-    virtual bool Update(ImgData* ai_image) {}
+  virtual int  OpenVideo(void) {return -1;}
+  virtual bool Update(ImgData* ai_image) {return false;}
     virtual void CloseVideo(void) {}
     virtual void Run(void) {}
     virtual bool IsOpen(void) {return false;}
