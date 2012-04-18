@@ -122,6 +122,18 @@ namespace ews {
                     _dataModel->setShaderOut(index);
             }
 
+            void BarrierEditor::changeDataUsed(int index)
+            {
+             //   qDebug() << "changed to " << index;
+                if(_dataModel)
+                    _dataModel->setDataUsed(index);
+            }
+            void BarrierEditor::changeColorMap(int index)
+            {
+             //   qDebug() << "changed to " << index;
+                if(_dataModel)
+                    _dataModel->setColorMap(index);
+            }
         }
     }
 }

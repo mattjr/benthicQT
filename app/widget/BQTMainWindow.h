@@ -118,6 +118,10 @@ namespace ews {
                 QAction *separatorAct;
                 QString curFile;
                 QComboBox *overlay;
+                QComboBox *datausedCombo;
+                QComboBox *colormapCombo;
+
+
                 enum { MaxRecentFiles = 5 };
                 QAction *recentFileActs[MaxRecentFiles];
                 bool firstRunRecord;

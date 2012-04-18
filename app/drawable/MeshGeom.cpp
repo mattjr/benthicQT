@@ -23,6 +23,7 @@
 #include <osg/Material>
 #include <osg/CullFace>
 #include <osgDB/ReadFile>
+#include "MyShaderGen.h"
 
 #include <osgManipulator/Translate2DDragger>
 #include "PositionHandler.h"
@@ -33,6 +34,7 @@
 #include "SimulationState.h"
 #include "ProgressBar.h"
 #include "FindNode.h"
+
 namespace ews {
     namespace app {
         namespace drawable {
@@ -40,7 +42,30 @@ namespace ews {
             using namespace osgManipulator;
             using namespace app::model;
             
+        class ShaderGenReadFileCallback : public osgDB::Registry::ReadFileCallback
+        {
+        public:
+            ShaderGenReadFileCallback()
+            {
+            }
 
+            virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::ReaderWriter::Options* options)
+            {
+                osgDB::ReaderWriter::ReadResult result = osgDB::Registry::ReadFileCallback::readNode(filename, options);
+                if (osg::Node *node = result.getNode())
+                {
+                    _visitor.reset();
+                    node->accept(_visitor);
+                }
+                return result;
+            }
+
+            void setRootStateSet(osg::StateSet *stateSet) { _visitor.setRootStateSet(stateSet); }
+            osg::StateSet *getRootStateSet() const { return _visitor.getRootStateSet(); }
+
+        protected:
+            MyShaderGenVisitor _visitor;
+        };
             
             /** Primary constructor. */
             MeshGeom::MeshGeom(MeshFile& dataModel)
@@ -118,6 +143,9 @@ namespace ews {
                     qDebug() << "Loading " << *it;
                 string filename = it->toStdString();
                 //osgDB::Registry::instance()->setReadFileCallback(new MyReadCallback(*sseh));
+                ShaderGenReadFileCallback *readFileCallback = new ShaderGenReadFileCallback;
+                   // All read nodes will inherit root state set.
+
                 osg::ref_ptr<osgDB::ReaderWriter> rw = osgDB::Registry::instance()->getReaderWriterForExtension(osgDB::getLowerCaseFileExtension(filename));
                 std::auto_ptr<progbuf> pb(new progbuf(osgDB::findDataFile(filename),_dataModel.getPBarD()));
                 if (!rw || !pb->is_open())
@@ -151,8 +179,15 @@ namespace ews {
 
 
                     osg::StateSet *ss=_meshGeom->getOrCreateStateSet();
-                    if(ss)
-                    ss->addUniform(_dataModel.getShaderOutUniform());
+
+                    if(ss){
+                        std::vector<osg::Uniform *> &shared_uniforms=_dataModel.getShaderOutUniform();
+                        for(int i=0; i < shared_uniforms.size(); i++)
+                            ss->addUniform(shared_uniforms[i]);
+                    }
+                    readFileCallback->setRootStateSet(ss);
+                    osgDB::Registry::instance()->setReadFileCallback(readFileCallback);
+
                     if( pCoordSystem ){
                         printf("New Node type with CSN\n");
                         osg::MatrixTransform *trans =findTopMostNodeOfType<osg::MatrixTransform>(node.get());

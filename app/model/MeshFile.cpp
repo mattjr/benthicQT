@@ -42,12 +42,32 @@ namespace ews {
                 progress = new QProgressDialog();
                 progress->setWindowModality(Qt::WindowModal);
                 progress->setCancelButtonText(0);
-                shared_shader_out = new osg::Uniform("shaderOut",0);
-                num_shader_out=4;
+                shared_uniforms.resize(NUM_UNI_ENUM);
+                shared_uniforms[UNI_SHADER_OUT]= new osg::Uniform("shaderOut",0);
+                shared_uniforms[UNI_COLORMAP]=new osg::Uniform("colormap",0);
+                shared_uniforms[UNI_DATAUSED]= new osg::Uniform("dataused",0);
+                shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(0.0,0.0));
+
                 shader_names.push_back("Texture");
                 shader_names.push_back("Label");
                 shader_names.push_back("Overlay");
                 shader_names.push_back("Shaded");
+
+
+                colormap_names.push_back("Jet");
+                colormap_names.push_back("Rainbow");
+                colormap_names.push_back("Hot");
+                colormap_names.push_back("Bone");
+                colormap_names.push_back("Pink");
+                colormap_names.push_back("Spring");
+                colormap_names.push_back("Summer");
+                colormap_names.push_back("Winter");
+                colormap_names.push_back("Cool");
+
+                colormap_names.push_back("Grey");
+
+                dataused_names.push_back("Height");
+
                 //_manip=
                 _stateset=NULL;
 
@@ -96,6 +116,7 @@ namespace ews {
             void MeshFile::updateImage(osg::Vec3 v)
             {
                 bbox_map_info info;
+                cout << v << endl;
                 if(find_closet_img_idx(_tree,v,info)){
                     curr_img=(info.leftname).c_str();
                     emit imgLabelChanged(curr_img);
@@ -127,8 +148,8 @@ namespace ews {
             }
 
             void MeshFile::setShaderOut(int index) {
-                if(shared_shader_out)
-                    shared_shader_out->set(index);
+                if(shared_uniforms.size() > UNI_SHADER_OUT && shared_uniforms[UNI_SHADER_OUT])
+                    shared_uniforms[UNI_SHADER_OUT]->set(index);
                 if(_stateset){
                     unsigned int mode = osg::StateAttribute::OVERRIDE|osg::StateAttribute::OFF;
                     if ( index ==0 ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
@@ -141,8 +162,26 @@ namespace ews {
             }
 
 
+            void MeshFile::setColorMap(int index) {
+                if(shared_uniforms.size() > UNI_COLORMAP && shared_uniforms[UNI_COLORMAP])
+                    shared_uniforms[UNI_COLORMAP]->set(index);
+            }
+            void MeshFile::setDataRange(osg::Vec2 range){
+                if(shared_uniforms.size() > UNI_VAL_RANGE && shared_uniforms[UNI_VAL_RANGE])
+                    shared_uniforms[UNI_VAL_RANGE]->set(range);
+            }
 
-            
+            void MeshFile::setDataUsed(int index) {
+                if(shared_uniforms.size() > UNI_DATAUSED && shared_uniforms[UNI_DATAUSED]){
+                    shared_uniforms[UNI_DATAUSED]->set(index);
+                    if(index == HEIGHT_DATA)
+                        setDataRange(zrange);
+                    else{
+                        printf("Set data range based on somthing toDO\n");
+                    }
+                }
+            }
+
 
         }
     }

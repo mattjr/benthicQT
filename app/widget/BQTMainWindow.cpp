@@ -72,6 +72,10 @@ namespace ews {
                 int num_shader_out=2;
                 overlay=new QComboBox;
                 _ui->mainToolBar->addWidget(overlay);
+                datausedCombo =new QComboBox;
+                _ui->mainToolBar->addWidget(datausedCombo);
+                colormapCombo=new QComboBox;
+                _ui->mainToolBar->addWidget(colormapCombo);
                 // Setup sync between model and renderer.
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
@@ -85,6 +89,9 @@ namespace ews {
                 QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
                 QObject::connect(_ui->actionSet_to_960x540, SIGNAL(triggered()), this, SLOT(resize960x540()));
                 QObject::connect(overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
+                QObject::connect(datausedCombo, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeDataUsed(int)));
+                QObject::connect(colormapCombo, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeColorMap(int)));
+
                 QObject::connect(_ui->actionSavedCamera, SIGNAL(triggered()), this, SLOT(toggle_saved_camera_dialog()));
                 _ui->actionSavedCamera->setEnabled(true);
 
@@ -398,14 +405,18 @@ namespace ews {
                     index = max(0, (int)dirs.size()-2);
                 return dirs[index]+" ("+p.fileName()+")";
             }
-             void EWSMainWindow::updateOverlayWidget(MeshFile &data){
-                          overlay->clear();
+            void EWSMainWindow::updateOverlayWidget(MeshFile &data){
+                overlay->clear();
+                datausedCombo->clear();
+                colormapCombo->clear();
 
-
-                      for(int i=0; i< data.getNumShaderOut(); i++){
-                   if( i < data.getShaderNames().size())
-                       overlay->addItem(data.getShaderNames()[i].c_str());
-                   else{
+                for(int i=0; i< data.getShaderNames().size(); i++)
+                    overlay->addItem(data.getShaderNames()[i].c_str());
+                for(int i=0; i< data.getColorMapNames().size(); i++)
+                    colormapCombo->addItem(data.getColorMapNames()[i].c_str());
+                for(int i=0; i< data.getDataUsedNames().size(); i++)
+                    datausedCombo->addItem(data.getDataUsedNames()[i].c_str());
+                /*   else{
                        char tmp[255];
                        sprintf(tmp,"Aux %d",i);
                        QString qtmp=tmp;
@@ -413,8 +424,8 @@ namespace ews {
                        //qDebug() << "Adding " <<qtmp;
                    }
 
-               }
-                  }
+               }*/
+            }
              bool EWSMainWindow::runRecDlg(){
                  if(!_ui->renderer->movieCallback)
                      return false;

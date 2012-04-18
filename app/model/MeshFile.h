@@ -88,6 +88,8 @@ namespace ews {
                     QStringList::Iterator it = list.begin();
                     while( it != list.end() ) {
                         string path=osgDB::getFilePath(it->toStdString());
+                        if(path.size() ==0)
+                            path=".";
                         _tree=loadBBox(string(path+"/campath.txt").c_str());
                         if(_tree)
                             qDebug() << "Sucessfully loaded Tree";
@@ -99,10 +101,12 @@ namespace ews {
                     QStringList::Iterator it = list.begin();
                     while( it != list.end() ) {
                         string path=osgDB::getFilePath(it->toStdString());
-                        FILE *fp=fopen(string(path+"/shaderout.txt").c_str(),"r");
+                        if(path.size() ==0)
+                            path=".";
+                        FILE *fp=fopen(string(path+"/zrange.txt").c_str(),"r");
                         if(fp){
-                            fscanf(fp,"%d\n",&num_shader_out);
-                            qDebug() << "Sucessfully loaded shaderout";
+                            fscanf(fp,"%f %f\n",&zrange[0],&zrange[1]);
+                            qDebug() << "Sucessfully loaded zrange";
                             fclose(fp);
                         }
                         it++;
@@ -113,6 +117,8 @@ namespace ews {
                     QStringList::Iterator it = list.begin();
                     while( it != list.end() ) {
                         string path=osgDB::getFilePath(it->toStdString());
+                        if(path.size() ==0)
+                            path=".";
                         FILE *fp=fopen(string(path+"/origin.txt").c_str(),"r");
                         if(fp){
                             fscanf(fp,"%lf %lf\n",&latOrigin,&longOrigin);
@@ -132,9 +138,25 @@ namespace ews {
                     updateBoxes();
                     updateShaders();
                     updateOrigin();
+                    setDataUsed(0);
+                    setColorMap(0);
                     //emit dataChanged();
                 }
             void setShaderOut(int index);
+            void setColorMap(int index);
+            void setDataUsed(int index);
+            void setDataRange(osg::Vec2 range);
+            enum{
+                HEIGHT_DATA
+            };
+            enum{
+                UNI_SHADER_OUT,
+                UNI_COLORMAP,
+                UNI_DATAUSED,
+                UNI_VAL_RANGE,
+                NUM_UNI_ENUM
+            }uniform_list;
+
                 QStringList getFileNames(void) {
                     return filenames ;
 
@@ -143,12 +165,21 @@ namespace ews {
                     return shader_names ;
 
                 }
+
+                std::vector<string> getColorMapNames(void) {
+                    return colormap_names ;
+
+                }
+                std::vector<string> getDataUsedNames(void) {
+                    return dataused_names ;
+
+                }
                 int getNumShaderOut(void) {
-                    return num_shader_out ;
+                    return shader_names.size() ;
 
                 }
 
-                osg::Uniform * getShaderOutUniform(){return shared_shader_out;}
+                std::vector<osg::Uniform *> &getShaderOutUniform(){return shared_uniforms;}
                 
 
                 void updatePos(osg::Vec3 v);
@@ -186,12 +217,15 @@ namespace ews {
                 QStringList filenames;
                 RTree *_tree;
                 QProgressDialog *progress;
-                osg::Uniform* shared_shader_out;
-                int num_shader_out;
+                std::vector<osg::Uniform*> shared_uniforms;
                 double latOrigin, longOrigin;
                  std::vector<string>  shader_names;
+                 std::vector<string>  colormap_names;
+                 std::vector<string>  dataused_names;
+
                  QOSGWidget *_renderer;
                  osg::StateSet *_stateset;
+                 osg::Vec2f zrange;
 
             };
         }
