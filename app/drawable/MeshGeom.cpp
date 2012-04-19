@@ -89,6 +89,7 @@ namespace ews {
               color.g() *= 0.5f;
               color.b() *= 0.5f;
               _dataModel._mapSwitch=new Switch;
+              _switch->addChild(_dataModel.colorbar_hud);
              _dataModel._mapSwitch->addChild(createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
                                                   _dataModel.getRenderer()->width(),_dataModel.getRenderer()->height()));
              _dataModel._mapSwitch->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF );
@@ -184,6 +185,8 @@ namespace ews {
                         std::vector<osg::Uniform *> &shared_uniforms=_dataModel.getShaderOutUniform();
                         for(int i=0; i < shared_uniforms.size(); i++)
                             ss->addUniform(shared_uniforms[i]);
+
+                        ss->setTextureAttribute(TEXUNIT_ATTRIB,_dataModel.getSharedTex());
                     }
                     readFileCallback->setRootStateSet(ss);
                     osgDB::Registry::instance()->setReadFileCallback(readFileCallback);

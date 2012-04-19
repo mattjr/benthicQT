@@ -19,6 +19,9 @@
 #include <osg/CullFace>
 #include "MeshFile.h"
 #include <stdio.h>
+#include <osgSim/ScalarsToColors>
+#include <osgSim/ColorRange>
+#include <osgSim/ScalarBar>
 using namespace std;
 extern osg::Geode* measure_geode;
 extern bool measuring_tool_on;
@@ -367,6 +370,7 @@ protected:
   osgText::Text *text_ptr;
 };
 
+osg::Projection * createScalarBar_HUD(float min,float max,char *title, osgSim::ScalarsToColors *colormap);
 
 osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, WorldWindManipulatorNew *om,int screen_width,int screen_height);
 osg::Group* createRTTQuad(osg::Texture *texture);

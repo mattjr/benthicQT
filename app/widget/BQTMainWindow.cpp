@@ -313,8 +313,9 @@ namespace ews {
                 //       _state->getMeshFiles().getPBarD()->reset();
                 _state->getMeshFiles().getPBarD()->show();
                 //  sseh->setShaderOutUniform(_state->getMeshFiles().getShaderOutUniform());
-                _state->getMeshFiles().setFileNames(files);
                 _state->getMeshFiles().setRenderer(_ui->renderer);
+
+                _state->getMeshFiles().setFileNames(files);
 
                 _state->emitSignalsForLoad();
 

@@ -27,6 +27,9 @@
 #include <QtGui/QApplication>
 #include "BQTMainWindow.h"
 #include <QtGui/QClipboard>
+#include <QtGui/QMessageBox>
+#include "ScreenTools.h"
+#include "seabed_slam_file_io.hpp"
 namespace ews {
     namespace app {
         /**
@@ -34,7 +37,10 @@ namespace ews {
          */
         namespace model {
 
-            
+        float clamp( const float& x, const float& min, const float& max )
+        {
+            return std::min( std::max( min, x ), max );
+        };
             MeshFile::MeshFile(QOSGWidget *renderer): _renderer(renderer)
                     //            : QObject(parent)
             {
@@ -47,11 +53,12 @@ namespace ews {
                 shared_uniforms[UNI_COLORMAP]=new osg::Uniform("colormap",0);
                 shared_uniforms[UNI_DATAUSED]= new osg::Uniform("dataused",0);
                 shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(0.0,0.0));
+                shared_uniforms[UNI_TEXSCALE]= new osg::Uniform("texScale",0.0f);
 
                 shader_names.push_back("Texture");
-                shader_names.push_back("Label");
-                shader_names.push_back("Overlay");
-                shader_names.push_back("Shaded");
+                shader_names.push_back("Aux");
+              //  shader_names.push_back("Overlay");
+               // shader_names.push_back("Shaded");
 
 
                 colormap_names.push_back("Jet");
@@ -67,9 +74,15 @@ namespace ews {
                 colormap_names.push_back("Grey");
 
                 dataused_names.push_back("Height");
+                dataused_names.push_back("Labels");
 
                 //_manip=
                 _stateset=NULL;
+                colorbar=NULL;
+                shared_tex=new osg::Texture2D();
+                shared_tex->setNumMipmapLevels(0);
+                shared_tex->setFilter(osg::Texture::MIN_FILTER , osg::Texture::LINEAR);
+                shared_tex->setFilter(osg::Texture::MAG_FILTER , osg::Texture::LINEAR);
 
             }
             
@@ -129,6 +142,32 @@ namespace ews {
                 }
 
             }
+         void MeshFile::createScalarBar_HUD(void)
+            {
+                 if(colorbar)
+                     return;
+                colorbar = new osgSim::ScalarBar;
+                osgSim::ScalarBar::TextProperties tp;
+                tp._fontFile = "fonts/times.ttf";
+                colorbar->setTextProperties(tp);
+                osg::StateSet * stateset = colorbar->getOrCreateStateSet();
+                stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+                stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+                stateset->setRenderBinDetails(11, "RenderBin");
+
+                osg::MatrixTransform * modelview = new osg::MatrixTransform;
+                modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+                osg::Matrixd matrix(osg::Matrixd::scale(1000,1000,1000) * osg::Matrixd::translate(120,10,0)); // I've played with these values a lot and it seems to work, but I have no idea why
+                modelview->setMatrix(matrix);
+                modelview->addChild(colorbar);
+
+                osg::Projection * colorbar_hud = new osg::Projection;
+                colorbar_hud->setMatrix(osg::Matrix::ortho2D(0,_renderer->width(),0,_renderer->height())); // or whatever the OSG window res is
+                colorbar_hud->addChild(modelview);
+
+            }
+
             void MeshFile::updateGlobal(osg::Vec3 v){
                 emit posChanged(v);
 
@@ -160,7 +199,79 @@ namespace ews {
                     }
                 }
             }
+            class JetColorMap :public osgSim::ScalarsToColors{
+            public:
+              JetColorMap(float min,float max): osgSim::ScalarsToColors(min,max){   }
+              virtual osg::Vec4 getColor(float scalar) const{
 
+                float min= std::min(getMin(),getMax());
+                float max= std::max(getMin(),getMax());
+                float range=max-min;
+                float val=(scalar-min)/range;
+                osg::Vec4 jet;
+
+                 jet[0] = std::min(4.0f * val - 1.5f,-4.0f * val + 4.5f) ;
+                    jet[1] = std::min(4.0f * val - 0.5f,-4.0f * val + 3.5f) ;
+                    jet[2] = std::min(4.0f * val + 0.5f,-4.0f * val + 2.5f) ;
+
+
+                    jet[0] = clamp(jet[0], 0.0f, 1.0f);
+                    jet[1] = clamp(jet[1], 0.0f, 1.0f);
+                    jet[2] = clamp(jet[2], 0.0f, 1.0f);
+                    jet[3] = 1.0;
+                    //std::cout << jet << val<<std::endl;
+                    return jet;
+
+              }
+            };
+            void MeshFile::updateSharedAttribTex() {
+                GLint textureSize = osg::Texture2D::getExtensions(0,true)->maxTextureSize();
+                QStringList list=getFileNames();
+                QStringList::Iterator it = list.begin();
+                while( it != list.end() ) {
+                    string path=osgDB::getFilePath(it->toStdString());
+                    if(path.size() ==0)
+                        path=".";
+                    string labelfn=string(path+"/image_label.data");
+                    vector<Image_Label> labels= read_image_label_file(labelfn);
+                    int max_poseid=0;
+                    for(int i=0; i<(int)labels.size(); i++){
+                        if(max_poseid < labels[i].pose_id &&labels[i].pose_id < (textureSize*textureSize))
+                            max_poseid=labels[i].pose_id;
+                    }
+                    current_attributes.resize(max_poseid,255);
+                    int max_label=0;
+                    for(int i=0; i<(int)labels.size(); i++){
+                        if(labels[i].pose_id <  current_attributes.size()){
+                            current_attributes[labels[i].pose_id ]=labels[i].label;
+                            if(max_label < labels[i].label)
+                                max_label=labels[i].label;
+                        }
+                    }
+                    int num=current_attributes.size();
+                    int dim=ceil(sqrt(num));
+                    dim=osg::Image::computeNearestPowerOfTwo(dim,1.0);
+                    if(dim> textureSize){
+                        char str[1024];
+                        sprintf(str,"Dimension of texture too high can't show all attribute data %d < %d",dim,textureSize);
+                        QMessageBox::warning( _renderer, QString("Warning:"),QString(str),QMessageBox::Ok);
+                        dim=textureSize;
+                    }
+                    dataImage=new osg::Image;
+                    dataImage->allocateImage(dim,dim, 1, GL_RGBA,GL_UNSIGNED_BYTE);
+                    unsigned char* dataPtr= (unsigned char*)dataImage->data();
+
+                    for(int i=0; i < current_attributes.size() && i < dim*dim; i++){
+                        *(dataPtr+(i*4)) = (unsigned char)clamp((current_attributes[i]/(float)max_label)*255.0,0,255);
+                    }
+                    shared_tex->setImage(dataImage);
+                    if(shared_uniforms.size() > UNI_TEXSCALE && shared_uniforms[UNI_TEXSCALE])
+                        shared_uniforms[UNI_TEXSCALE]->set((float)dim);
+                    colorbar->setScalarsToColors(new JetColorMap(0.0,1.0));
+                    colorbar->setTitle(std::string("title"));
+                     it++;
+                }
+            }
 
             void MeshFile::setColorMap(int index) {
                 if(shared_uniforms.size() > UNI_COLORMAP && shared_uniforms[UNI_COLORMAP])

@@ -30,6 +30,7 @@ using osg::ref_ptr;
 #include "BQTDefine.h"
 #include "MathUtils.h"
 #include <osgDB/FileNameUtils>
+#include <osgSim/ScalarBar>
 #include "Bboxes.hpp"
 #include <osg/Uniform>
 #include <QProgressDialog>
@@ -52,7 +53,7 @@ namespace ews {
                         void openCurrentImage();
                 void switchMinimap(bool enabled);
                 void copyCurrentImageClipboard();
-;
+
             public:
                 void setStateSet(osg::StateSet *state);
 
@@ -64,6 +65,10 @@ namespace ews {
                 void setRenderer(QOSGWidget *r){_renderer=r;} 
                 void updateImage(osg::Vec3 v);
                 osg::ref_ptr<osg::Switch> _mapSwitch;
+                osg::ref_ptr<osg::Projection > colorbar_hud;
+                osg::ref_ptr<osgSim::ScalarBar > colorbar;
+
+                void createScalarBar_HUD(void);
 
                 /**
                  * Default constructor.
@@ -135,17 +140,22 @@ namespace ews {
                 void setFileNames(QStringList files) {
                     filenames = files;
 //                    qDebug() << "SizeFM " << files.size();
+                    createScalarBar_HUD();
+
                     updateBoxes();
                     updateShaders();
                     updateOrigin();
                     setDataUsed(0);
                     setColorMap(0);
+                    updateSharedAttribTex();
                     //emit dataChanged();
                 }
             void setShaderOut(int index);
             void setColorMap(int index);
             void setDataUsed(int index);
             void setDataRange(osg::Vec2 range);
+            void updateSharedAttribTex();
+
             enum{
                 HEIGHT_DATA
             };
@@ -154,6 +164,7 @@ namespace ews {
                 UNI_COLORMAP,
                 UNI_DATAUSED,
                 UNI_VAL_RANGE,
+                UNI_TEXSCALE,
                 NUM_UNI_ENUM
             }uniform_list;
 
@@ -180,7 +191,8 @@ namespace ews {
                 }
 
                 std::vector<osg::Uniform *> &getShaderOutUniform(){return shared_uniforms;}
-                
+                osg::ref_ptr<osg::Texture2D> getSharedTex(){return shared_tex;}
+
 
                 void updatePos(osg::Vec3 v);
 
@@ -222,11 +234,12 @@ namespace ews {
                  std::vector<string>  shader_names;
                  std::vector<string>  colormap_names;
                  std::vector<string>  dataused_names;
-
+                 osg::ref_ptr<osg::Texture2D> shared_tex;
+                 osg::ref_ptr<osg::Image> dataImage;
                  QOSGWidget *_renderer;
                  osg::StateSet *_stateset;
                  osg::Vec2f zrange;
-
+                 std::vector<double> current_attributes;
             };
         }
     }

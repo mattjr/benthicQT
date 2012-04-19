@@ -23,6 +23,7 @@
 #include <osg/NodeVisitor>
 #include <osg/State>
 
+#define TEXUNIT_ATTRIB 1
 
 
 class MyShaderGenCache : public osg::Referenced
@@ -63,6 +64,8 @@ public:
 
     /// Top level state set applied as the first one.
     void setRootStateSet(osg::StateSet *stateSet);
+    //void setAttribTex(osg::Texture *texture);
+
     osg::StateSet *getRootStateSet() const { return _rootStateSet.get(); }
 
     void apply(osg::Node &node);
@@ -75,6 +78,8 @@ protected:
 
     osg::ref_ptr<MyShaderGenCache> _stateCache;
     osg::ref_ptr<osg::State> _state;
+    //osg::ref_ptr<osg::Texture> _attribTex;
+
     osg::ref_ptr<osg::StateSet> _rootStateSet;
 };
 

@@ -23,7 +23,6 @@
 #include <sstream>
 
 
-
 /// State extended by mode/attribute accessors
 class StateEx : public osg::State
 {
@@ -141,6 +140,14 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
         stateSet->addUniform(diffuseMap);
         frag << "uniform sampler2D diffuseMap;\n";
     }
+
+    if(stateMask & (ATTRIB_MAP)){
+        frag << "uniform sampler2D attribSampler;\n";
+        frag << "uniform float texScale;\n";
+
+        stateSet->addUniform( new osg::Uniform("attribSampler", TEXUNIT_ATTRIB) );
+    }
+
     frag << "uniform int shaderOut;\n";
 
     /*if (stateMask & NORMAL_MAP)
@@ -218,6 +225,12 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                         "uniform int colormap;\n"\
                         "uniform vec2 valrange;\n"\
                         "uniform int dataused;\n"\
+                        "vec2 addrTranslation_1DtoRECT(float address1D, float texSize) \n"\
+                        "{\n"\
+                        "   float CONV_CONST = 1.0 / texSize; \n"\
+                        "   float normAddr1D = address1D * CONV_CONST;  \n"
+                        "   return vec2( fract(normAddr1D)*texSize,normAddr1D); ;\n"
+                        "}\n"
                         "vec4 doMap(float val,const vec3 iMap[9],int iMapSize){\n"\
                         " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
                         " float x0 = floor(x);\n"\
@@ -375,7 +388,8 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
    /* if (stateMask & NORMAL_MAP)
     {
         frag << "  vec3 normalDir = texture2D(normalMap, gl_TexCoord[0].st).xyz*2.0-1.0;\n";
-    }
+    }    if (stateMask & FOG)
+
 */
 
 
@@ -383,12 +397,22 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
     {
         frag <<
             "  vec4 color;\n"\
+            "  vec4 base;\n"\
             "  float val;\n"\
             "  if(shaderOut == 1) {\n";
         if(stateMask & (ATTRIB_MAP)){
-               frag << "float range= valrange.y-valrange.x;\n";
+                frag << "if(dataused==0){\n";
+                frag << "float range= valrange.y-valrange.x;\n";
                 frag << "val = (height-valrange.x)/range;\n";
-                frag << "   vec4 base = colormapGetColor(val,colormap);";
+                frag << "base = colormapGetColor(val,colormap);";
+                frag << "}\n";
+                frag << "else if(dataused==1){\n";
+                frag << "vec2 twoDIdx = addrTranslation_1DtoRECT(gl_TexCoord[1].t,texScale);\n ";
+                frag << "   vec2 mult=(2.0*twoDIdx- 1.0)/(2.0*texScale);\n";
+                frag << "base = texture2D(attribSampler,mult);\n";
+                frag << "base = colormapGetColor(base.x,colormap);\n";
+                frag << "}\n";
+
         }
          //  frag << "   vec4 base = colormapGetColor(gl_TexCoord[0].s,colormap);\n";
         else
@@ -449,6 +473,7 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
 
     program->addShader(new osg::Shader(osg::Shader::VERTEX, vertstr));
     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragstr));
+
 
     return stateSet;
 }

@@ -179,7 +179,7 @@ endif (WIN32)
 # this command finds Qt4 libraries and sets all required variables
 # note that it's Qt4, not QT4 or qt4
 set(QT_COMPONENTS QtCore QtGui QtOpenGL QtSvg QtXml)
-set(OSG_COMPONENTS osg osgUtil osgViewer osgGA osgManipulator osgText osgDB)
+set(OSG_COMPONENTS osg osgUtil osgViewer osgGA osgManipulator osgText osgDB osgSim)
 if(CMAKE_CROSSCOMPILING)
 	set(QT_HEADERS_DIR /home/mattjr/.wine/drive_c/Qt/2010.05/qt/include)
 	foreach(module QtCore QtGui QtSvg QtNetwork QtScript QtHelp QtWebKit QtTest QtXml QtSql QtCLucene QtOpenGL)
