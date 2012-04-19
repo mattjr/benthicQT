@@ -42,30 +42,7 @@ namespace ews {
             using namespace osgManipulator;
             using namespace app::model;
             
-        class ShaderGenReadFileCallback : public osgDB::Registry::ReadFileCallback
-        {
-        public:
-            ShaderGenReadFileCallback()
-            {
-            }
 
-            virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::ReaderWriter::Options* options)
-            {
-                osgDB::ReaderWriter::ReadResult result = osgDB::Registry::ReadFileCallback::readNode(filename, options);
-                if (osg::Node *node = result.getNode())
-                {
-                    _visitor.reset();
-                    node->accept(_visitor);
-                }
-                return result;
-            }
-
-            void setRootStateSet(osg::StateSet *stateSet) { _visitor.setRootStateSet(stateSet); }
-            osg::StateSet *getRootStateSet() const { return _visitor.getRootStateSet(); }
-
-        protected:
-            MyShaderGenVisitor _visitor;
-        };
             
             /** Primary constructor. */
             MeshGeom::MeshGeom(MeshFile& dataModel)

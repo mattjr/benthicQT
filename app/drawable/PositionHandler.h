@@ -67,6 +67,12 @@ namespace ews {
                                     
                                    const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
                                    osg::Vec3 cursor_pos=intersection.getWorldIntersectPoint();
+                                   std::cout <<intersection.indexList.size()<<std::endl;
+                                   osg::Geometry* geometry = intersection.drawable->asGeometry();
+                                   osg::Vec2Array *va=(osg::Vec2Array*)geometry->getTexCoordArray(1);
+                                   if(intersection.indexList.size() && va && intersection.indexList[0] < va->size()){
+                                       std::cout <<va->at(intersection.indexList[0])<<std::endl;
+                                   }
                                    osg::Vec3d world=cursor_pos;
                                    if(projWGS84){
                                       world.z() = world.y();

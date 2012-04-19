@@ -30,6 +30,54 @@
 #include <QtGui/QMessageBox>
 #include "ScreenTools.h"
 #include "seabed_slam_file_io.hpp"
+#define clamp(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+int floorToInt(float x){
+    return (int)floor(x);
+}
+
+osg::Vec4b getTexel(osg::Image *image, int x, int y)  {
+        int levelWidth = image->s();
+        int levelHeight = image->t();
+
+        if (x < 0 || y < 0 || x >= levelWidth || y >= levelHeight) {
+
+                                x = clamp(x, 0, levelWidth - 1);
+                                y = clamp(y, 0, levelHeight - 1);
+
+        }
+        return ((osg::Vec4b *)image->data())[x + levelWidth*y];
+}
+osg::Vec4b triangle(osg::Image *image, float x, float y)  {
+                int xPos = floorToInt(x*image->s()),
+                        yPos = floorToInt(y*image->t());
+                return getTexel(image, xPos, yPos);
+}
+double Frac(double arg)
+{
+    /* Returns fractional part of double argument */
+    return arg - floor(arg);
+}
+osg::Vec2f addrTranslation_1Dto2D( float address1D, osg::Vec2f  texSize )
+
+{
+
+
+
+    osg::Vec2f CONV_CONST = osg::Vec2f (( 1.0 / texSize[0]),
+
+            1.0 / (texSize[0] * texSize[1] ));
+
+
+
+  // Return a normalized 2D address (with values in [0,1])
+
+  osg::Vec2f  normAddr2D =osg::Vec2f(CONV_CONST.x()*address1D,CONV_CONST.y()*address1D);
+
+  osg::Vec2f  address2D = osg::Vec2f ( Frac(normAddr2D.x()), normAddr2D.y() );
+
+  return address2D;
+
+}
 namespace ews {
     namespace app {
         /**
@@ -37,10 +85,7 @@ namespace ews {
          */
         namespace model {
 
-        float clamp( const float& x, const float& min, const float& max )
-        {
-            return std::min( std::max( min, x ), max );
-        };
+
             MeshFile::MeshFile(QOSGWidget *renderer): _renderer(renderer)
                     //            : QObject(parent)
             {
@@ -80,10 +125,14 @@ namespace ews {
                 _stateset=NULL;
                 colorbar=NULL;
                 shared_tex=new osg::Texture2D();
+                shared_tex_rect=new osg::TextureRectangle();
+
                 shared_tex->setNumMipmapLevels(0);
                 shared_tex->setFilter(osg::Texture::MIN_FILTER , osg::Texture::LINEAR);
                 shared_tex->setFilter(osg::Texture::MAG_FILTER , osg::Texture::LINEAR);
-
+                shared_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
+                shared_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+                shared_tex->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
             }
             
 
@@ -239,13 +288,14 @@ namespace ews {
                         if(max_poseid < labels[i].pose_id &&labels[i].pose_id < (textureSize*textureSize))
                             max_poseid=labels[i].pose_id;
                     }
-                    current_attributes.resize(max_poseid,255);
+                    current_attributes.resize(max_poseid,0);
                     int max_label=0;
                     for(int i=0; i<(int)labels.size(); i++){
+                    //    printf("%d :%d\n",labels[i].pose_id,labels[i].label);
                         if(labels[i].pose_id <  current_attributes.size()){
-                            current_attributes[labels[i].pose_id ]=labels[i].label;
-                            if(max_label < labels[i].label)
-                                max_label=labels[i].label;
+                            current_attributes[labels[i].pose_id ]=labels[i].label+1;
+                            if(max_label < labels[i].label+1)
+                                max_label=labels[i].label+1;
                         }
                     }
                     int num=current_attributes.size();
@@ -260,11 +310,28 @@ namespace ews {
                     dataImage=new osg::Image;
                     dataImage->allocateImage(dim,dim, 1, GL_RGBA,GL_UNSIGNED_BYTE);
                     unsigned char* dataPtr= (unsigned char*)dataImage->data();
-
+                    memset(dataPtr,0,dataImage->getImageSizeInBytes());
                     for(int i=0; i < current_attributes.size() && i < dim*dim; i++){
-                        *(dataPtr+(i*4)) = (unsigned char)clamp((current_attributes[i]/(float)max_label)*255.0,0,255);
+                        osg::Vec2f add=addrTranslation_1Dto2D((float)i,osg::Vec2f((float)dim,(float)dim));
+                        if(i>270 && i <300){
+                        for(int j=0; j<4; j++)
+                        *(dataPtr+(i*4)+j) = 255.0;//(unsigned char)clamp((current_attributes[i]+1),0,255);
+                        }
+                        printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
+                        printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
                     }
+
+                    /*for(int i=0; i <  dim*dim*4; i++){
+                        osg::Vec2f add=addrTranslation_1Dto2D((float)i,osg::Vec2f((float)dim,(float)dim));
+
+
+                        *(dataPtr+(i)) = (unsigned char)clamp(255,0,255);
+                        //printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
+                        //printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
+                    }*/
                     shared_tex->setImage(dataImage);
+                    shared_tex_rect->setImage(dataImage);
+
                     if(shared_uniforms.size() > UNI_TEXSCALE && shared_uniforms[UNI_TEXSCALE])
                         shared_uniforms[UNI_TEXSCALE]->set((float)dim);
                     colorbar->setScalarsToColors(new JetColorMap(0.0,1.0));

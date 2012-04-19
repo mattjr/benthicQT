@@ -22,6 +22,8 @@
 #include <osgUtil/Export>
 #include <osg/NodeVisitor>
 #include <osg/State>
+#include <osgDB/Callbacks>
+#include <osgDB/ReadFile>
 
 #define TEXUNIT_ATTRIB 1
 
@@ -83,6 +85,29 @@ protected:
     osg::ref_ptr<osg::StateSet> _rootStateSet;
 };
 
+class ShaderGenReadFileCallback : public osgDB::Registry::ReadFileCallback
+{
+public:
+    ShaderGenReadFileCallback()
+    {
+    }
 
+    virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::ReaderWriter::Options* options)
+    {
+        osgDB::ReaderWriter::ReadResult result = osgDB::Registry::ReadFileCallback::readNode(filename, options);
+        if (osg::Node *node = result.getNode())
+        {
+            _visitor.reset();
+            node->accept(_visitor);
+        }
+        return result;
+    }
+
+    void setRootStateSet(osg::StateSet *stateSet) { _visitor.setRootStateSet(stateSet); }
+    osg::StateSet *getRootStateSet() const { return _visitor.getRootStateSet(); }
+
+protected:
+    MyShaderGenVisitor _visitor;
+};
 
 #endif

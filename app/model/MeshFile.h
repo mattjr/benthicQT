@@ -26,6 +26,7 @@
 
 #include <osg/Vec2>
 #include <osg/ref_ptr>
+#include <osg/TextureRectangle>
 using osg::ref_ptr;
 #include "BQTDefine.h"
 #include "MathUtils.h"
@@ -35,6 +36,14 @@ using osg::ref_ptr;
 #include <osg/Uniform>
 #include <QProgressDialog>
 #include "QOSGWidget.h"
+enum{
+    UNI_SHADER_OUT,
+    UNI_COLORMAP,
+    UNI_DATAUSED,
+    UNI_VAL_RANGE,
+    UNI_TEXSCALE,
+    NUM_UNI_ENUM
+};
 namespace ews {
     namespace app {
         namespace model {
@@ -159,14 +168,7 @@ namespace ews {
             enum{
                 HEIGHT_DATA
             };
-            enum{
-                UNI_SHADER_OUT,
-                UNI_COLORMAP,
-                UNI_DATAUSED,
-                UNI_VAL_RANGE,
-                UNI_TEXSCALE,
-                NUM_UNI_ENUM
-            }uniform_list;
+
 
                 QStringList getFileNames(void) {
                     return filenames ;
@@ -193,6 +195,7 @@ namespace ews {
                 std::vector<osg::Uniform *> &getShaderOutUniform(){return shared_uniforms;}
                 osg::ref_ptr<osg::Texture2D> getSharedTex(){return shared_tex;}
 
+                osg::ref_ptr<osg::TextureRectangle> getSharedTexRect(){return shared_tex_rect;}
 
                 void updatePos(osg::Vec3 v);
 
@@ -235,6 +238,8 @@ namespace ews {
                  std::vector<string>  colormap_names;
                  std::vector<string>  dataused_names;
                  osg::ref_ptr<osg::Texture2D> shared_tex;
+                 osg::ref_ptr<osg::TextureRectangle> shared_tex_rect;
+
                  osg::ref_ptr<osg::Image> dataImage;
                  QOSGWidget *_renderer;
                  osg::StateSet *_stateset;

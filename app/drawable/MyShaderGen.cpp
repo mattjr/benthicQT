@@ -225,12 +225,23 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                         "uniform int colormap;\n"\
                         "uniform vec2 valrange;\n"\
                         "uniform int dataused;\n"\
+                        "vec4 FetchTexel(sampler2D textureMap,vec2 texCoord,  vec2 texSize)"\
+                        "{\n"\
+                        "vec2 clampedCoord = clamp(texCoord,vec2(0.0,0.0),texSize)/texSize; \n"\
+                        "return texture2D(textureMap, clampedCoord);\n"\
+            "}\n"\
                         "vec2 addrTranslation_1DtoRECT(float address1D, float texSize) \n"\
                         "{\n"\
                         "   float CONV_CONST = 1.0 / texSize; \n"\
                         "   float normAddr1D = address1D * CONV_CONST;  \n"
                         "   return vec2( fract(normAddr1D)*texSize,normAddr1D); ;\n"
                         "}\n"
+                        "vec2 addrTranslation_1Dto2D(float address1D, float texSize) \n"\
+                        "{\n"\
+                        "   vec2 CONV_CONST = vec2(1.0 / texSize,1.0/(texSize*texSize)); \n"\
+                        "   vec2 normAddr2D = address1D * CONV_CONST;  \n"\
+                        "   return vec2( fract(normAddr2D.x),normAddr2D.y); ;\n"\
+                        "}\n"\
                         "vec4 doMap(float val,const vec3 iMap[9],int iMapSize){\n"\
                         " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
                         " float x0 = floor(x);\n"\
@@ -407,10 +418,18 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                 frag << "base = colormapGetColor(val,colormap);";
                 frag << "}\n";
                 frag << "else if(dataused==1){\n";
-                frag << "vec2 twoDIdx = addrTranslation_1DtoRECT(gl_TexCoord[1].t,texScale);\n ";
-                frag << "   vec2 mult=(2.0*twoDIdx- 1.0)/(2.0*texScale);\n";
-                frag << "base = texture2D(attribSampler,mult);\n";
-                frag << "base = colormapGetColor(base.x,colormap);\n";
+                frag << "vec2 twoDIdx = addrTranslation_1DtoRECT(floor(gl_TexCoord[1].t+0.5),texScale);\n ";
+                frag << "base = FetchTexel(attribSampler,vec2(1,20),vec2(texScale,texScale));\n";
+                frag << "if(floor(gl_TexCoord[1].t+0.5)==273.0)\n";
+                frag << "if(floor(base.x+0.5) > 1.0)\n";
+                frag << "color.rgb =vec3(base.x,base.y,base.z);\n";
+                frag << "else color.rgb =vec3(1.0,0.0,0.0);\n";
+                //frag << "   base = vec4(0.3,0.3,0.7,1.0);\n";
+              //  frag << "  else base = vec4(1.0,1.0,1.0,1.0);\n";
+            //    frag << "else\n";
+            //    frag << "base = debug(base.x);\n";
+             //   frag << "base = texture2D(attribSampler,mult);\n";
+              //  frag << "base = colormapGetColor(base.x,colormap);\n";
                 frag << "}\n";
 
         }
@@ -422,18 +441,18 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
             "   vec3 nd = normalize(normalDir);\n"\
             "   vec3 ld = normalize(lightDir);\n"\
             "   vec3 vd = normalize(viewDir);\n"\
-            "   color = gl_FrontLightModelProduct.sceneColor;\n"\
-            "   color += gl_FrontLightProduct[0].ambient;\n"\
+            " //  color = gl_FrontLightModelProduct.sceneColor;\n"\
+            "  // color += gl_FrontLightProduct[0].ambient;\n"\
             "   float diff = max(dot(ld, nd), 0.0);\n"\
-            "   color += gl_FrontLightProduct[0].diffuse * diff;\n"\
-            "   color *= base;\n"\
+            " //  color += gl_FrontLightProduct[0].diffuse * diff;\n"\
+            " //  color *= base;\n"\
             "   if (diff > 0.0)\n"\
             "   {\n"\
             "        vec3 halfDir = normalize(ld+vd);\n"\
-            "        color.rgb += base.a * gl_FrontLightProduct[0].specular.rgb * \n"\
+            "  //      color.rgb += base.a * gl_FrontLightProduct[0].specular.rgb * \n"\
             "        pow(max(dot(halfDir, nd), 0.0), gl_FrontMaterial.shininess);\n"\
             "   }\n"\
-            "   color.rgb *= (gl_TexCoord[1].s);\n"\
+            "   //color.rgb *= (gl_TexCoord[1].s);\n"\
             "  }else\n";
 
     }
@@ -596,3 +615,4 @@ void MyShaderGenVisitor::update(osg::Drawable *drawable)
     if ((stateMask&MyShaderGenCache::DIFFUSE_MAP)!=0) ss->removeTextureMode(0, GL_TEXTURE_2D);
     //if ((stateMask&MyShaderGenCache::NORMAL_MAP)!=0) ss->removeTextureMode(1, GL_TEXTURE_2D);
 }
+

@@ -389,8 +389,9 @@ set(ALL_QT_OSG_LIBS
 )
 
 ##message("libs:  ${ALL_QT_OSG_LIBS}")
-
+add_executable(bosgviewer bosgviewer.cpp app/drawable/MyShaderGen.cpp)
 target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions)
+target_link_libraries(bosgviewer ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions)
 
 #--------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
