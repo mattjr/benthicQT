@@ -92,7 +92,7 @@ namespace ews {
                 void setInterFrameDelay(Uint delay);
                 /** Show the preferences dialog. */
                 void resetView();
-                void updateOverlayWidget(MeshFile &data);
+                void updateOverlayWidget();
                 bool runRecDlg();
                 void toggleRecGui();
                 void loadFile(QStringList files);

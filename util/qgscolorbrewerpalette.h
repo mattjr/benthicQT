@@ -40,6 +40,22 @@ class QgsColorBrewerPalette
       return schemes;
     }
 
+    static QStringList listSchemes(int numClasses)
+    {
+      QStringList schemes;
+
+      QString palette( brewerString );
+      QStringList list = palette.split( QChar( '\n' ) );
+      foreach( QString entry, list )
+      {
+        QStringList items = entry.split( QChar( '-' ) );
+        if ( items.count() != 3  || items[1].toInt() != numClasses) continue;
+        if ( !schemes.contains( items[0] ) )
+          schemes << items[0];
+      }
+      return schemes;
+    }
+
     static QList<int> listSchemeVariants( QString schemeName )
     {
       QList<int> variants;
@@ -55,6 +71,7 @@ class QgsColorBrewerPalette
 
       return variants;
     }
+
 
     static QColor parseColor( QString color )
     {

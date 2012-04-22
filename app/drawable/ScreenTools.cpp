@@ -354,14 +354,14 @@ public:
     if( tx != NULL )
       {
 
-	osg::Vec3 	center=  om->getCenter();
-	osg::Vec3 screen =  WorldToScreen(cam,center);
-	osg::Vec3 tranV(screen[0]/tex_width,screen[1]/tex_height,0);
-	
-	double scale = (om->getDistance()/om->getHomeDist());
-	if(scale < 0.05)
-	  scale = 0.05;
-	tx->setMatrix(osg::Matrix::scale(scale,scale,1.0)*osg::Matrix::translate(tranV)); 
+        osg::Vec3 	center=  om->getCenter();
+        osg::Vec3 screen =  WorldToScreen(cam,center);
+        osg::Vec3 tranV(screen[0]/tex_width,screen[1]/tex_height,0);
+
+        double scale = (om->getDistance()/om->getHomeDist());
+        if(scale < 0.05)
+          scale = 0.05;
+        tx->setMatrix(osg::Matrix::scale(scale,scale,1.0)*osg::Matrix::translate(tranV));
       }
     traverse(node, nv);
   }
@@ -372,6 +372,59 @@ private:
   int tex_width,tex_height;
 };
 
+class scaleBarUpdate : public osg::NodeCallback
+{
+public:
+  scaleBarUpdate(WorldWindManipulatorNew *om,osg::Camera *cam):om(om),cam(cam) {
+
+  }
+  virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+  {
+    osg::MatrixTransform *tx = dynamic_cast<osg::MatrixTransform *>(node);
+    if( tx != NULL )
+      {
+
+        double fovy,aspectratio,znear,zfar;
+        cam->getProjectionMatrixAsPerspective(fovy,aspectratio,znear,zfar);
+        const osg::Viewport* viewport    = cam->getViewport();
+        double width  = viewport->width();
+
+       double pixelSize=computePixelSizeAtDistance(om->getDistance(),fovy,width);
+       double scaleSize = pixelSize * width ;  // meter
+                       string unitLabel = "m";
+
+                           if (scaleSize > 10000)
+                           {
+                               scaleSize /= 1000;
+                               unitLabel = "Km";
+                           }
+
+                       // Rounded division size
+                       int pot = (int) floor(log10(scaleSize));
+                       if (!isnan(pot))
+                       {
+                           char tmp[1024];
+                           sprintf(tmp,"%.0f", scaleSize);
+                                   string a=string(tmp).substr(0, 1);
+                           int digit = atoi(a.c_str());
+                           double divSize = digit * pow(10, pot);
+                           if (digit >= 5)
+                               divSize = 5 * pow(10, pot);
+                           else if (digit >= 2)
+                               divSize = 2 * pow(10, pot);
+                           double divWidth = width * divSize / scaleSize;
+                       }
+       printf("Pixel Distance %f\n",pixelSize);
+       printf("Total Scale %f\n",scaleSize);
+      }
+    traverse(node, nv);
+  }
+private:
+  osg::Vec3 pose;
+  osg::Camera *cam;
+  WorldWindManipulatorNew *om;
+  int tex_width,tex_height;
+};
 void addMapSqaure(osg::Group *mapGroup,WorldWindManipulatorNew *om,osg::Camera *cam,int tex_width,int tex_height){
   osg::Geode* geode = new osg::Geode();
   osg::Geometry* polyGeom = new osg::Geometry();
@@ -507,3 +560,27 @@ osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, Wo
   
   return quad_cam;
 }
+
+ double computePixelSizeAtDistance(double distance, double fieldOfView, double viewportWidth)
+
+{
+
+   double  TanHalfAngle = tan(fieldOfView/2 * M_PI/180.0);
+
+
+
+    // If the viewport width is zero, than replace it with 1, which effectively ignores the viewport width.
+
+
+    double pixelSizeScale = 2 * TanHalfAngle / (viewportWidth <= 0 ? 1.0 : viewportWidth);
+
+
+    return fabs(distance) * pixelSizeScale;
+
+}
+ osg::Node *createScaleBar(WorldWindManipulatorNew *om,osg::Camera *cam){
+     osg::MatrixTransform * transgeode = new osg::MatrixTransform();
+
+     transgeode ->setUpdateCallback( new scaleBarUpdate(om,cam) );
+    return transgeode;
+ }

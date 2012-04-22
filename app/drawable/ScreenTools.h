@@ -374,4 +374,6 @@ osg::Projection * createScalarBar_HUD(float min,float max,char *title, osgSim::S
 
 osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, WorldWindManipulatorNew *om,int screen_width,int screen_height);
 osg::Group* createRTTQuad(osg::Texture *texture);
+double computePixelSizeAtDistance(double distance, double fieldOfView, double viewportWidth);
+osg::Node *createScaleBar(WorldWindManipulatorNew *om,osg::Camera *cam);
 #endif

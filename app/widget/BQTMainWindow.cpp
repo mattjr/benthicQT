@@ -331,7 +331,7 @@ namespace ews {
                 qApp->processEvents();
                 //Redo rendering delay
                 _state->getMeshFiles().getPBarD()->close();
-                updateOverlayWidget(_state->getMeshFiles());
+                updateOverlayWidget();
                 QApplication::restoreOverrideCursor();
                 setCurrentFile(first);
 
@@ -341,6 +341,7 @@ namespace ews {
                 QObject::connect( &_state->getMeshFiles(), SIGNAL(measureResults(osg::Vec3,osg::Vec3)),_ui->barrierEditor, SLOT(displayMeasure(osg::Vec3,osg::Vec3)));
                 QObject::connect(_ui->actionOpen_Images, SIGNAL(triggered()), &_state->getMeshFiles(), SLOT(openCurrentImage()));
                 QObject::connect(_ui->actionCopy_Images_Names, SIGNAL(triggered()), &_state->getMeshFiles(), SLOT(copyCurrentImageClipboard()));
+                QObject::connect( &_state->getMeshFiles(), SIGNAL(colorMapChanged()), this, SLOT(updateOverlayWidget()));
 
 
 
@@ -406,17 +407,20 @@ namespace ews {
                     index = max(0, (int)dirs.size()-2);
                 return dirs[index]+" ("+p.fileName()+")";
             }
-            void EWSMainWindow::updateOverlayWidget(MeshFile &data){
+            void EWSMainWindow::updateOverlayWidget(){
+                MeshFile *data=&_state->getMeshFiles();
                 overlay->clear();
                 datausedCombo->clear();
                 colormapCombo->clear();
 
-                for(int i=0; i< data.getShaderNames().size(); i++)
-                    overlay->addItem(data.getShaderNames()[i].c_str());
-                for(int i=0; i< data.getColorMapNames().size(); i++)
-                    colormapCombo->addItem(data.getColorMapNames()[i].c_str());
-                for(int i=0; i< data.getDataUsedNames().size(); i++)
-                    datausedCombo->addItem(data.getDataUsedNames()[i].c_str());
+                for(int i=0; i< data->getShaderNames().size(); i++)
+                    overlay->addItem(data->getShaderNames()[i].c_str());
+                if(data->getColorMapNames()){
+                    for(int i=0; i< data->getColorMapNames()->size(); i++)
+                        colormapCombo->addItem((*data->getColorMapNames())[i]);
+                }
+                for(int i=0; i< data->getDataUsedNames().size(); i++)
+                    datausedCombo->addItem(data->getDataUsedNames()[i].c_str());
                 /*   else{
                        char tmp[255];
                        sprintf(tmp,"Aux %d",i);

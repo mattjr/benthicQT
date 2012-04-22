@@ -180,7 +180,7 @@ namespace ews {
 
                 }
 
-                std::vector<string> getColorMapNames(void) {
+                QStringList *getColorMapNames(void) {
                     return colormap_names ;
 
                 }
@@ -217,6 +217,7 @@ namespace ews {
                  * General signal for case when number of items in the
                  * set has changed. Parameter is the new number of items.
                  */
+                void colorMapChanged();
                 void posChanged(osg::Vec3);
                 void imgLabelChanged(QString);
                 void measureResults(osg::Vec3,osg::Vec3);
@@ -236,7 +237,7 @@ namespace ews {
                 std::vector<osg::Uniform*> shared_uniforms;
                 double latOrigin, longOrigin;
                  std::vector<string>  shader_names;
-                 std::vector<string>  colormap_names;
+                 QStringList  *colormap_names;
                  std::vector<string>  dataused_names;
                  osg::ref_ptr<osg::Texture2D> shared_tex;
                  osg::ref_ptr<osg::TextureRectangle> shared_tex_rect;
@@ -246,6 +247,10 @@ namespace ews {
                  osg::StateSet *_stateset;
                  osg::Vec2f zrange,label_range;
                  std::vector<double> current_attributes;
+                 QList<QColor> mPalette;
+                 QStringList texture_color_brewer_names;
+                 QStringList static_shader_colormaps;
+
             };
         }
     }

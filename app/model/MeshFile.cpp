@@ -108,17 +108,18 @@ namespace ews {
                // shader_names.push_back("Shaded");
 
 
-                colormap_names.push_back("Jet");
-                colormap_names.push_back("Rainbow");
-                colormap_names.push_back("Hot");
-                colormap_names.push_back("Bone");
-                colormap_names.push_back("Pink");
-                colormap_names.push_back("Spring");
-                colormap_names.push_back("Summer");
-                colormap_names.push_back("Winter");
-                colormap_names.push_back("Cool");
+                static_shader_colormaps.push_back("Jet");
+                static_shader_colormaps.push_back("Rainbow");
+                static_shader_colormaps.push_back("Hot");
+                static_shader_colormaps.push_back("Bone");
+                static_shader_colormaps.push_back("Pink");
+                static_shader_colormaps.push_back("Spring");
+                static_shader_colormaps.push_back("Summer");
+                static_shader_colormaps.push_back("Winter");
+                static_shader_colormaps.push_back("Cool");
 
-                colormap_names.push_back("Grey");
+                static_shader_colormaps.push_back("Grey");
+                colormap_names= &static_shader_colormaps;
 
                 dataused_names.push_back("Height");
                 dataused_names.push_back("Labels");
@@ -126,6 +127,7 @@ namespace ews {
                 //_manip=
                 _stateset=NULL;
                 colorbar=NULL;
+                colorbar_hud=NULL;
                 shared_tex=new osg::Texture2D();
                 shared_tex_rect=new osg::TextureRectangle();
 
@@ -193,6 +195,72 @@ namespace ews {
                 }
 
             }
+            class JetColorMap :public osgSim::ScalarsToColors{
+            public:
+              JetColorMap(float min,float max): osgSim::ScalarsToColors(min,max){   }
+              virtual osg::Vec4 getColor(float scalar) const{
+
+                float min= std::min(getMin(),getMax());
+                float max= std::max(getMin(),getMax());
+                float range=max-min;
+                float val=(scalar-min)/range;
+                osg::Vec4 jet;
+
+                 jet[0] = std::min(4.0f * val - 1.5f,-4.0f * val + 4.5f) ;
+                    jet[1] = std::min(4.0f * val - 0.5f,-4.0f * val + 3.5f) ;
+                    jet[2] = std::min(4.0f * val + 0.5f,-4.0f * val + 2.5f) ;
+
+
+                    jet[0] = clamp(jet[0], 0.0f, 1.0f);
+                    jet[1] = clamp(jet[1], 0.0f, 1.0f);
+                    jet[2] = clamp(jet[2], 0.0f, 1.0f);
+                    jet[3] = 1.0;
+                    //std::cout << jet << val<<std::endl;
+                    return jet;
+
+              }
+            };
+            class  DiscretLabelPrinter: public osgSim::ScalarBar::ScalarPrinter
+            {
+                virtual std::string printScalar(float scalar){
+                    double  fractpart, intpart;
+                    fractpart = modf (scalar , &intpart);
+                    if(fractpart != 0.0)
+                        return osgSim::ScalarBar::ScalarPrinter::printScalar(floor(scalar));
+                    else
+                        return "";
+                }
+            };
+            class ColorBrewerMap :public osgSim::ScalarsToColors{
+            public:
+              ColorBrewerMap(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
+                   minV= std::min(getMin(),getMax());
+                   maxV= std::max(getMin(),getMax());
+                   range=maxV-minV;
+              }
+              virtual osg::Vec4 getColor(float scalar) const{
+
+                if ( mPalette.isEmpty() || scalar<=1.0 )
+                    return osg::Vec4(0,0,0,1);
+
+                float val=((scalar-1.0)-minV)/(range-1.0);
+
+                if (  val < minV || val > maxV )
+                    return osg::Vec4(0,0,0,1);
+
+                int paletteEntry = ( int )( val * mPalette.count() );
+                if ( paletteEntry >= mPalette.count() )
+                  paletteEntry = mPalette.count() - 1;
+                QColor c= mPalette.at( paletteEntry );
+                return osg::Vec4(c.red()/255.0,c.green()/255.0,c.blue()/255.0,1.0);
+
+
+              }
+              QList<QColor> &mPalette;
+              float minV,maxV,range;
+            };
+
+
          void MeshFile::createScalarBar_HUD(void)
             {
                  if(colorbar)
@@ -201,6 +269,7 @@ namespace ews {
                 osgSim::ScalarBar::TextProperties tp;
                 tp._fontFile = "fonts/times.ttf";
                 colorbar->setTextProperties(tp);
+
                 osg::StateSet * stateset = colorbar->getOrCreateStateSet();
                 stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
@@ -213,7 +282,7 @@ namespace ews {
                 modelview->setMatrix(matrix);
                 modelview->addChild(colorbar);
 
-                osg::Projection * colorbar_hud = new osg::Projection;
+                colorbar_hud = new osg::Projection;
                 colorbar_hud->setMatrix(osg::Matrix::ortho2D(0,_renderer->width(),0,_renderer->height())); // or whatever the OSG window res is
                 colorbar_hud->addChild(modelview);
 
@@ -250,31 +319,7 @@ namespace ews {
                     }
                 }
             }
-            class JetColorMap :public osgSim::ScalarsToColors{
-            public:
-              JetColorMap(float min,float max): osgSim::ScalarsToColors(min,max){   }
-              virtual osg::Vec4 getColor(float scalar) const{
 
-                float min= std::min(getMin(),getMax());
-                float max= std::max(getMin(),getMax());
-                float range=max-min;
-                float val=(scalar-min)/range;
-                osg::Vec4 jet;
-
-                 jet[0] = std::min(4.0f * val - 1.5f,-4.0f * val + 4.5f) ;
-                    jet[1] = std::min(4.0f * val - 0.5f,-4.0f * val + 3.5f) ;
-                    jet[2] = std::min(4.0f * val + 0.5f,-4.0f * val + 2.5f) ;
-
-
-                    jet[0] = clamp(jet[0], 0.0f, 1.0f);
-                    jet[1] = clamp(jet[1], 0.0f, 1.0f);
-                    jet[2] = clamp(jet[2], 0.0f, 1.0f);
-                    jet[3] = 1.0;
-                    //std::cout << jet << val<<std::endl;
-                    return jet;
-
-              }
-            };
             void MeshFile::updateSharedAttribTex() {
                 GLint textureSize = osg::Texture2D::getExtensions(0,true)->maxTextureSize();
                 QStringList list=getFileNames();
@@ -283,8 +328,39 @@ namespace ews {
                     string path=osgDB::getFilePath(it->toStdString());
                     if(path.size() ==0)
                         path=".";
+                    char tmp[8192];
+                    int idx;
+                    float time;
                     string labelfn=string(path+"/image_label.data");
-                    vector<Image_Label> labels= read_image_label_file(labelfn);
+                    string imgmap_fn=string(path+"/img_num.txt");
+                    if(!osgDB::fileExists(labelfn) || !osgDB::fileExists(imgmap_fn))
+                        continue;
+                    FILE *fpimgmap=fopen(imgmap_fn.c_str(), "r");
+                    if(!fpimgmap){
+                        sprintf(tmp,"Cant open file %s\n",imgmap_fn.c_str());
+                        QMessageBox::warning( _renderer, QString("Warning:"),QString(tmp),QMessageBox::Ok);
+                        continue;
+                    }
+
+                    std::map<string,int> remap_fn_idx;
+                    while(!feof(fpimgmap)){
+                        fscanf(fpimgmap,"%d %f %s",&idx,&time,tmp);
+                        remap_fn_idx[tmp]=idx;
+
+                    }
+
+                    vector<Image_Label> labels;
+                    try{
+                        labels= read_image_label_file(labelfn);
+                    }catch( std::string error ) {
+                        std::cerr << "ERROR Parsing imagelabel- " << error << endl;
+                        continue;
+                    }
+                    for(int i=0; i<(int)labels.size(); i++){
+                        string fn=osgDB::getNameLessExtension(labels[i].left_image_name);
+                        if(remap_fn_idx.count(fn))
+                            labels[i].pose_id=remap_fn_idx[fn];
+                    }
                     int max_poseid=0;
                     for(int i=0; i<(int)labels.size(); i++){
                         if(max_poseid < labels[i].pose_id &&labels[i].pose_id < (textureSize*textureSize))
@@ -305,9 +381,16 @@ namespace ews {
                     }
                     if (min_el > 0.0)
                         min_el=0.0;
+
+                    QgsColorBrewerPalette cb_pal;
+
+                    int num_labels=(int)max_el;
+                    texture_color_brewer_names=cb_pal.listSchemes(num_labels);
+                    mPalette=cb_pal.listSchemeColors("Paired",num_labels);
+                    printf("Pal size %d %s\n",mPalette.size(),texture_color_brewer_names[0].toAscii().data());
                     label_range=osg::Vec2(min_el,max_el);
                     printf("Min El %f Max El %f\n",min_el,max_el);
-                    int num=current_attributes.size();
+                    int num=current_attributes.size()+mPalette.size();
                     int dim=ceil(sqrt(num));
                     dim=osg::Image::computeNearestPowerOfTwo(dim,1.0);
                     if(dim> textureSize){
@@ -321,7 +404,7 @@ namespace ews {
                     unsigned char* dataPtr= (unsigned char*)dataImage->data();
                     memset(dataPtr,0,dataImage->getImageSizeInBytes());
                     for(int i=0; i < current_attributes.size() && i < dim*dim; i++){
-                        //printf("Pose id %d val %f\n",i,current_attributes[i]);
+                       // printf("Pose id %d val %f\n",i,current_attributes[i]);
                             if(current_attributes[i] < min_el)
                                 continue;
                             float s=((current_attributes[i])-min_el)/(max_el-min_el);
@@ -331,14 +414,22 @@ namespace ews {
                         //printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
                        // printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
                     }
-
+                    //Place pallet in texture
+                    osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dim*dim-1);
+                    for(int i=0; i<mPalette.size(); i++){
+                        *ptr=osg::Vec4ub(mPalette[i].red(),mPalette[i].green(),mPalette[i].blue(),255);
+                        ptr--;
+                    }
                     shared_tex->setImage(dataImage);
                     shared_tex_rect->setImage(dataImage);
 
                     if(shared_uniforms.size() > UNI_TEXSCALE && shared_uniforms[UNI_TEXSCALE])
                         shared_uniforms[UNI_TEXSCALE]->set((float)dim);
-                    colorbar->setScalarsToColors(new JetColorMap(0.0,1.0));
-                    colorbar->setTitle(std::string("title"));
+                    colorbar->setNumLabels(((num_labels+1)*2) +1);;
+
+                    colorbar->setScalarsToColors(new ColorBrewerMap(min_el,max_el+1.0,mPalette));
+                    colorbar->setTitle(std::string("Labels"));
+                    colorbar->setScalarPrinter(new DiscretLabelPrinter);
                      it++;
                 }
             }
@@ -356,9 +447,14 @@ namespace ews {
             void MeshFile::setDataUsed(int index) {
                 if(shared_uniforms.size() > UNI_DATAUSED && shared_uniforms[UNI_DATAUSED]){
                     shared_uniforms[UNI_DATAUSED]->set(index);
-                    if(index == HEIGHT_DATA)
+                    if(index == HEIGHT_DATA){
+                        colormap_names=&static_shader_colormaps;
+                     //   emit colorMapChanged();
                         setDataRange(zrange);
+                    }
                     else if(index == LABEL_DATA) {
+                        colormap_names=&texture_color_brewer_names;
+                       // emit colorMapChanged();
                         setDataRange(label_range);
                     }
 

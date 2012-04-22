@@ -217,6 +217,7 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
     {
         vert << "  gl_FrontColor = gl_Color;\n";
     }
+
 bool debug_shader=true;
     vert << "}\n";
         if (stateMask & ATTRIB_MAP)
@@ -229,6 +230,12 @@ bool debug_shader=true;
                     "{\n"\
                     "vec2 clampedCoord = clamp(texCoord,vec2(0.0,0.0),texSize)/texSize; \n"\
                     "return texture2D(textureMap, clampedCoord);\n"\
+                    "}\n"\
+                    "vec4 texLoadedColormapLabel(sampler2D textureMap,float label, vec2 texSize)"\
+                    "{\n"\
+                    "if(label==0.0) return vec4(0.0,0.0,0.0,1.0); \n"\
+                    "vec2 coord = vec2((texSize.x-(label-1.0)-0.5),texSize.y-0.5);  \n"\
+                    "return FetchTexel(textureMap, coord,texSize);\n"\
                     "}\n"\
                     "float unpackFloat( vec4 rgbaColor )\n"\
                     "{\n"\
@@ -428,7 +435,9 @@ bool debug_shader=true;
                 frag << "vec2 pixelLoc= linearTo2D(loc,texScale);\n";
                 frag << "base = FetchTexel(attribSampler,pixelLoc,vec2(texScale,texScale));\n";
                 frag << "float f=floor(((unpackFloat(base)*range)+valrange.x)+0.5);\n";
-                frag << "if(f == 11.0) base = vec4(1.0,1.0,0.0,1.0); else if(f == 7.0) base = vec4(1.0,0.0,0.0,1.0);else if(f == 0.0) base = vec4(0.0,0.0,0.0,1.0); else base= vec4(1.0,1.0,1.0,1.0);\n";
+                frag << "base =texLoadedColormapLabel(attribSampler,f,vec2(texScale,texScale));\n";
+                if(!debug_shader)
+                frag << "base = colormapGetColor(f/5.0,colormap);";
                 frag << "}\n";
 
         }

@@ -69,6 +69,7 @@ namespace ews {
               _switch->addChild(_dataModel.colorbar_hud);
              _dataModel._mapSwitch->addChild(createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
                                                   _dataModel.getRenderer()->width(),_dataModel.getRenderer()->height()));
+             _switch->addChild(createScaleBar(dataModel.getRenderer()->getWWManip(),_dataModel.getRenderer()->getCamera()));
              _dataModel._mapSwitch->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF );
               _switch->addChild(_dataModel._mapSwitch);
 //                qDebug() << "In contstrt mesh gerom";
