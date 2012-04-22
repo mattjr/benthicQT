@@ -11,7 +11,7 @@
 #include <fstream>
 #include <stdexcept>
 
-
+#include <iostream>
 
 //----------------------------------------------------------------------------//
 //   Constants                                                                //
@@ -212,6 +212,7 @@ read_tide_correction_file( const std::string &file_name );
 
 // FIXME: 
 // * Replace ublas vectors and matrix with std::vector to remove this dependency
+#if 0
 #include <libplankton/auv_matrix.hpp>
 
 
@@ -309,7 +310,7 @@ void write_rel_pose_obs_file( const std::string &file_name,
 //----------------------------------------------------------------------------//
 //   Image Feature File                                                       //
 //----------------------------------------------------------------------------//
-
+#endif
 // Information about the image features
 class Image_Feats
 {

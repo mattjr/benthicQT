@@ -333,13 +333,16 @@ namespace ews {
                     float time;
                     string labelfn=string(path+"/image_label.data");
                     string imgmap_fn=string(path+"/img_num.txt");
-                    if(!osgDB::fileExists(labelfn) || !osgDB::fileExists(imgmap_fn))
-                        continue;
+                    if(!osgDB::fileExists(labelfn) || !osgDB::fileExists(imgmap_fn)){
+		      it++;
+		      continue;
+		    }
                     FILE *fpimgmap=fopen(imgmap_fn.c_str(), "r");
                     if(!fpimgmap){
                         sprintf(tmp,"Cant open file %s\n",imgmap_fn.c_str());
                         QMessageBox::warning( _renderer, QString("Warning:"),QString(tmp),QMessageBox::Ok);
-                        continue;
+			it++;
+			continue;
                     }
 
                     std::map<string,int> remap_fn_idx;
@@ -354,7 +357,8 @@ namespace ews {
                         labels= read_image_label_file(labelfn);
                     }catch( std::string error ) {
                         std::cerr << "ERROR Parsing imagelabel- " << error << endl;
-                        continue;
+                        it++;
+			continue;
                     }
                     for(int i=0; i<(int)labels.size(); i++){
                         string fn=osgDB::getNameLessExtension(labels[i].left_image_name);

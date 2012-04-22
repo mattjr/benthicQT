@@ -4,6 +4,7 @@
 #include "seabed_slam_file_io.hpp"
 
 #include <sstream>
+#include <iomanip>
 
 
 using namespace std;
@@ -314,7 +315,7 @@ static void open_output_stream( const string &file_name, ofstream &out_file )
    }
    
    // Configure output stream
-   out_file << fixed << setprecision(PRECISION) << endl;
+   out_file << fixed << std::setprecision(PRECISION) << endl;
 }
 
 

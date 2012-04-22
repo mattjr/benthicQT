@@ -386,11 +386,19 @@ public:
 
         double fovy,aspectratio,znear,zfar;
         cam->getProjectionMatrixAsPerspective(fovy,aspectratio,znear,zfar);
+	osg::Vec3f eye; osg::Vec3f center; osg::Vec3f up;
+        cam->getViewMatrixAsLookAt(eye,center,up);
+	cout << "eye "<<eye<<endl;
+	cout <<center <<endl;
+	printf("fov %f %f %f %f\n",fovy,aspectratio,znear,zfar);
         const osg::Viewport* viewport    = cam->getViewport();
         double width  = viewport->width();
-
-       double pixelSize=computePixelSizeAtDistance(om->getDistance(),fovy,width);
-       double scaleSize = pixelSize * width ;  // meter
+        double height  = viewport->height();
+	//double fovx=cam->calc_fovx();
+	//	double fovy2=cam->calc_fovy();
+	//	printf("%f %f %f\n",fovx, fovy,fovy2);
+	double pixelSize=computePixelSizeAtDistance(om->getDistance(),fovy,height);
+       double scaleSize = pixelSize * height ;  // meter
                        string unitLabel = "m";
 
                            if (scaleSize > 10000)
@@ -407,14 +415,15 @@ public:
                            sprintf(tmp,"%.0f", scaleSize);
                                    string a=string(tmp).substr(0, 1);
                            int digit = atoi(a.c_str());
-                           double divSize = digit * pow(10, pot);
+                           double divSize = digit * pow(10.0, pot);
                            if (digit >= 5)
-                               divSize = 5 * pow(10, pot);
+                               divSize = 5 * pow(10.0, pot);
                            else if (digit >= 2)
-                               divSize = 2 * pow(10, pot);
+                               divSize = 2 * pow(10.0, pot);
                            double divWidth = width * divSize / scaleSize;
-                       }
-       printf("Pixel Distance %f\n",pixelSize);
+		       printf("Pixel Distance %f %f %f\n",pixelSize,divSize,divWidth);                       
+}
+
        printf("Total Scale %f\n",scaleSize);
       }
     traverse(node, nv);
@@ -565,7 +574,7 @@ osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, Wo
 
 {
 
-   double  TanHalfAngle = tan(fieldOfView/2 * M_PI/180.0);
+  double  TanHalfAngle = tan(osg::DegreesToRadians(fieldOfView)*0.5);
 
 
 
