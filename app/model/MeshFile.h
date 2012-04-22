@@ -166,7 +166,8 @@ namespace ews {
             void updateSharedAttribTex();
 
             enum{
-                HEIGHT_DATA
+                HEIGHT_DATA,
+                LABEL_DATA,
             };
 
 
@@ -243,7 +244,7 @@ namespace ews {
                  osg::ref_ptr<osg::Image> dataImage;
                  QOSGWidget *_renderer;
                  osg::StateSet *_stateset;
-                 osg::Vec2f zrange;
+                 osg::Vec2f zrange,label_range;
                  std::vector<double> current_attributes;
             };
         }

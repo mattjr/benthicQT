@@ -22,11 +22,76 @@
 #include <osgGA/StateSetManipulator>
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
-
+#include <osg/io_utils>
 #include <iostream>
 
 #include "MeshFile.h"
 
+
+
+float DecodeDepth( const osg::Vec4ub &shadowSample )
+
+{
+
+        return shadowSample[0] / 1.0f +
+
+           shadowSample[1] / 256.0f +
+
+               shadowSample[2] / 65536.0f +
+
+               shadowSample[3] / 16777216.0f;
+
+}
+float DecodeDepth( const osg::Vec4f &shadowSample )
+
+{
+
+        return (255.0f*shadowSample[0]) / 1.0f +
+
+           (255.0f*shadowSample[1]) / 256.0f +
+
+               (255.0f*shadowSample[2]) / 65536.0f +
+
+               (255.0f*shadowSample[3]) / 16777216.0f;
+
+}
+float unpackDepth( const osg::Vec4f rgba_depth ) {
+    osg::Vec4f bit_shift = osg::Vec4f( 1.0 / ( 16777216.0 ), 1.0 / ( 65536.0 ), 1.0 / 256.0, 1.0 );
+    return ( rgba_depth* bit_shift );
+}
+/*osg::Vec4f packDepth( const float depth ) {
+    const osg::Vec4f bitShift = osg::Vec4f( 16777216.0, 65536.0, 256.0, 1.0 );
+    const osg::Vec4f bitMask = osg::Vec4f( 0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0 );
+    osg::Vec4f res = modf( depth * bitShift );
+    res -= res.xxyz * bitMask;
+    return res;
+}*/
+double Fract(double arg)
+{
+    /* Returns fractional part of double argument */
+    return arg - floor(arg);
+}
+osg::Vec4f pack_depth(float depth)
+{
+    const osg::Vec4f bit_shift(256.0*256.0*256.0, 256.0*256.0, 256.0, 1.0);
+    const osg::Vec4f bit_mask(0.0, 1.0/256.0, 1.0/256.0, 1.0/256.0);
+    osg::Vec4f res = osg::Vec4f(Fract(depth * bit_shift[0]),
+                                Fract(depth * bit_shift[1]),
+                                Fract(depth * bit_shift[2]),
+                                Fract(depth * bit_shift[3]));
+    res[0] -= res[0] * bit_mask[0];
+    res[1] -= res[0] * bit_mask[1];
+    res[2] -= res[1] * bit_mask[2];
+    res[3] -= res[2] * bit_mask[3];
+
+    return res;
+}
+float unpack_depth(osg::Vec4f rgba_depth)
+{
+    const osg::Vec4f bit_shift(1.0/(256.0*256.0*256.0), 1.0/(256.0*256.0), 1.0/256.0, 1.0);
+    float depth = (rgba_depth* bit_shift);
+    return depth;
+}
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -112,17 +177,89 @@ int main(int argc, char** argv)
     // Register shader generator callback
     ShaderGenReadFileCallback *readFileCallback = new ShaderGenReadFileCallback;
     // All read nodes will inherit root state set.
-    osg::StateSet *ss=viewer.getCamera()->getStateSet();
-    readFileCallback->setRootStateSet(ss);
+    osg::Group *g=new osg::Group;
+    osg::StateSet *ss=g->getOrCreateStateSet();
     std::vector<osg::Uniform *> shared_uniforms;
+    vector<float>current_attributes(1224,0.0);
+    for(int i=0; i< 1224; i++){
+        current_attributes[i]=(float)i;
+    }
+    float maxel=*std::max_element(current_attributes.begin(),current_attributes.end());
+    float minel=*std::min_element(current_attributes.begin(),current_attributes.end());
+
     shared_uniforms.resize(NUM_UNI_ENUM);
     shared_uniforms[UNI_SHADER_OUT]= new osg::Uniform("shaderOut",1);
     shared_uniforms[UNI_COLORMAP]=new osg::Uniform("colormap",0);
     shared_uniforms[UNI_DATAUSED]= new osg::Uniform("dataused",0);
-    shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(0.0,0.0));
-    shared_uniforms[UNI_TEXSCALE]= new osg::Uniform("texScale",0.0f);
+    shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(minel,maxel));
+    shared_uniforms[UNI_TEXSCALE]= new osg::Uniform("texScale",256.0f);
     for(int i=0; i < shared_uniforms.size(); i++)
         ss->addUniform(shared_uniforms[i]);
+    ss->getUniform("texScale")->set(256.0f);
+    osg::Texture2D *shared_tex=new osg::Texture2D();
+
+    shared_tex->setNumMipmapLevels(0);
+    shared_tex->setFilter(osg::Texture::MIN_FILTER , osg::Texture::LINEAR);
+    shared_tex->setFilter(osg::Texture::MAG_FILTER , osg::Texture::LINEAR);
+    shared_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
+    shared_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+    shared_tex->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
+    osg::Image *dataImage=new osg::Image;
+    int dim=256;
+    dataImage->allocateImage(dim,dim, 1, GL_RGBA,GL_UNSIGNED_BYTE);
+    unsigned char* dataPtr= (unsigned char*)dataImage->data();
+    memset(dataPtr,0,dataImage->getImageSizeInBytes());
+
+printf("min %f %f\n",minel,maxel);
+    for(int i=0;  i < dim*dim; i++){
+       // osg::Vec2f add=addrTranslation_1Dto2D((float)i,osg::Vec2f((float)dim,(float)dim));
+        if(i==273){
+            printf("current_attributes[%d] %f\n",i,current_attributes[i]);
+            float s=((current_attributes[i])-minel)/(maxel-minel);
+            osg::Vec4f f=pack_depth(s);
+            osg::Vec4ub l(f[0]*255.0,f[1]*255.0,f[2]*255.0,f[3]*255.0);
+
+            *(((osg::Vec4ub*)dataPtr)+i) = EncodeDepth(s);//l;
+        }
+
+    //    printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
+      //  printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
+    }
+
+  /*  vector<float> tmp;
+    for(int i=0; i< 100; i++)
+    tmp.push_back(153.723f+(rand()/(float)RAND_MAX));
+
+      maxel=*std::max_element(tmp.begin(),tmp.end());
+      minel=*std::min_element(tmp.begin(),tmp.end());
+     for(int i=0; i<tmp.size(); i++){
+         float s=(tmp[i]-minel)/(maxel-minel);
+         osg::Vec4f f=pack_depth(s);
+         osg::Vec4ub l(f[0]*255.0,f[1]*255.0,f[2]*255.0,f[3]*255.0);
+         osg::Vec4f f2(l[0]/255.0,l[1]/255.0,l[2]/255.0,l[3]/255.0);
+    //osg::Vec4f f2=osg::Vec4f(f[0]/255.0,f[1]/255.0,f[2]/255.0,f[3]/255.0);
+    float t=(unpack_depth(f2)*(maxel-minel))+minel;
+  //  float t2=(DecodeDepth(f2)*(maxel-minel))+minel;
+   // cout <<f<<endl;
+  //  cout <<f2<<endl;
+
+
+    printf("Envcode %f Deccoce %f \n",tmp[i],t);
+}*/
+    /*for(int i=0; i <  dim*dim*4; i++){
+        osg::Vec2f add=addrTranslation_1Dto2D((float)i,osg::Vec2f((float)dim,(float)dim));
+
+
+        *(dataPtr+(i)) = (unsigned char)clamp(255,0,255);
+        //printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
+        //printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
+    }*/
+
+
+    shared_tex->setImage(dataImage);
+    ss->setTextureAttribute(TEXUNIT_ATTRIB,shared_tex);
+
+    readFileCallback->setRootStateSet(ss);
 
   //  ss->setTextureAttribute(TEXUNIT_ATTRIB,_dataModel.getSharedTex());
     osgDB::Registry::instance()->setReadFileCallback(readFileCallback);
@@ -144,8 +281,8 @@ int main(int argc, char** argv)
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-
-    viewer.setSceneData( loadedModel.get() );
+    g->addChild(loadedModel.get());
+    viewer.setSceneData( g);
 
     viewer.realize();
 

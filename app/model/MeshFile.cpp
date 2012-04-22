@@ -30,6 +30,8 @@
 #include <QtGui/QMessageBox>
 #include "ScreenTools.h"
 #include "seabed_slam_file_io.hpp"
+#include "MyShaderGen.h"
+#include "qgscolorbrewerpalette.h"
 #define clamp(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 int floorToInt(float x){
     return (int)floor(x);
@@ -289,15 +291,22 @@ namespace ews {
                             max_poseid=labels[i].pose_id;
                     }
                     current_attributes.resize(max_poseid,0);
-                    int max_label=0;
+                    float max_el=-FLT_MAX;
+                    float min_el=FLT_MAX;
                     for(int i=0; i<(int)labels.size(); i++){
                     //    printf("%d :%d\n",labels[i].pose_id,labels[i].label);
                         if(labels[i].pose_id <  current_attributes.size()){
-                            current_attributes[labels[i].pose_id ]=labels[i].label+1;
-                            if(max_label < labels[i].label+1)
-                                max_label=labels[i].label+1;
+                            current_attributes[labels[i].pose_id ]=labels[i].label;
+                            if(max_el < labels[i].label)
+                                max_el=labels[i].label;
+                            if(min_el > labels[i].label)
+                                min_el=labels[i].label;
                         }
                     }
+                    if (min_el > 0.0)
+                        min_el=0.0;
+                    label_range=osg::Vec2(min_el,max_el);
+                    printf("Min El %f Max El %f\n",min_el,max_el);
                     int num=current_attributes.size();
                     int dim=ceil(sqrt(num));
                     dim=osg::Image::computeNearestPowerOfTwo(dim,1.0);
@@ -312,23 +321,17 @@ namespace ews {
                     unsigned char* dataPtr= (unsigned char*)dataImage->data();
                     memset(dataPtr,0,dataImage->getImageSizeInBytes());
                     for(int i=0; i < current_attributes.size() && i < dim*dim; i++){
-                        osg::Vec2f add=addrTranslation_1Dto2D((float)i,osg::Vec2f((float)dim,(float)dim));
-                        if(i>270 && i <300){
-                        for(int j=0; j<4; j++)
-                        *(dataPtr+(i*4)+j) = 255.0;//(unsigned char)clamp((current_attributes[i]+1),0,255);
-                        }
-                        printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
-                        printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
+                        //printf("Pose id %d val %f\n",i,current_attributes[i]);
+                            if(current_attributes[i] < min_el)
+                                continue;
+                            float s=((current_attributes[i])-min_el)/(max_el-min_el);
+                            *(((osg::Vec4ub*)dataPtr)+i) = EncodeDepth(s);
+
+
+                        //printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
+                       // printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
                     }
 
-                    /*for(int i=0; i <  dim*dim*4; i++){
-                        osg::Vec2f add=addrTranslation_1Dto2D((float)i,osg::Vec2f((float)dim,(float)dim));
-
-
-                        *(dataPtr+(i)) = (unsigned char)clamp(255,0,255);
-                        //printf("1d %0.1f = (%0.20f %0.20f)\n",(float)i,add.x(),add.y());
-                        //printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
-                    }*/
                     shared_tex->setImage(dataImage);
                     shared_tex_rect->setImage(dataImage);
 
@@ -345,6 +348,7 @@ namespace ews {
                     shared_uniforms[UNI_COLORMAP]->set(index);
             }
             void MeshFile::setDataRange(osg::Vec2 range){
+                cout << "Setting data range " << range <<endl;
                 if(shared_uniforms.size() > UNI_VAL_RANGE && shared_uniforms[UNI_VAL_RANGE])
                     shared_uniforms[UNI_VAL_RANGE]->set(range);
             }
@@ -354,6 +358,10 @@ namespace ews {
                     shared_uniforms[UNI_DATAUSED]->set(index);
                     if(index == HEIGHT_DATA)
                         setDataRange(zrange);
+                    else if(index == LABEL_DATA) {
+                        setDataRange(label_range);
+                    }
+
                     else{
                         printf("Set data range based on somthing toDO\n");
                     }

@@ -217,40 +217,43 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
     {
         vert << "  gl_FrontColor = gl_Color;\n";
     }
-    
+bool debug_shader=true;
     vert << "}\n";
         if (stateMask & ATTRIB_MAP)
             {
-                frag <<
-                        "uniform int colormap;\n"\
-                        "uniform vec2 valrange;\n"\
-                        "uniform int dataused;\n"\
-                        "vec4 FetchTexel(sampler2D textureMap,vec2 texCoord,  vec2 texSize)"\
-                        "{\n"\
-                        "vec2 clampedCoord = clamp(texCoord,vec2(0.0,0.0),texSize)/texSize; \n"\
-                        "return texture2D(textureMap, clampedCoord);\n"\
-            "}\n"\
-                        "vec2 addrTranslation_1DtoRECT(float address1D, float texSize) \n"\
-                        "{\n"\
-                        "   float CONV_CONST = 1.0 / texSize; \n"\
-                        "   float normAddr1D = address1D * CONV_CONST;  \n"
-                        "   return vec2( fract(normAddr1D)*texSize,normAddr1D); ;\n"
-                        "}\n"
-                        "vec2 addrTranslation_1Dto2D(float address1D, float texSize) \n"\
-                        "{\n"\
-                        "   vec2 CONV_CONST = vec2(1.0 / texSize,1.0/(texSize*texSize)); \n"\
-                        "   vec2 normAddr2D = address1D * CONV_CONST;  \n"\
-                        "   return vec2( fract(normAddr2D.x),normAddr2D.y); ;\n"\
-                        "}\n"\
-                        "vec4 doMap(float val,const vec3 iMap[9],int iMapSize){\n"\
-                        " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
-                        " float x0 = floor(x);\n"\
-                        "int i = int(x0);\n"\
-                        " if (i == iMapSize - 1)\n"\
-                        "{\n"\
-                        "return vec4(iMap[i].x,iMap[i].y,iMap[i].z,1.0);\n"\
-                        "  }\n"\
-                        " float dx = x - x0;\n"\
+            frag <<
+                    "uniform int colormap;\n"\
+                    "uniform vec2 valrange;\n"\
+                    "uniform int dataused;\n"\
+                    "vec4 FetchTexel(sampler2D textureMap,vec2 texCoord,  vec2 texSize)"\
+                    "{\n"\
+                    "vec2 clampedCoord = clamp(texCoord,vec2(0.0,0.0),texSize)/texSize; \n"\
+                    "return texture2D(textureMap, clampedCoord);\n"\
+                    "}\n"\
+                    "float unpackFloat( vec4 rgbaColor )\n"\
+                    "{\n"\
+                    "return (255.0f*rgbaColor[0]) / 1.0f +\n"\
+                    "(255.0f*rgbaColor[1]) / 256.0f +\n"\
+                    " (255.0f*rgbaColor[2]) / 65536.0f +\n"\
+                    "(255.0f*rgbaColor[3]) / 16777216.0f;\n"\
+                    "}\n"\
+                    "vec2 linearTo2D(float index, float width) "\
+                    "{ \nfloat quotient = index / width; \n"\
+                    "float fraction = fract(quotient); \n"\
+                    "float integer=floor(quotient); \n"\
+                    "return vec2(fraction * width, integer) + 0.5;\n"\
+                    " }\n";
+            if(!debug_shader){
+                    frag <<
+                    "vec4 doMap(float val,const vec3 iMap[9],int iMapSize){\n"\
+                    " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
+                    " float x0 = floor(x);\n"\
+                    "int i = int(x0);\n"\
+                    " if (i == iMapSize - 1)\n"\
+                    "{\n"\
+                    "return vec4(iMap[i].x,iMap[i].y,iMap[i].z,1.0);\n"\
+                    "  }\n"\
+                    " float dx = x - x0;\n"\
                         "vec3 tmp=iMap[i] * (1.0 - dx) + iMap[i + 1] * dx;\n"\
                         "return vec4(tmp.x,tmp.y,tmp.z,1.0);\n"\
                         "}\n"\
@@ -382,6 +385,8 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
                         "return grey(val);\n"\
                         "}\n";
 
+                }
+
             }
     frag << "\n"\
         "void main()\n"\
@@ -411,29 +416,22 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
             "  vec4 base;\n"\
             "  float val;\n"\
             "  if(shaderOut == 1) {\n";
+            frag << "float range= valrange.y-valrange.x;\n";
         if(stateMask & (ATTRIB_MAP)){
                 frag << "if(dataused==0){\n";
-                frag << "float range= valrange.y-valrange.x;\n";
                 frag << "val = (height-valrange.x)/range;\n";
+                if(!debug_shader)
                 frag << "base = colormapGetColor(val,colormap);";
                 frag << "}\n";
                 frag << "else if(dataused==1){\n";
-                frag << "vec2 twoDIdx = addrTranslation_1DtoRECT(floor(gl_TexCoord[1].t+0.5),texScale);\n ";
-                frag << "base = FetchTexel(attribSampler,vec2(1,20),vec2(texScale,texScale));\n";
-                frag << "if(floor(gl_TexCoord[1].t+0.5)==273.0)\n";
-                frag << "if(floor(base.x+0.5) > 1.0)\n";
-                frag << "color.rgb =vec3(base.x,base.y,base.z);\n";
-                frag << "else color.rgb =vec3(1.0,0.0,0.0);\n";
-                //frag << "   base = vec4(0.3,0.3,0.7,1.0);\n";
-              //  frag << "  else base = vec4(1.0,1.0,1.0,1.0);\n";
-            //    frag << "else\n";
-            //    frag << "base = debug(base.x);\n";
-             //   frag << "base = texture2D(attribSampler,mult);\n";
-              //  frag << "base = colormapGetColor(base.x,colormap);\n";
+                frag << "float loc=floor(gl_TexCoord[1].t+0.5);\n";
+                frag << "vec2 pixelLoc= linearTo2D(loc,texScale);\n";
+                frag << "base = FetchTexel(attribSampler,pixelLoc,vec2(texScale,texScale));\n";
+                frag << "float f=floor(((unpackFloat(base)*range)+valrange.x)+0.5);\n";
+                frag << "if(f == 11.0) base = vec4(1.0,1.0,0.0,1.0); else if(f == 7.0) base = vec4(1.0,0.0,0.0,1.0);else if(f == 0.0) base = vec4(0.0,0.0,0.0,1.0); else base= vec4(1.0,1.0,1.0,1.0);\n";
                 frag << "}\n";
 
         }
-         //  frag << "   vec4 base = colormapGetColor(gl_TexCoord[0].s,colormap);\n";
         else
             frag << "  vec4 base = gl_Color;";
 
@@ -441,18 +439,18 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
             "   vec3 nd = normalize(normalDir);\n"\
             "   vec3 ld = normalize(lightDir);\n"\
             "   vec3 vd = normalize(viewDir);\n"\
-            " //  color = gl_FrontLightModelProduct.sceneColor;\n"\
-            "  // color += gl_FrontLightProduct[0].ambient;\n"\
+            "   color = gl_FrontLightModelProduct.sceneColor;\n"\
+            "   color += gl_FrontLightProduct[0].ambient;\n"\
             "   float diff = max(dot(ld, nd), 0.0);\n"\
-            " //  color += gl_FrontLightProduct[0].diffuse * diff;\n"\
-            " //  color *= base;\n"\
+            "   color += gl_FrontLightProduct[0].diffuse * diff;\n"\
+            "   color *= base;\n"\
             "   if (diff > 0.0)\n"\
             "   {\n"\
             "        vec3 halfDir = normalize(ld+vd);\n"\
-            "  //      color.rgb += base.a * gl_FrontLightProduct[0].specular.rgb * \n"\
+            "        color.rgb += base.a * gl_FrontLightProduct[0].specular.rgb * \n"\
             "        pow(max(dot(halfDir, nd), 0.0), gl_FrontMaterial.shininess);\n"\
             "   }\n"\
-            "   //color.rgb *= (gl_TexCoord[1].s);\n"\
+            "   color.rgb *= (gl_TexCoord[1].s);\n"\
             "  }else\n";
 
     }
@@ -487,8 +485,8 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
     std::string vertstr = vert.str();
     std::string fragstr = frag.str();
 
-    OSG_DEBUG << "MyShaderGenCache Vertex shader:\n" << vertstr << std::endl;
-    OSG_DEBUG << "MyShaderGenCache Fragment shader:\n" << fragstr << std::endl;
+    osg::notify(osg::INFO) << "MyShaderGenCache Vertex shader:\n" << vertstr << std::endl;
+    osg::notify(osg::INFO) << "MyShaderGenCache Fragment shader:\n" << fragstr << std::endl;
 
     program->addShader(new osg::Shader(osg::Shader::VERTEX, vertstr));
     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragstr));
@@ -616,3 +614,21 @@ void MyShaderGenVisitor::update(osg::Drawable *drawable)
     //if ((stateMask&MyShaderGenCache::NORMAL_MAP)!=0) ss->removeTextureMode(1, GL_TEXTURE_2D);
 }
 
+
+osg::Vec4ub EncodeDepth( float depth )
+
+{
+
+        return osg::Vec4ub(
+
+                1 * depth,
+
+                256 * depth,
+
+                65536 * depth,
+
+                16777216 * depth
+
+        );
+
+}

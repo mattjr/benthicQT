@@ -22,7 +22,6 @@
 #include <osgUtil/Export>
 #include <osg/NodeVisitor>
 #include <osg/State>
-#include <osgDB/Callbacks>
 #include <osgDB/ReadFile>
 
 #define TEXUNIT_ATTRIB 1
@@ -109,5 +108,8 @@ public:
 protected:
     MyShaderGenVisitor _visitor;
 };
+osg::Vec4ub EncodeDepth( float depth );
+
+
 
 #endif
