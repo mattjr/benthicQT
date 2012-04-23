@@ -76,8 +76,11 @@ namespace ews {
                 osg::ref_ptr<osg::Switch> _mapSwitch;
                 osg::ref_ptr<osg::Projection > colorbar_hud;
                 osg::ref_ptr<osgSim::ScalarBar > colorbar;
+                osg::ref_ptr<osg::Camera > scalebar_hud;
+                osg::ref_ptr<osgText::Text > textNode;
 
                 void createScalarBar_HUD(void);
+                void createScaleBar_HUD(void);
 
                 /**
                  * Default constructor.
@@ -150,6 +153,7 @@ namespace ews {
                     filenames = files;
 //                    qDebug() << "SizeFM " << files.size();
                     createScalarBar_HUD();
+                    createScaleBar_HUD();
 
                     updateBoxes();
                     updateShaders();

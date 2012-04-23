@@ -128,6 +128,8 @@ namespace ews {
                 _stateset=NULL;
                 colorbar=NULL;
                 colorbar_hud=NULL;
+                textNode=NULL;
+                scalebar_hud=NULL;
                 shared_tex=new osg::Texture2D();
                 shared_tex_rect=new osg::TextureRectangle();
 
@@ -288,6 +290,38 @@ namespace ews {
 
             }
 
+
+
+         void MeshFile::createScaleBar_HUD(void)
+            {
+                 if(textNode)
+                     return;
+                 textNode = new osgText::Text;
+                osgText::Font* font = osgText::readFontFile("fonts/times.ttf");
+                float margin = 50.0f;
+
+                osg::Vec4 layoutColor(1.0f,1.0f,1.0f,1.0f);
+                   float layoutCharacterSize = 20.0f;
+                   textNode->setFont(font);
+                   textNode->setColor(layoutColor);
+                   textNode->setCharacterSize(layoutCharacterSize);
+
+                osg::StateSet * stateset = textNode->getOrCreateStateSet();
+                stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+                stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+                stateset->setRenderBinDetails(11, "RenderBin");
+
+
+
+                scalebar_hud = new osg::Camera;
+                scalebar_hud->setProjectionMatrix(osg::Matrix::ortho2D(0,_renderer->width(),0,_renderer->height())); // or whatever the OSG window res is
+                scalebar_hud->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+                scalebar_hud->setViewMatrix(osg::Matrix::identity());
+                scalebar_hud->addChild(createScaleBar(textNode,_renderer->getWWManip(),_renderer->getCamera()));
+                scalebar_hud->setRenderOrder(osg::Camera::POST_RENDER);
+            scalebar_hud->setClearMask(GL_DEPTH_BUFFER_BIT);
+            }
             void MeshFile::updateGlobal(osg::Vec3 v){
                 emit posChanged(v);
 
