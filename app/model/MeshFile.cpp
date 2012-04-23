@@ -166,6 +166,8 @@ namespace ews {
                 QStringList::Iterator it = list.begin();
                 while( it != list.end() ) {
                     path=osgDB::getFilePath(it->toStdString());
+                    if(path.size() ==0)
+                        path=".";
                     imgdir_file=string(path+"/imgpath.txt");
                     FILE *fp=fopen(imgdir_file.c_str(),"r");
                     if(fp)
@@ -184,11 +186,12 @@ namespace ews {
             void MeshFile::updateImage(osg::Vec3 v)
             {
                 bbox_map_info info;
-                cout << v << endl;
+             //   cout << v << endl;
+              //  cout <<_tree<<endl;
                 if(find_closet_img_idx(_tree,v,info)){
                     curr_img=(info.leftname).c_str();
                     emit imgLabelChanged(curr_img);
-                }else{
+                }else if(curr_img.size()){
                     curr_img="";
                     QString s;
                     s=string("N/A").c_str();
@@ -322,7 +325,8 @@ namespace ews {
                 scalebar_hud->setRenderOrder(osg::Camera::POST_RENDER);
             scalebar_hud->setClearMask(GL_DEPTH_BUFFER_BIT);
             }
-            void MeshFile::updateGlobal(osg::Vec3 v){
+            void MeshFile::updateGlobal(osg::Vec4 v){
+
                 emit posChanged(v);
 
             }
@@ -367,24 +371,10 @@ namespace ews {
                     float time;
                     string labelfn=string(path+"/image_label.data");
                     string imgmap_fn=string(path+"/img_num.txt");
-                    if(!osgDB::fileExists(labelfn) || !osgDB::fileExists(imgmap_fn)){
+                    if(!osgDB::fileExists(labelfn) ){
 		      it++;
 		      continue;
 		    }
-                    FILE *fpimgmap=fopen(imgmap_fn.c_str(), "r");
-                    if(!fpimgmap){
-                        sprintf(tmp,"Cant open file %s\n",imgmap_fn.c_str());
-                        QMessageBox::warning( _renderer, QString("Warning:"),QString(tmp),QMessageBox::Ok);
-			it++;
-			continue;
-                    }
-
-                    std::map<string,int> remap_fn_idx;
-                    while(!feof(fpimgmap)){
-                        fscanf(fpimgmap,"%d %f %s",&idx,&time,tmp);
-                        remap_fn_idx[tmp]=idx;
-
-                    }
 
                     vector<Image_Label> labels;
                     try{
@@ -394,10 +384,27 @@ namespace ews {
                         it++;
 			continue;
                     }
-                    for(int i=0; i<(int)labels.size(); i++){
-                        string fn=osgDB::getNameLessExtension(labels[i].left_image_name);
-                        if(remap_fn_idx.count(fn))
-                            labels[i].pose_id=remap_fn_idx[fn];
+                    if(osgDB::fileExists(imgmap_fn)){
+                        FILE *fpimgmap=fopen(imgmap_fn.c_str(), "r");
+                        if(!fpimgmap){
+                            sprintf(tmp,"Cant open file %s\n",imgmap_fn.c_str());
+                            QMessageBox::warning( _renderer, QString("Warning:"),QString(tmp),QMessageBox::Ok);
+                            it++;
+                            continue;
+                        }
+
+                        std::map<string,int> remap_fn_idx;
+                        while(!feof(fpimgmap)){
+                            fscanf(fpimgmap,"%d %f %s",&idx,&time,tmp);
+                            remap_fn_idx[tmp]=idx;
+
+                        }
+
+                        for(int i=0; i<(int)labels.size(); i++){
+                            string fn=osgDB::getNameLessExtension(labels[i].left_image_name);
+                            if(remap_fn_idx.count(fn))
+                                labels[i].pose_id=remap_fn_idx[fn];
+                        }
                     }
                     int max_poseid=0;
                     for(int i=0; i<(int)labels.size(); i++){
@@ -408,7 +415,7 @@ namespace ews {
                     float max_el=-FLT_MAX;
                     float min_el=FLT_MAX;
                     for(int i=0; i<(int)labels.size(); i++){
-                    //    printf("%d :%d\n",labels[i].pose_id,labels[i].label);
+                        //printf("%d %s :%d\n",labels[i].pose_id,labels[i].left_image_name.c_str(),labels[i].label);
                         if(labels[i].pose_id <  current_attributes.size()){
                             current_attributes[labels[i].pose_id ]=labels[i].label;
                             if(max_el < labels[i].label)

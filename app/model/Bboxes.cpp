@@ -47,7 +47,7 @@ RTree *loadBBox(const char *str){
             bb.edges[2].first  = z1;
             bb.edges[2].second = z2;
 
-            /*printf("\n%.1f -- %.1f\n",x1,x2);
+          /*  printf("\n%.1f -- %.1f\n",x1,x2);
             printf("%.1f -- %.1f\n",y1,y2);
             printf("%.1f -- %.1f\n\n",z1,z2);
 */
@@ -57,7 +57,7 @@ RTree *loadBBox(const char *str){
         }
 
         fclose(bboxfp);
-
+            printf("Loaded %d boxes\n",frame_count);
         return bboxTree;
     }
     //printf("No bbox file bailing...\n");
@@ -76,19 +76,19 @@ bool find_closet_img_idx(RTree *tree,osg::Vec3 pt,bbox_map_info &boxinfo){
     double epi=0.01;
     BoundingBox bb;
 
-    bb.edges[0].first  = pt[2];
-    bb.edges[0].second = pt[2]+epi;
+    bb.edges[0].first  = pt[0];
+    bb.edges[0].second = pt[0]+epi;
 
-    bb.edges[1].first  = pt[0];
-    bb.edges[1].second = pt[0]+epi;
+    bb.edges[1].first  = pt[1];
+    bb.edges[1].second = pt[1]+epi;
 
-    bb.edges[2].first  = pt[1];
-    bb.edges[2].second = pt[1]+epi;
+    bb.edges[2].first  = pt[2];
+    bb.edges[2].second = pt[2]+epi;
 
     Visitor x;
     x.found=NULL;
     x = tree->Query(RTree::AcceptOverlapping(bb), Visitor());
-    //std::cout << "Visited " << x.count << " nodes." << std::endl;
+  //  std::cout << "Visited " << x.count << " nodes." << std::endl;
     if(x.count > 0 && x.found ){
         boxinfo=x.found->leaf;
         return true;

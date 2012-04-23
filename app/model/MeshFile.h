@@ -69,7 +69,7 @@ namespace ews {
                 void loadMesh();
                 double getLatOrigin(){return latOrigin;}
                 double getLongOrigin(){return longOrigin;}
-                void updateGlobal(osg::Vec3 v);
+                void updateGlobal(osg::Vec4 v);
                 QOSGWidget * getRenderer(){return _renderer;}
                 void setRenderer(QOSGWidget *r){_renderer=r;} 
                 void updateImage(osg::Vec3 v);
@@ -81,6 +81,7 @@ namespace ews {
 
                 void createScalarBar_HUD(void);
                 void createScaleBar_HUD(void);
+                std::vector<double> current_attributes;
 
                 /**
                  * Default constructor.
@@ -110,6 +111,8 @@ namespace ews {
                         _tree=loadBBox(string(path+"/campath.txt").c_str());
                         if(_tree)
                             qDebug() << "Sucessfully loaded Tree";
+                        else
+                            qDebug() << "Failed to load Tree";
                         it++;
                     }
                 }
@@ -202,7 +205,7 @@ namespace ews {
 
                 osg::ref_ptr<osg::TextureRectangle> getSharedTexRect(){return shared_tex_rect;}
 
-                void updatePos(osg::Vec3 v);
+                void updatePos(osg::Vec4 v);
 
                 QProgressDialog *getPBarD(void){
                         return progress;
@@ -222,7 +225,7 @@ namespace ews {
                  * set has changed. Parameter is the new number of items.
                  */
                 void colorMapChanged();
-                void posChanged(osg::Vec3);
+                void posChanged(osg::Vec4);
                 void imgLabelChanged(QString);
                 void measureResults(osg::Vec3,osg::Vec3);
 
@@ -250,7 +253,6 @@ namespace ews {
                  QOSGWidget *_renderer;
                  osg::StateSet *_stateset;
                  osg::Vec2f zrange,label_range;
-                 std::vector<double> current_attributes;
                  QList<QColor> mPalette;
                  QStringList texture_color_brewer_names;
                  QStringList static_shader_colormaps;

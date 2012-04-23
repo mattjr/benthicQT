@@ -218,7 +218,7 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
         vert << "  gl_FrontColor = gl_Color;\n";
     }
 
-bool debug_shader=true;
+bool debug_shader=false;
     vert << "}\n";
         if (stateMask & ATTRIB_MAP)
             {
@@ -436,8 +436,6 @@ bool debug_shader=true;
                 frag << "base = FetchTexel(attribSampler,pixelLoc,vec2(texScale,texScale));\n";
                 frag << "float f=floor(((unpackFloat(base)*range)+valrange.x)+0.5);\n";
                 frag << "base =texLoadedColormapLabel(attribSampler,f,vec2(texScale,texScale));\n";
-                if(!debug_shader)
-                frag << "base = colormapGetColor(f/5.0,colormap);";
                 frag << "}\n";
 
         }

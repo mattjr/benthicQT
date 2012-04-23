@@ -77,7 +77,7 @@ namespace ews {
             void BarrierEditor::setDataModel(MeshFile* mf) {
                 _dataModel = mf;
 
-                  QObject::connect(_dataModel, SIGNAL(posChanged(osg::Vec3)), this, SLOT(updatePos(osg::Vec3)));
+                  QObject::connect(_dataModel, SIGNAL(posChanged(osg::Vec4)), this, SLOT(updatePos(osg::Vec4)));
                  QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
         //         QObject::connect(_dataModel, SIGNAL(imgLabelChanged (QString)), this, SLOT(updateImgLabel(QString)));
 
@@ -96,11 +96,18 @@ namespace ews {
 
             }
             
-            void BarrierEditor::updatePos(osg::Vec3 pos) {
+            void BarrierEditor::updatePos(osg::Vec4 pos) {
                 QObject* sender = QObject::sender();
                 if(sender) {
                     char tmp[1024];
+                    int labelId=(int)round(pos[3]);
+                    double label=0.0;
+                    if(labelId > 0 &&  labelId  <_dataModel->current_attributes.size()){
+                       label= _dataModel->current_attributes[labelId];
+                    sprintf(tmp,"Lat: %3.8f Long: %3.8f Z: %3.2f Label: %.0f",pos[0],pos[1],pos[2],label);
+                }else
                     sprintf(tmp,"Lat: %3.8f Long: %3.8f Z: %3.2f",pos[0],pos[1],pos[2]);
+
                     posString=tmp;
                     _ui->label_2->setText(posString);
 

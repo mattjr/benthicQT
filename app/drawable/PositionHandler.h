@@ -67,21 +67,22 @@ namespace ews {
                                     
                                    const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
                                    osg::Vec3 cursor_pos=intersection.getWorldIntersectPoint();
-                                   std::cout <<intersection.indexList.size()<<std::endl;
                                    osg::Geometry* geometry = intersection.drawable->asGeometry();
-                                   osg::Vec2Array *va=(osg::Vec2Array*)geometry->getTexCoordArray(1);
+                                   osg::Vec2Array *va=geometry?(osg::Vec2Array*)geometry->getTexCoordArray(1):NULL;
+                                   osg::Vec4d world=osg::Vec4(cursor_pos[0],cursor_pos[1],cursor_pos[2],0.0);;
                                    if(intersection.indexList.size() && va && intersection.indexList[0] < va->size()){
-                                       std::cout <<va->at(intersection.indexList[0])<<std::endl;
+                                           world[3]=va->at(intersection.indexList[0])[1];
+                                           cursor_pos[3]=va->at(intersection.indexList[0])[1];
+
                                    }
-                                   osg::Vec3d world=cursor_pos;
                                    if(projWGS84){
-                                      world.z() = world.y();
+                                      world.z() = world.z();
                                       projWGS84->calc_geo_coords(cursor_pos.x(),cursor_pos.y(),world.x(),world.y());
                                       _mf->updateGlobal(world);
 
 
                                   }else
-                                      _mf->updateGlobal(cursor_pos);
+                                      _mf->updateGlobal(osg::Vec4(cursor_pos[0],cursor_pos[1],cursor_pos[2],world[3]));
 
                                    _mf->updateImage(cursor_pos);
 

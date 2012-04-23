@@ -61,7 +61,7 @@ namespace ews {
                 void updateEnabled();
 
                 /** Update the data model to reflect the selected number of slits.*/
-                void updatePos(osg::Vec3);
+                void updatePos(osg::Vec4);
                 void updateImgLabel(QString);
                 void changeOverlay(int index);
                 void changeDataUsed(int index);
