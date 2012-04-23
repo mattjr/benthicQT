@@ -375,7 +375,7 @@ private:
 class scaleBarUpdate : public osg::NodeCallback
 {
 public:
-  scaleBarUpdate(WorldWindManipulatorNew *om,osg::Camera *cam):om(om),cam(cam) {
+    scaleBarUpdate(WorldWindManipulatorNew *om,osg::Camera *cam,osgText::Text *text,osg::Vec3Array *verts):om(om),cam(cam),text(text),verts(verts) {
 
   }
   virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
@@ -383,28 +383,36 @@ public:
     osg::MatrixTransform *tx = dynamic_cast<osg::MatrixTransform *>(node);
     if( tx != NULL )
       {
-
+double height =10;
+double width =150;
+double offset =5.0;
         double fovy,aspectratio,znear,zfar;
         cam->getProjectionMatrixAsPerspective(fovy,aspectratio,znear,zfar);
-	osg::Vec3f eye; osg::Vec3f center; osg::Vec3f up;
-        cam->getViewMatrixAsLookAt(eye,center,up);
-	cout << "eye "<<eye<<endl;
-	cout <<center <<endl;
-	printf("fov %f %f %f %f\n",fovy,aspectratio,znear,zfar);
+        //osg::Vec3f eye; osg::Vec3f center; osg::Vec3f up;
+       // cam->getViewMatrixAsLookAt(eye,center,up);
+        //cout << "eye "<<eye<<endl;
+        //cout <<center <<endl;
+        //printf("fov %f %f %f %f\n",fovy,aspectratio,znear,zfar);
         const osg::Viewport* viewport    = cam->getViewport();
-        double width  = viewport->width();
-        double height  = viewport->height();
+        double vpwidth  = viewport->width();
+
+        double vpheight  = viewport->height();
 	//double fovx=cam->calc_fovx();
 	//	double fovy2=cam->calc_fovy();
 	//	printf("%f %f %f\n",fovx, fovy,fovy2);
-	double pixelSize=computePixelSizeAtDistance(om->getDistance(),fovy,height);
-       double scaleSize = pixelSize * height ;  // meter
+        double pixelSize=computePixelSizeAtDistance(om->getDistance(),fovy,vpheight);
+       double scaleSize = pixelSize * width ;  // meter
                        string unitLabel = "m";
 
                            if (scaleSize > 10000)
                            {
                                scaleSize /= 1000;
                                unitLabel = "Km";
+                           }
+                           else if (scaleSize < 1.0 )
+                           {
+                               scaleSize *= 100;
+                               unitLabel = "cm";
                            }
 
                        // Rounded division size
@@ -421,10 +429,24 @@ public:
                            else if (digit >= 2)
                                divSize = 2 * pow(10.0, pot);
                            double divWidth = width * divSize / scaleSize;
-		       printf("Pixel Distance %f %f %f\n",pixelSize,divSize,divWidth);                       
+                 //      printf("Pixel Distance %f %f %f\n",pixelSize,divSize,divWidth);
+                       const double offsetX=(width - divWidth) / 2;
+                       verts->at(0)=osg::Vec3(0+offsetX, height, 0);
+                       verts->at(1)=osg::Vec3(0+offsetX, 0, 0);
+
+                             verts->at(2)=osg::Vec3(divWidth+offsetX, 0, 0);
+                             verts->at(3)=osg::Vec3(divWidth+offsetX, height, 0);
+
+                            verts->at(4)=osg::Vec3((divWidth / 2)+offsetX, 0, 0);
+                             verts->at(5)=osg::Vec3((divWidth / 2)+offsetX, height / 2, 0);
+                             char label[8129];
+                             sprintf(label,"%.0f %s", divSize, unitLabel.c_str());
+                              text->setText(label);
+                              float scale =1.0;
+                              text->setPosition(osg::Vec3((divWidth * scale / 2 + (width - divWidth) / 2)-offset, height*scale,0.0));
 }
 
-       printf("Total Scale %f\n",scaleSize);
+
       }
     traverse(node, nv);
   }
@@ -432,7 +454,8 @@ private:
   osg::Vec3 pose;
   osg::Camera *cam;
   WorldWindManipulatorNew *om;
-  int tex_width,tex_height;
+  osgText::Text *text;
+  osg::Vec3Array *verts;
 };
 void addMapSqaure(osg::Group *mapGroup,WorldWindManipulatorNew *om,osg::Camera *cam,int tex_width,int tex_height){
   osg::Geode* geode = new osg::Geode();
@@ -587,9 +610,47 @@ osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, Wo
     return fabs(distance) * pixelSizeScale;
 
 }
- osg::Node *createScaleBar(WorldWindManipulatorNew *om,osg::Camera *cam){
-     osg::MatrixTransform * transgeode = new osg::MatrixTransform();
+ osg::Node *createScaleBar(osgText::Text *textNode,WorldWindManipulatorNew *om,osg::Camera *cam){
 
-     transgeode ->setUpdateCallback( new scaleBarUpdate(om,cam) );
+     osg::Group * transgeode = new osg::MatrixTransform();
+     osg::Geode* geode  = new osg::Geode;
+     geode->addDrawable(textNode);
+     geode->setDataVariance(osg::Object::DYNAMIC);
+     osg::ref_ptr<osg::Geometry> scalebarGeometry = new osg::Geometry();
+
+     osg::ref_ptr<osg::DrawElementsUInt> scalebarBase = new osg::DrawElementsUInt(osg::PrimitiveSet::LINE_STRIP, 0);
+     scalebarBase->push_back(0);
+     scalebarBase->push_back(1);
+     scalebarBase->push_back(2);
+     scalebarBase->push_back(3);
+     scalebarGeometry->addPrimitiveSet(scalebarBase.get());
+     osg::ref_ptr<osg::DrawElementsUInt> scalebarBase2 = new osg::DrawElementsUInt(osg::PrimitiveSet::LINE_STRIP, 0);
+     scalebarBase2->push_back(4);
+     scalebarBase2->push_back(5);
+     osg::Vec3Array *verts=new osg::Vec3Array(6);
+     for(int i=0; i<verts->size(); i++){
+         verts->at(i)=osg::Vec3(0,0,0);
+     }
+     scalebarGeometry->setVertexArray(verts);
+     scalebarGeometry->addPrimitiveSet(scalebarBase2.get());
+     scalebarGeometry->setUseDisplayList(false);
+     osg::Vec4Array *carray=new osg::Vec4Array;
+     carray->push_back(osg::Vec4(1.0,1.0,1.0,1.0));
+     scalebarGeometry->setColorArray(carray);
+     scalebarGeometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+     osg::Vec3Array* HUDnormals = new osg::Vec3Array;
+            HUDnormals->push_back(osg::Vec3(0.0f,0.0f,1.0f));
+            scalebarGeometry->setNormalArray(HUDnormals);
+            scalebarGeometry->setNormalBinding(osg::Geometry::BIND_OVERALL);
+            osg::StateSet* state = geode->getOrCreateStateSet();
+
+             state->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+     geode->addDrawable(scalebarGeometry);
+     osg::MatrixTransform *mt=new osg::MatrixTransform;
+     mt->setMatrix(osg::Matrix::translate(40,20,0));
+     mt->addChild(geode);
+     transgeode->addChild(mt);
+     transgeode ->setUpdateCallback( new scaleBarUpdate(om,cam,textNode,verts) );
     return transgeode;
  }
