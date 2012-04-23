@@ -24,6 +24,7 @@
 #include "BarrierSet.h"
 #include <osg/Vec3>
 #include "MeshFile.h"
+#include <QtGui/QComboBox>
 /** Forward declaration of UI implementation class. */
 /** @cond */
 namespace Ui {
@@ -53,7 +54,9 @@ namespace ews {
                 
                 /** Connect the data model instance with the editor. */
                 void setDataModel(MeshFile* barriers);
-
+                QComboBox *overlay;
+                QComboBox *datausedCombo;
+                QComboBox *colormapCombo;
 
             public slots:
 
@@ -66,7 +69,8 @@ namespace ews {
                 void changeOverlay(int index);
                 void changeDataUsed(int index);
                 void changeColorMap(int index);
-
+                void updateOverlayWidget();
+                void updateDataUsedWidget(int index);
                 void displayMeasure(osg::Vec3,osg::Vec3);
 
              signals:

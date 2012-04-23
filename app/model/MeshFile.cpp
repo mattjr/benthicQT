@@ -131,7 +131,6 @@ namespace ews {
                 textNode=NULL;
                 scalebar_hud=NULL;
                 shared_tex=new osg::Texture2D();
-                shared_tex_rect=new osg::TextureRectangle();
 
                 shared_tex->setNumMipmapLevels(0);
                 shared_tex->setFilter(osg::Texture::MIN_FILTER , osg::Texture::LINEAR);
@@ -140,6 +139,8 @@ namespace ews {
                 shared_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
                 shared_tex->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
                 font_name="fonts/VeraMono.ttf";
+                dlp=new DiscretLabelPrinter;
+                selColorMap=0;
             }
             
 
@@ -226,17 +227,7 @@ namespace ews {
 
               }
             };
-            class  DiscretLabelPrinter: public osgSim::ScalarBar::ScalarPrinter
-            {
-                virtual std::string printScalar(float scalar){
-                    double  fractpart, intpart;
-                    fractpart = modf (scalar , &intpart);
-                    if(fractpart != 0.0)
-                        return osgSim::ScalarBar::ScalarPrinter::printScalar(floor(scalar));
-                    else
-                        return "";
-                }
-            };
+
             class ColorBrewerMap :public osgSim::ScalarsToColors{
             public:
               ColorBrewerMap(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
@@ -359,6 +350,28 @@ namespace ews {
             void MeshFile::setStateSet(osg::StateSet *state){
                 _stateset=state;
             }
+            void MeshFile::setupPallet(){
+                QgsColorBrewerPalette cb_pal;
+
+                int num_labels=(int)label_range[1];
+                if(selColorMap >=texture_color_brewer_names.size() || selColorMap < 0){
+                    fprintf(stderr,"cant get pallet for this selection error %d\n",selColorMap);
+                    return;
+                }
+
+                mPalette=cb_pal.listSchemeColors(texture_color_brewer_names[selColorMap],num_labels);
+
+                osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dataImage->s()*dataImage->t()-1);
+                for(int i=0; i<mPalette.size(); i++){
+                    *ptr=osg::Vec4ub(mPalette[i].red(),mPalette[i].green(),mPalette[i].blue(),255);
+                    ptr--;
+                }
+                colorbar->setNumLabels(((label_range[1]+1)*2) +1);;
+                colorbar->setScalarsToColors(new ColorBrewerMap(label_range[0],label_range[1]+1.0,mPalette));
+                colorbar->setTitle(std::string("Labels"));
+                colorbar->setScalarPrinter(dlp);
+                shared_tex->dirtyTextureObject();
+            }
 
             void MeshFile::setShaderOut(int index) {
                 if(shared_uniforms.size() > UNI_SHADER_OUT && shared_uniforms[UNI_SHADER_OUT])
@@ -476,26 +489,19 @@ namespace ews {
                        // printf("%0.1f = %d\n",(current_attributes[i]), triangle(dataImage,add.x(),add.y()).r());
                     }
                     //Place pallet in texture
-                    osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dim*dim-1);
-                    for(int i=0; i<mPalette.size(); i++){
-                        *ptr=osg::Vec4ub(mPalette[i].red(),mPalette[i].green(),mPalette[i].blue(),255);
-                        ptr--;
-                    }
                     shared_tex->setImage(dataImage);
-                    shared_tex_rect->setImage(dataImage);
+                    setupPallet();
 
                     if(shared_uniforms.size() > UNI_TEXSCALE && shared_uniforms[UNI_TEXSCALE])
                         shared_uniforms[UNI_TEXSCALE]->set((float)dim);
-                    colorbar->setNumLabels(((num_labels+1)*2) +1);;
 
-                    colorbar->setScalarsToColors(new ColorBrewerMap(min_el,max_el+1.0,mPalette));
-                    colorbar->setTitle(std::string("Labels"));
-                    colorbar->setScalarPrinter(new DiscretLabelPrinter);
                      it++;
                 }
             }
 
             void MeshFile::setColorMap(int index) {
+                selColorMap=index;
+                setupPallet();
                 if(shared_uniforms.size() > UNI_COLORMAP && shared_uniforms[UNI_COLORMAP])
                     shared_uniforms[UNI_COLORMAP]->set(index);
             }
@@ -510,12 +516,12 @@ namespace ews {
                     shared_uniforms[UNI_DATAUSED]->set(index);
                     if(index == HEIGHT_DATA){
                         colormap_names=&static_shader_colormaps;
-                     //   emit colorMapChanged();
+                        emit colorMapChanged(index);
                         setDataRange(zrange);
                     }
                     else if(index == LABEL_DATA) {
                         colormap_names=&texture_color_brewer_names;
-                       // emit colorMapChanged();
+                        emit colorMapChanged(index);
                         setDataRange(label_range);
                     }
 

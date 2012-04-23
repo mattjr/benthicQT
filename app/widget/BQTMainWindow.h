@@ -92,7 +92,6 @@ namespace ews {
                 void setInterFrameDelay(Uint delay);
                 /** Show the preferences dialog. */
                 void resetView();
-                void updateOverlayWidget();
                 bool runRecDlg();
                 void toggleRecGui();
                 void loadFile(QStringList files);
@@ -117,9 +116,7 @@ namespace ews {
                 osg::ref_ptr<SceneRoot> _sceneRoot;
                 QAction *separatorAct;
                 QString curFile;
-                QComboBox *overlay;
-                QComboBox *datausedCombo;
-                QComboBox *colormapCombo;
+
 
 
                 enum { MaxRecentFiles = 5 };

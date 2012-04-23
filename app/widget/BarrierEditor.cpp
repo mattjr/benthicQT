@@ -95,7 +95,46 @@ namespace ews {
             void BarrierEditor::updateEnabled() {
 
             }
-            
+            void BarrierEditor::updateDataUsedWidget(int index){
+                datausedCombo->blockSignals(true);
+                colormapCombo->blockSignals(true);
+                datausedCombo->clear();
+                colormapCombo->clear();
+
+
+                if(_dataModel->getColorMapNames()){
+                    for(int i=0; i< _dataModel->getColorMapNames()->size(); i++)
+                        colormapCombo->addItem((*_dataModel->getColorMapNames())[i]);
+                }
+                for(int i=0; i< _dataModel->getDataUsedNames().size(); i++)
+                    datausedCombo->addItem(_dataModel->getDataUsedNames()[i].c_str());
+                /*   else{
+                       char tmp[255];
+                       sprintf(tmp,"Aux %d",i);
+                       QString qtmp=tmp;
+                       overlay->addItem(qtmp);
+                       //qDebug() << "Adding " <<qtmp;
+                   }
+
+               }*/
+                datausedCombo->setCurrentIndex(index);
+
+                datausedCombo->blockSignals(false);
+                colormapCombo->blockSignals(false);
+
+            }
+            void BarrierEditor::updateOverlayWidget(){
+                overlay->blockSignals(true);
+
+                overlay->clear();
+
+
+                for(int i=0; i< _dataModel->getShaderNames().size(); i++)
+                    overlay->addItem(_dataModel->getShaderNames()[i].c_str());
+
+                overlay->blockSignals(false);
+
+            }
             void BarrierEditor::updatePos(osg::Vec4 pos) {
                 QObject* sender = QObject::sender();
                 if(sender) {

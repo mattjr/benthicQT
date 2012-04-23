@@ -91,7 +91,17 @@ namespace ews {
                 
                 virtual ~MeshFile();
 
-                
+                class  DiscretLabelPrinter: public osgSim::ScalarBar::ScalarPrinter
+                {
+                    virtual std::string printScalar(float scalar){
+                        double  fractpart, intpart;
+                        fractpart = modf (scalar , &intpart);
+                        if(fractpart != 0.0)
+                            return osgSim::ScalarBar::ScalarPrinter::printScalar(floor(scalar));
+                        else
+                            return "";
+                    }
+                };
 
 
                 /**
@@ -171,6 +181,7 @@ namespace ews {
             void setDataUsed(int index);
             void setDataRange(osg::Vec2 range);
             void updateSharedAttribTex();
+            void setupPallet();
 
             enum{
                 HEIGHT_DATA,
@@ -203,7 +214,6 @@ namespace ews {
                 std::vector<osg::Uniform *> &getShaderOutUniform(){return shared_uniforms;}
                 osg::ref_ptr<osg::Texture2D> getSharedTex(){return shared_tex;}
 
-                osg::ref_ptr<osg::TextureRectangle> getSharedTexRect(){return shared_tex_rect;}
 
                 void updatePos(osg::Vec4 v);
 
@@ -224,11 +234,10 @@ namespace ews {
                  * General signal for case when number of items in the
                  * set has changed. Parameter is the new number of items.
                  */
-                void colorMapChanged();
+                void colorMapChanged(int index);
                 void posChanged(osg::Vec4);
                 void imgLabelChanged(QString);
                 void measureResults(osg::Vec3,osg::Vec3);
-
 
             private slots:
               //  void generatePotential();
@@ -247,7 +256,6 @@ namespace ews {
                  QStringList  *colormap_names;
                  std::vector<string>  dataused_names;
                  osg::ref_ptr<osg::Texture2D> shared_tex;
-                 osg::ref_ptr<osg::TextureRectangle> shared_tex_rect;
 
                  osg::ref_ptr<osg::Image> dataImage;
                  QOSGWidget *_renderer;
@@ -256,6 +264,8 @@ namespace ews {
                  QList<QColor> mPalette;
                  QStringList texture_color_brewer_names;
                  QStringList static_shader_colormaps;
+                 int selColorMap;
+                 DiscretLabelPrinter *dlp;
 
             };
         }
