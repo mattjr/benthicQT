@@ -385,7 +385,7 @@ public:
       {
 double height =10;
 double width =150;
-double offset =5.0;
+double offset =15.0;
         double fovy,aspectratio,znear,zfar;
         cam->getProjectionMatrixAsPerspective(fovy,aspectratio,znear,zfar);
         //osg::Vec3f eye; osg::Vec3f center; osg::Vec3f up;

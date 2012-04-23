@@ -74,11 +74,11 @@ namespace ews {
                 void setRenderer(QOSGWidget *r){_renderer=r;} 
                 void updateImage(osg::Vec3 v);
                 osg::ref_ptr<osg::Switch> _mapSwitch;
-                osg::ref_ptr<osg::Projection > colorbar_hud;
+                osg::ref_ptr<osg::Camera > colorbar_hud;
                 osg::ref_ptr<osgSim::ScalarBar > colorbar;
                 osg::ref_ptr<osg::Camera > scalebar_hud;
                 osg::ref_ptr<osgText::Text > textNode;
-
+                std::string font_name;
                 void createScalarBar_HUD(void);
                 void createScaleBar_HUD(void);
                 std::vector<double> current_attributes;

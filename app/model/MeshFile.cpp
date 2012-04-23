@@ -139,6 +139,7 @@ namespace ews {
                 shared_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
                 shared_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
                 shared_tex->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
+                font_name="fonts/VeraMono.ttf";
             }
             
 
@@ -272,7 +273,8 @@ namespace ews {
                      return;
                 colorbar = new osgSim::ScalarBar;
                 osgSim::ScalarBar::TextProperties tp;
-                tp._fontFile = "fonts/times.ttf";
+                tp._fontFile = font_name.c_str();
+                tp._characterSize=18.0f;
                 colorbar->setTextProperties(tp);
 
                 osg::StateSet * stateset = colorbar->getOrCreateStateSet();
@@ -280,7 +282,7 @@ namespace ews {
 
                 stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
                 stateset->setRenderBinDetails(11, "RenderBin");
-
+/*
                 osg::MatrixTransform * modelview = new osg::MatrixTransform;
                 modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
                 osg::Matrixd matrix(osg::Matrixd::scale(1000,1000,1000) * osg::Matrixd::translate(120,10,0)); // I've played with these values a lot and it seems to work, but I have no idea why
@@ -289,8 +291,22 @@ namespace ews {
 
                 colorbar_hud = new osg::Projection;
                 colorbar_hud->setMatrix(osg::Matrix::ortho2D(0,_renderer->width(),0,_renderer->height())); // or whatever the OSG window res is
-                colorbar_hud->addChild(modelview);
-
+                colorbar_hud->addChild(modelview);*/
+                float width=120.0;
+                float margin=20.0;
+                colorbar->setWidth(width);
+                colorbar->setAspectRatio(0.1);
+                colorbar->setPosition(osg::Vec3(_renderer->width()-width-margin,margin,0));
+                colorbar_hud = new osg::Camera;
+                colorbar_hud->setProjectionMatrix(osg::Matrix::ortho2D(0,_renderer->width(),0,_renderer->height())); // or whatever the OSG window res is
+                colorbar_hud->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+                colorbar_hud->setViewMatrix(osg::Matrix::identity());
+               // osg::MatrixTransform * matT = new osg::MatrixTransform;
+              //  matT->setMatrix(osg::Matrix::translate(_renderer->width()-width-margin,margin,0));
+               // matT->addChild(colorbar);
+                colorbar_hud->addChild(colorbar);
+                colorbar_hud->setRenderOrder(osg::Camera::POST_RENDER);
+                colorbar_hud->setClearMask(GL_DEPTH_BUFFER_BIT);
             }
 
 
@@ -300,11 +316,11 @@ namespace ews {
                  if(textNode)
                      return;
                  textNode = new osgText::Text;
-                osgText::Font* font = osgText::readFontFile("fonts/times.ttf");
+                osgText::Font* font = osgText::readFontFile(font_name.c_str());
                 float margin = 50.0f;
 
                 osg::Vec4 layoutColor(1.0f,1.0f,1.0f,1.0f);
-                   float layoutCharacterSize = 20.0f;
+                   float layoutCharacterSize = 18.0f;
                    textNode->setFont(font);
                    textNode->setColor(layoutColor);
                    textNode->setCharacterSize(layoutCharacterSize);
