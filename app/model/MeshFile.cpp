@@ -139,8 +139,8 @@ namespace ews {
                 shared_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
                 shared_tex->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
                 font_name="fonts/VeraMono.ttf";
-                dlp=new DiscretLabelPrinter;
                 selColorMap=0;
+                dataout=0;
             }
             
 
@@ -228,9 +228,9 @@ namespace ews {
               }
             };
 
-            class ColorBrewerMap :public osgSim::ScalarsToColors{
+            class ColorBrewerMapDiscrete :public osgSim::ScalarsToColors{
             public:
-              ColorBrewerMap(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
+              ColorBrewerMapDiscrete(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
                    minV= std::min(getMin(),getMax());
                    maxV= std::max(getMin(),getMax());
                    range=maxV-minV;
@@ -258,21 +258,42 @@ namespace ews {
             };
 
 
+            class ColorBrewerMap :public osgSim::ScalarsToColors{
+            public:
+              ColorBrewerMap(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
+                   minV= std::min(getMin(),getMax());
+                   maxV= std::max(getMin(),getMax());
+                   range=maxV-minV;
+              }
+              virtual osg::Vec4 getColor(float scalar) const{
+
+                if ( mPalette.isEmpty() )
+                    return osg::Vec4(0,0,0,1);
+
+                float val=(scalar-minV)/(range);
+
+                if (  val < minV || val > maxV )
+                    return osg::Vec4(0,0,0,1);
+
+                int paletteEntry = ( int )( val * mPalette.count() );
+                if ( paletteEntry >= mPalette.count() )
+                  paletteEntry = mPalette.count() - 1;
+                QColor c= mPalette.at( paletteEntry );
+                return osg::Vec4(c.red()/255.0,c.green()/255.0,c.blue()/255.0,1.0);
+
+
+              }
+              QList<QColor> &mPalette;
+              float minV,maxV,range;
+            };
+
+
          void MeshFile::createScalarBar_HUD(void)
             {
                  if(colorbar)
                      return;
                 colorbar = new osgSim::ScalarBar;
-                osgSim::ScalarBar::TextProperties tp;
-                tp._fontFile = font_name.c_str();
-                tp._characterSize=18.0f;
-                colorbar->setTextProperties(tp);
 
-                osg::StateSet * stateset = colorbar->getOrCreateStateSet();
-                stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-
-                stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-                stateset->setRenderBinDetails(11, "RenderBin");
 /*
                 osg::MatrixTransform * modelview = new osg::MatrixTransform;
                 modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
@@ -283,15 +304,13 @@ namespace ews {
                 colorbar_hud = new osg::Projection;
                 colorbar_hud->setMatrix(osg::Matrix::ortho2D(0,_renderer->width(),0,_renderer->height())); // or whatever the OSG window res is
                 colorbar_hud->addChild(modelview);*/
-                float width=120.0;
-                float margin=20.0;
-                colorbar->setWidth(width);
-                colorbar->setAspectRatio(0.1);
-                colorbar->setPosition(osg::Vec3(_renderer->width()-width-margin,margin,0));
+
                 colorbar_hud = new osg::Camera;
                 colorbar_hud->setProjectionMatrix(osg::Matrix::ortho2D(0,_renderer->width(),0,_renderer->height())); // or whatever the OSG window res is
                 colorbar_hud->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
                 colorbar_hud->setViewMatrix(osg::Matrix::identity());
+                colorbar_hud->setDataVariance(osg::Object::DYNAMIC);
+
                // osg::MatrixTransform * matT = new osg::MatrixTransform;
               //  matT->setMatrix(osg::Matrix::translate(_renderer->width()-width-margin,margin,0));
                // matT->addChild(colorbar);
@@ -352,25 +371,58 @@ namespace ews {
             }
             void MeshFile::setupPallet(){
                 QgsColorBrewerPalette cb_pal;
+                int num_labels;
+                if(colorbar_hud->getNumChildren() !=0)
+                    colorbar_hud->removeChild(0,1);
+                colorbar=new osgSim::ScalarBar;
+                if(dataout == HEIGHT_DATA){
+                    num_labels=4;
+                }else{
+                    num_labels=(int)label_range[1];
 
-                int num_labels=(int)label_range[1];
-                if(selColorMap >=texture_color_brewer_names.size() || selColorMap < 0){
-                    fprintf(stderr,"cant get pallet for this selection error %d\n",selColorMap);
-                    return;
+                    if(selColorMap >=texture_color_brewer_names.size() || selColorMap < 0){
+                        fprintf(stderr,"cant get pallet for this selection error %d\n",selColorMap);
+                        return;
+                    }
+
+                    mPalette=cb_pal.listSchemeColors(texture_color_brewer_names[selColorMap],num_labels);
+
+                    osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dataImage->s()*dataImage->t()-1);
+                    for(int i=0; i<mPalette.size(); i++){
+                        *ptr=osg::Vec4ub(mPalette[i].red(),mPalette[i].green(),mPalette[i].blue(),255);
+                        ptr--;
+                    }
                 }
+                if(dataout == HEIGHT_DATA){
+                 /*   colorbar->setScalarsToColors(new JetColorMap(zrange[0],zrange[1]));
+                    colorbar->setNumLabels(5);
+                    colorbar->setTitle(std::string("Height"));
+                    colorbar->setScalarPrinter(sp);*/
+                    colorbar=new osgSim::ScalarBar(256,5,new JetColorMap(zrange[0],zrange[1]),"Height",osgSim::ScalarBar::HORIZONTAL,0.1,new TrunkScalarPrinter);
+                }else if(dataout == LABEL_DATA){
+                    colorbar=new osgSim::ScalarBar(((label_range[1]+1)*2) +1,((label_range[1]+1)*2) +1,
+                                                  new ColorBrewerMapDiscrete(label_range[0],label_range[1]+1.0,mPalette),
+                                                  "Labels",osgSim::ScalarBar::HORIZONTAL,0.1,new DiscretLabelPrinter);
 
-                mPalette=cb_pal.listSchemeColors(texture_color_brewer_names[selColorMap],num_labels);
 
-                osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dataImage->s()*dataImage->t()-1);
-                for(int i=0; i<mPalette.size(); i++){
-                    *ptr=osg::Vec4ub(mPalette[i].red(),mPalette[i].green(),mPalette[i].blue(),255);
-                    ptr--;
                 }
-                colorbar->setNumLabels(((label_range[1]+1)*2) +1);;
-                colorbar->setScalarsToColors(new ColorBrewerMap(label_range[0],label_range[1]+1.0,mPalette));
-                colorbar->setTitle(std::string("Labels"));
-                colorbar->setScalarPrinter(dlp);
+                float width=160.0;
+                float margin=20.0;
+                colorbar->setWidth(width);
+                colorbar->setPosition(osg::Vec3(_renderer->width()-width-margin,margin,0));
+                colorbar->setDataVariance(osg::Object::DYNAMIC);
+                osgSim::ScalarBar::TextProperties tp;
+                tp._fontFile = font_name.c_str();
+                tp._characterSize=12.0f;
+                colorbar->setTextProperties(tp);
+               // colorbar->setOrientation(osgSim::ScalarBar::VERTICAL);
+                osg::StateSet * stateset = colorbar->getOrCreateStateSet();
+                stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+                stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+                stateset->setRenderBinDetails(11, "RenderBin");
                 shared_tex->dirtyTextureObject();
+                colorbar_hud->addChild(colorbar);
             }
 
             void MeshFile::setShaderOut(int index) {
@@ -516,11 +568,13 @@ namespace ews {
                     shared_uniforms[UNI_DATAUSED]->set(index);
                     if(index == HEIGHT_DATA){
                         colormap_names=&static_shader_colormaps;
+                        dataout=index;
                         emit colorMapChanged(index);
                         setDataRange(zrange);
                     }
                     else if(index == LABEL_DATA) {
                         colormap_names=&texture_color_brewer_names;
+                        dataout=index;
                         emit colorMapChanged(index);
                         setDataRange(label_range);
                     }

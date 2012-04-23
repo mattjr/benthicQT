@@ -102,6 +102,14 @@ namespace ews {
                             return "";
                     }
                 };
+                class  TrunkScalarPrinter: public osgSim::ScalarBar::ScalarPrinter
+                {
+                    virtual std::string printScalar(float scalar){
+                       char tmp[1024];
+                       sprintf(tmp,"%0.1f",scalar);
+                       return std::string(tmp);
+                    }
+                };
 
 
                 /**
@@ -265,7 +273,8 @@ namespace ews {
                  QStringList texture_color_brewer_names;
                  QStringList static_shader_colormaps;
                  int selColorMap;
-                 DiscretLabelPrinter *dlp;
+                 int dataout;
+
 
             };
         }

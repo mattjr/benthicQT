@@ -118,9 +118,10 @@ namespace ews {
 
                }*/
                 datausedCombo->setCurrentIndex(index);
-
                 datausedCombo->blockSignals(false);
                 colormapCombo->blockSignals(false);
+                colormapCombo->setCurrentIndex(0);
+                changeColorMap(0);
 
             }
             void BarrierEditor::updateOverlayWidget(){
