@@ -513,9 +513,9 @@ namespace ews {
                     int num_labels=(int)max_el;
                     texture_color_brewer_names=cb_pal.listSchemes(num_labels);
                     mPalette=cb_pal.listSchemeColors("Paired",num_labels);
-                    printf("Pal size %d %s\n",mPalette.size(),texture_color_brewer_names[0].toAscii().data());
+                    //printf("Pal size %d %s\n",mPalette.size(),texture_color_brewer_names[0].toAscii().data());
                     label_range=osg::Vec2(min_el,max_el);
-                    printf("Min El %f Max El %f\n",min_el,max_el);
+                    //printf("Min El %f Max El %f\n",min_el,max_el);
                     int num=current_attributes.size()+mPalette.size();
                     int dim=ceil(sqrt(num));
                     dim=osg::Image::computeNearestPowerOfTwo(dim,1.0);
@@ -558,7 +558,7 @@ namespace ews {
                     shared_uniforms[UNI_COLORMAP]->set(index);
             }
             void MeshFile::setDataRange(osg::Vec2 range){
-                cout << "Setting data range " << range <<endl;
+                //cout << "Setting data range " << range <<endl;
                 if(shared_uniforms.size() > UNI_VAL_RANGE && shared_uniforms[UNI_VAL_RANGE])
                     shared_uniforms[UNI_VAL_RANGE]->set(range);
             }
