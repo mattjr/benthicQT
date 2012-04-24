@@ -142,6 +142,10 @@ namespace ews {
                 selColorMap=0;
                 dataout=0;
                 seq_colormap_colors=7.0;
+                QgsColorBrewerPalette cb_pal;
+
+                texture_color_brewer_names_DIV=cb_pal.listSchemesDiv();
+
             }
             
 
@@ -383,15 +387,22 @@ namespace ews {
                 colorbar=new osgSim::ScalarBar;
                 if(dataout == HEIGHT_DATA){
                     num_labels=seq_colormap_colors;
+                    printf("%d bla\n",texture_color_brewer_names_DIV.size());
+                    mPalette=cb_pal.getDivScheme( texture_color_brewer_names_DIV[selColorMap]);
+
                 }else{
                     num_labels=(int)label_range[1];
+                    mPalette=cb_pal.getQualScheme( texture_color_brewer_names_QUAL[selColorMap],num_labels);
+
                 }
-                if(!colormap_names ||selColorMap >=colormap_names->size() || selColorMap < 0){
+                if(!dataImage){
+                    return;
+                }
+                if(/*!colormap_names ||selColorMap >=colormap_names->size() || selColorMap < 0 ||*/ mPalette.size() ==0){
                     fprintf(stderr,"cant get pallet for this selection error %d\n",selColorMap);
                     return;
                 }
 
-                mPalette=cb_pal.listSchemeColors((*colormap_names)[selColorMap],num_labels);
 
                 osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dataImage->s()*dataImage->t()-1);
                 for(int i=0; i<mPalette.size(); i++){
@@ -517,10 +528,11 @@ namespace ews {
                     QgsColorBrewerPalette cb_pal;
 
                     int num_labels=(int)max_el;
-                    texture_color_brewer_names_SEQ=cb_pal.listSchemes(seq_colormap_colors);
-                    texture_color_brewer_names_QUAL=cb_pal.listSchemes(num_labels);
 
-                    mPalette=cb_pal.listSchemeColors("Paired",num_labels);
+                   // texture_color_brewer_names_SEQ=cb_pal.listSchemesSeq();
+                    texture_color_brewer_names_QUAL=cb_pal.listSchemesQual(num_labels);
+
+                    mPalette=cb_pal.getQualScheme( texture_color_brewer_names_QUAL[selColorMap],num_labels);
                     //printf("Pal size %d %s\n",mPalette.size(),texture_color_brewer_names[0].toAscii().data());
                     label_range=osg::Vec2(min_el,max_el);
                     //printf("Min El %f Max El %f\n",min_el,max_el);
@@ -575,7 +587,7 @@ namespace ews {
                 if(shared_uniforms.size() > UNI_DATAUSED && shared_uniforms[UNI_DATAUSED]){
                     shared_uniforms[UNI_DATAUSED]->set(index);
                     if(index == HEIGHT_DATA){
-                        colormap_names=&texture_color_brewer_names_SEQ;
+                        colormap_names=&texture_color_brewer_names_DIV;
                         dataout=index;
                         emit colorMapChanged(index);
                         setDataRange(zrange);
