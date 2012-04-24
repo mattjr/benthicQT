@@ -38,7 +38,7 @@ using osg::ref_ptr;
 #include "QOSGWidget.h"
 enum{
     UNI_SHADER_OUT,
-    UNI_COLORMAP,
+    UNI_COLORMAP_SIZE,
     UNI_DATAUSED,
     UNI_VAL_RANGE,
     UNI_TEXSCALE,
@@ -270,8 +270,11 @@ namespace ews {
                  osg::StateSet *_stateset;
                  osg::Vec2f zrange,label_range;
                  QList<QColor> mPalette;
-                 QStringList texture_color_brewer_names;
+                 QStringList texture_color_brewer_names_QUAL;
+                 QStringList texture_color_brewer_names_DIV;
+                 QStringList texture_color_brewer_names_SEQ;
                  QStringList static_shader_colormaps;
+                 int seq_colormap_colors;
                  int selColorMap;
                  int dataout;
 

@@ -217,13 +217,14 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
     {
         vert << "  gl_FrontColor = gl_Color;\n";
     }
+#define QUOTEME(x) #x
 
 bool debug_shader=false;
     vert << "}\n";
         if (stateMask & ATTRIB_MAP)
             {
             frag <<
-                    "uniform int colormap;\n"\
+                    "uniform int colormapSize;\n"\
                     "uniform vec2 valrange;\n"\
                     "uniform int dataused;\n"\
                     "vec4 FetchTexel(sampler2D textureMap,vec2 texCoord,  vec2 texSize)"\
@@ -231,10 +232,9 @@ bool debug_shader=false;
                     "vec2 clampedCoord = clamp(texCoord,vec2(0.0,0.0),texSize)/texSize; \n"\
                     "return texture2D(textureMap, clampedCoord);\n"\
                     "}\n"\
-                    "vec4 texLoadedColormapLabel(sampler2D textureMap,float label, vec2 texSize)"\
+                    "vec4 getColorMapValue(sampler2D textureMap,int i, vec2 texSize)"\
                     "{\n"\
-                    "if(label==0.0) return vec4(0.0,0.0,0.0,1.0); \n"\
-                    "vec2 coord = vec2((texSize.x-(label-1.0)-0.5),texSize.y-0.5);  \n"\
+                    "vec2 coord = vec2((texSize.x-i-0.5),texSize.y-0.5);  \n"\
                     "return FetchTexel(textureMap, coord,texSize);\n"\
                     "}\n"\
                     "float unpackFloat( vec4 rgbaColor )\n"\
@@ -250,170 +250,34 @@ bool debug_shader=false;
                     "float integer=floor(quotient); \n"\
                     "return vec2(fraction * width, integer) + 0.5;\n"\
                     " }\n";
-            if(!debug_shader){
                     frag <<
-                    "vec4 doMap(float val,const vec3 iMap[9],int iMapSize){\n"\
-                    " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
-                    " float x0 = floor(x);\n"\
-                    "int i = int(x0);\n"\
-                    " if (i == iMapSize - 1)\n"\
-                    "{\n"\
-                    "return vec4(iMap[i].x,iMap[i].y,iMap[i].z,1.0);\n"\
-                    "  }\n"\
-                    " float dx = x - x0;\n"\
-                        "vec3 tmp=iMap[i] * (1.0 - dx) + iMap[i + 1] * dx;\n"\
-                        "return vec4(tmp.x,tmp.y,tmp.z,1.0);\n"\
-                        "}\n"\
-                        "vec4 doMap17(float val,const vec3 iMap[17],int iMapSize){\n"\
-                        " float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n"
-                        " float x0 = floor(x);\n"\
-                        "int i = int(x0);\n"\
-                        " if (i == iMapSize - 1)\n"\
-                        "{\n"\
-                        "return vec4(iMap[i].x,iMap[i].y,iMap[i].z,1.0);\n"\
-                        "  }\n"\
-                        " float dx = x - x0;\n"\
-                        "vec3 tmp=iMap[i] * (1.0 - dx) + iMap[i + 1] * dx;\n"\
-                        "return vec4(tmp.x,tmp.y,tmp.z,1.0);\n"\
-                        "}\n"\
-                        "vec4 jet(float val){\n"\
-                        " const vec3 keys[9]=vec3[9]("\
-                        "vec3(0., 0., .5),\n"\
-                        " vec3(0., 0., 1.),\n"\
-                        " vec3(0., .5, 1.), \n"\
-                        "vec3(0., 1., 1.),\n"\
-                        "vec3(.5, 1., .5),\n"\
-                        "vec3(1., 1., 0.), \n"\
-                        "vec3(1., .5, 0.), \n"\
-                        "vec3(1., .0, 0.), \n"\
-                        "vec3(.5, .0, 0.) ); \n"\
-                        "return doMap(val, keys, 9);\n"\
-                        "}\n"\
-                        "vec4 hot(float val){\n"\
-                        " const vec3 keys[9]=vec3[9]("\
-                        "vec3(0.     , 0.     , 0.),\n"\
-                        " vec3(1. / 3., 0.     , 0.),\n"\
-                        " vec3(2. / 3., 0.     , 0.), \n"\
-                        "vec3(1.     , 0.     , 0.),\n"\
-                        "vec3(1.     , 1. / 3., 0.),\n"\
-                        "vec3(1.     , 2. / 3., 0.), \n"\
-                        "vec3(1.     , 1.     , 0.), \n"\
-                        "vec3(1.     , 1.     , .5), \n"\
-                        "vec3(1.     , 1.     , 1.) ); \n"\
-                        "return doMap(val, keys, 9);\n"\
-                        "}\n"\
-                         "vec4 grey(float val){\n"\
-                        " float x = clamp(val,0.0,1.0);\n"\
-                        "return vec4(x,x,x,1.0);\n"\
-                        "}\n"\
-                        "vec4 spring(float val){\n"\
-                       " float x = clamp(val,0.0,1.0);\n"\
-                       "return vec4(1.0,x,1.0-x,1.0);\n"\
-                       "}\n"\
-                        "vec4 summer(float val){\n"\
-                       " float x = clamp(val,0.0,1.0);\n"\
-                       "return vec4(x,(1.0+x)/2.0,0.4,1.0);\n"\
-                       "}\n"\
-                        "vec4 winter(float val){\n"\
-                       " float x = clamp(val,0.0,1.0);\n"\
-                       "return vec4(0.0,1.0-x,0.5,1.0);\n"\
-                       "}\n"\
-                        "vec4 cool(float val){\n"\
-                       " float x = clamp(val,0.0,1.0);\n"\
-                       "return vec4(x,1.0-x,1.0,1.0);\n"\
-                       "}\n"\
-                        "vec4 bone(float val){\n"\
-                        " const vec3 keys[9]=vec3[9]("\
-                        "vec3(0.     , 0.     , 0.),\n"\
-                        " vec3(0.3194, 0.3194, 0.4444),\n"\
-                        " vec3(0.6528, 0.7778, 0.7778),\n"\
-                        "vec3(1.    , 1.    , 1.    ),\n"\
-                        "vec3(0.     , 0.     , 0.),\n"\
-                        "vec3(0.     , 0.     , 0.),\n"\
-                        "vec3(0.     , 0.     , 0.),\n"\
-                        "vec3(0.     , 0.     , 0.),\n"\
-                        "vec3(0.     , 0.     , 0.) ); \n"\
-                        "return doMap(val, keys, 4);\n"\
-                        "}\n"\
-                        "vec4 rainbow(float val){\n"\
-                        " const vec3 keys[9]=vec3[9]("\
-                        "vec3(1., 0., 0.),\n"\
-                        " vec3(1., 1., 0.),\n"\
-                        " vec3(0., 1., 0.),\n"\
-                        "vec3(0., 1., 1.),\n"\
-                        "vec3(0., 0., 1.),\n"\
-                        "vec3(1., 0., 1.),\n"\
-                        "vec3(1., 0., 0.),\n"\
-                        "vec3(0.     , 0.     , 0.),\n"\
-                        "vec3(0.     , 0.     , 0.) ); \n"\
-                        "return doMap(val, keys, 7);\n"\
-                        "}\n"\
-                        "vec4 pink(float val){\n"\
-                        " const vec3 keys[17]=vec3[17]("\
-                        "vec3(0.    , 0.    , 0.    ),\n"\
-                                "vec3(0.2955, 0.1782, 0.1782),\n"\
-                                "vec3(0.4303, 0.2722, 0.2722),\n"\
-                                "vec3(0.5320, 0.3412, 0.3412),\n"\
-                                "vec3(0.6172, 0.3984, 0.3984),\n"\
-                                "vec3(0.6920, 0.4484, 0.4484),\n"\
-                                "vec3(0.7594, 0.4933, 0.4933),\n"\
-                                "vec3(0.7868, 0.5842, 0.5345),\n"\
-                                "vec3(0.8133, 0.6627, 0.5727),\n"\
-                                "vec3(0.8389, 0.7328, 0.6086),\n"\
-                                "vec3(0.8637, 0.7968, 0.6424),\n"\
-                                "vec3(0.8879, 0.8560, 0.6746),\n"\
-                                "vec3(0.9114, 0.9114, 0.7052),\n"\
-                                "vec3(0.9344, 0.9344, 0.7893),\n"\
-                                "vec3(0.9567, 0.9567, 0.8653),\n"\
-                                "vec3(0.9786, 0.9786, 0.9351),\n"\
-                                "vec3(1.    , 1.    , 1.    ));\n"\
-                        "return doMap17(val, keys, 17);\n"\
-                        "}\n"\
-                        "vec4 colormapGetColor(float val,int map){\n"\
-                        "if(map==0)\n"\
-                        "return jet(val);\n"\
-                        "else if(map==1)\n"\
-                        "return rainbow(val);\n"\
-                        "else if(map==2)\n"\
-                        "return hot(val);\n"\
-                        "else if(map==3)\n"\
-                        "return bone(val);\n"\
-                        "else if(map==4)\n"\
-                        "return pink(val);\n"\
-                        "else if(map==5)\n"\
-                        "return spring(val);\n"\
-                        "else if(map==6)\n"\
-                        "return summer(val);\n"\
-                        "else if(map==7)\n"\
-                        "return winter(val);\n"\
-                        "else if(map==8)\n"\
-                        "return cool(val);\n"\
-                        "else \n"\
-                        "return grey(val);\n"\
-                        "}\n";
-
+                           QUOTEME(
+                                   vec4 doMapInterp(sampler2D colorMapTex,float val,int iMapSize, vec2 texSize){\n
+                             float x = clamp(val,0.0,1.0) * (iMapSize - 1);\n
+                             float x0 = floor(x);\n
+                            int i = int(x0);\n
+                             if (i == iMapSize - 1)\n
+                            {\n
+                            return getColorMapValue(colorMapTex,i,texSize);\n
+                              }\n
+                             float dx = x - x0;\n
+                                        vec4 v1=getColorMapValue(colorMapTex,i,texSize);\n
+                                                vec4 v2=getColorMapValue(colorMapTex,i+1,texSize);\n
+                            return ( v1* (1.0 - dx) + v2 * dx);\n
+                            }\n
+                             vec4 doMap(sampler2D textureMap,float label,int iMapSize,  vec2 texSize)\n
+                            {\n
+                            if(label<=0.0 || label > iMapSize-1) return vec4(0.0,0.0,0.0,1.0); \n
+                            vec2 coord = vec2((texSize.x-(label-1.0)-0.5),texSize.y-0.5);  \n
+                            return FetchTexel(textureMap, coord,texSize);\n
+                            }\n);
                 }
+    frag << QUOTEME(
+         \n
+         void main()\n
+        {\n
+         );
 
-            }
-    frag << "\n"\
-        "void main()\n"\
-        "{\n";
-
-   /* if (stateMask & DIFFUSE_MAP)
-    {
-        frag << "  vec4 base = texture2D(diffuseMap, gl_TexCoord[0].st);\n";
-    }*/
-    /*else
-    {
-        frag << "  vec4 base = vec4(1.0);\n";
-    }*/
-
-   /* if (stateMask & NORMAL_MAP)
-    {
-        frag << "  vec3 normalDir = texture2D(normalMap, gl_TexCoord[0].st).xyz*2.0-1.0;\n";
-    }    if (stateMask & FOG)
-
-*/
 
 
     if (stateMask & (LIGHTING))
@@ -427,15 +291,14 @@ bool debug_shader=false;
         if(stateMask & (ATTRIB_MAP)){
                 frag << "if(dataused==0){\n";
                 frag << "val = (height-valrange.x)/range;\n";
-                if(!debug_shader)
-                frag << "base = colormapGetColor(val,colormap);";
+                frag << "base = doMapInterp(attribSampler,val,colormapSize,vec2(texScale,texScale));";
                 frag << "}\n";
                 frag << "else if(dataused==1){\n";
                 frag << "float loc=floor(gl_TexCoord[1].t+0.5);\n";
                 frag << "vec2 pixelLoc= linearTo2D(loc,texScale);\n";
                 frag << "base = FetchTexel(attribSampler,pixelLoc,vec2(texScale,texScale));\n";
                 frag << "float f=floor(((unpackFloat(base)*range)+valrange.x)+0.5);\n";
-                frag << "base =texLoadedColormapLabel(attribSampler,f,vec2(texScale,texScale));\n";
+                frag << "base =doMap(attribSampler,f,colormapSize,vec2(texScale,texScale));\n";
                 frag << "}\n";
 
         }

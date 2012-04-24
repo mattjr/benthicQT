@@ -97,7 +97,7 @@ namespace ews {
                 progress->setCancelButtonText(0);
                 shared_uniforms.resize(NUM_UNI_ENUM);
                 shared_uniforms[UNI_SHADER_OUT]= new osg::Uniform("shaderOut",0);
-                shared_uniforms[UNI_COLORMAP]=new osg::Uniform("colormap",0);
+                shared_uniforms[UNI_COLORMAP_SIZE]=new osg::Uniform("colormapSize",0);
                 shared_uniforms[UNI_DATAUSED]= new osg::Uniform("dataused",0);
                 shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(0.0,0.0));
                 shared_uniforms[UNI_TEXSCALE]= new osg::Uniform("texScale",0.0f);
@@ -108,7 +108,7 @@ namespace ews {
                // shader_names.push_back("Shaded");
 
 
-                static_shader_colormaps.push_back("Jet");
+              /*  static_shader_colormaps.push_back("Jet");
                 static_shader_colormaps.push_back("Rainbow");
                 static_shader_colormaps.push_back("Hot");
                 static_shader_colormaps.push_back("Bone");
@@ -118,7 +118,7 @@ namespace ews {
                 static_shader_colormaps.push_back("Winter");
                 static_shader_colormaps.push_back("Cool");
 
-                static_shader_colormaps.push_back("Grey");
+                static_shader_colormaps.push_back("Grey");*/
                 colormap_names= &static_shader_colormaps;
 
                 dataused_names.push_back("Height");
@@ -141,6 +141,7 @@ namespace ews {
                 font_name="fonts/VeraMono.ttf";
                 selColorMap=0;
                 dataout=0;
+                seq_colormap_colors=7.0;
             }
             
 
@@ -230,71 +231,76 @@ namespace ews {
 
             class ColorBrewerMapDiscrete :public osgSim::ScalarsToColors{
             public:
-              ColorBrewerMapDiscrete(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
-                   minV= std::min(getMin(),getMax());
-                   maxV= std::max(getMin(),getMax());
-                   range=maxV-minV;
-              }
-              virtual osg::Vec4 getColor(float scalar) const{
+                ColorBrewerMapDiscrete(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
+                    minV= std::min(getMin(),getMax());
+                    maxV= std::max(getMin(),getMax());
+                    range=maxV-minV;
+                }
+                virtual osg::Vec4 getColor(float scalar) const{
 
-                if ( mPalette.isEmpty() || scalar<=1.0 )
-                    return osg::Vec4(0,0,0,1);
+                    if ( mPalette.isEmpty() || scalar<=1.0 )
+                        return osg::Vec4(0,0,0,1);
 
-                float val=((scalar-1.0)-minV)/(range-1.0);
+                    float val=((scalar-1.0)-minV)/(range-1.0);
 
-                if (  val < minV || val > maxV )
-                    return osg::Vec4(0,0,0,1);
+                    if (  val < minV || val > maxV )
+                        return osg::Vec4(0,0,0,1);
 
-                int paletteEntry = ( int )( val * mPalette.count() );
-                if ( paletteEntry >= mPalette.count() )
-                  paletteEntry = mPalette.count() - 1;
-                QColor c= mPalette.at( paletteEntry );
-                return osg::Vec4(c.red()/255.0,c.green()/255.0,c.blue()/255.0,1.0);
+                    int paletteEntry = ( int )( val * mPalette.count() );
+                    if ( paletteEntry >= mPalette.count() )
+                        paletteEntry = mPalette.count() - 1;
+                    QColor c= mPalette.at( paletteEntry );
+                    return osg::Vec4(c.red()/255.0,c.green()/255.0,c.blue()/255.0,1.0);
 
 
-              }
-              QList<QColor> &mPalette;
-              float minV,maxV,range;
+                }
+                QList<QColor> &mPalette;
+                float minV,maxV,range;
             };
 
 
             class ColorBrewerMap :public osgSim::ScalarsToColors{
             public:
-              ColorBrewerMap(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
-                   minV= std::min(getMin(),getMax());
-                   maxV= std::max(getMin(),getMax());
-                   range=maxV-minV;
-              }
-              virtual osg::Vec4 getColor(float scalar) const{
+                ColorBrewerMap(float min,float max,QList<QColor> &palette): osgSim::ScalarsToColors(min,max), mPalette(palette){
+                    minV= std::min(getMin(),getMax());
+                    maxV= std::max(getMin(),getMax());
+                    range=maxV-minV;
+                }
+                virtual osg::Vec4 getColor(float scalar) const{
 
-                if ( mPalette.isEmpty() )
-                    return osg::Vec4(0,0,0,1);
+                    if ( mPalette.isEmpty() )
+                        return osg::Vec4(0,0,0,1);
 
-                float val=(scalar-minV)/(range);
+                    float val=(scalar-minV)/(range);
+                    float x = clamp(val,0.0,1.0) * (mPalette.size() - 1);
+                    float x0 = floor(x);
+                    int i = (int)x0;
+                    if (i == mPalette.size() - 1){
+                        QColor c= mPalette.at( i );
+                        return osg::Vec4(c.red()/255.0,c.green()/255.0,c.blue()/255.0,1.0);
+                    }
+                    float dx = x - x0;
+                    QColor c1= mPalette.at( i );
+                    QColor c2= mPalette.at( i+1 );
+                    float r1=1.0-dx;
+                    return osg::Vec4((c1.red()/255.0)*r1,(c1.green()/255.0)*r1,(c1.blue()/255.0)*r1,1.0)+
+                            osg::Vec4((c2.red()/255.0)*dx,(c2.green()/255.0)*dx,(c2.blue()/255.0)*dx,1.0);
 
-                if (  val < minV || val > maxV )
-                    return osg::Vec4(0,0,0,1);
-
-                int paletteEntry = ( int )( val * mPalette.count() );
-                if ( paletteEntry >= mPalette.count() )
-                  paletteEntry = mPalette.count() - 1;
-                QColor c= mPalette.at( paletteEntry );
-                return osg::Vec4(c.red()/255.0,c.green()/255.0,c.blue()/255.0,1.0);
 
 
-              }
-              QList<QColor> &mPalette;
-              float minV,maxV,range;
+                }
+                QList<QColor> &mPalette;
+                float minV,maxV,range;
             };
 
 
-         void MeshFile::createScalarBar_HUD(void)
+            void MeshFile::createScalarBar_HUD(void)
             {
-                 if(colorbar)
-                     return;
+                if(colorbar)
+                    return;
                 colorbar = new osgSim::ScalarBar;
 
-/*
+                /*
                 osg::MatrixTransform * modelview = new osg::MatrixTransform;
                 modelview->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
                 osg::Matrixd matrix(osg::Matrixd::scale(1000,1000,1000) * osg::Matrixd::translate(120,10,0)); // I've played with these values a lot and it seems to work, but I have no idea why
@@ -376,29 +382,29 @@ namespace ews {
                     colorbar_hud->removeChild(0,1);
                 colorbar=new osgSim::ScalarBar;
                 if(dataout == HEIGHT_DATA){
-                    num_labels=4;
+                    num_labels=seq_colormap_colors;
                 }else{
                     num_labels=(int)label_range[1];
-
-                    if(selColorMap >=texture_color_brewer_names.size() || selColorMap < 0){
-                        fprintf(stderr,"cant get pallet for this selection error %d\n",selColorMap);
-                        return;
-                    }
-
-                    mPalette=cb_pal.listSchemeColors(texture_color_brewer_names[selColorMap],num_labels);
-
-                    osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dataImage->s()*dataImage->t()-1);
-                    for(int i=0; i<mPalette.size(); i++){
-                        *ptr=osg::Vec4ub(mPalette[i].red(),mPalette[i].green(),mPalette[i].blue(),255);
-                        ptr--;
-                    }
                 }
+                if(!colormap_names ||selColorMap >=colormap_names->size() || selColorMap < 0){
+                    fprintf(stderr,"cant get pallet for this selection error %d\n",selColorMap);
+                    return;
+                }
+
+                mPalette=cb_pal.listSchemeColors((*colormap_names)[selColorMap],num_labels);
+
+                osg::Vec4ub *ptr=((osg::Vec4ub *)dataImage->data())+(dataImage->s()*dataImage->t()-1);
+                for(int i=0; i<mPalette.size(); i++){
+                    *ptr=osg::Vec4ub(mPalette[i].red(),mPalette[i].green(),mPalette[i].blue(),255);
+                    ptr--;
+                }
+
                 if(dataout == HEIGHT_DATA){
                  /*   colorbar->setScalarsToColors(new JetColorMap(zrange[0],zrange[1]));
                     colorbar->setNumLabels(5);
                     colorbar->setTitle(std::string("Height"));
                     colorbar->setScalarPrinter(sp);*/
-                    colorbar=new osgSim::ScalarBar(256,5,new JetColorMap(zrange[0],zrange[1]),"Height",osgSim::ScalarBar::HORIZONTAL,0.1,new TrunkScalarPrinter);
+                    colorbar=new osgSim::ScalarBar(256,5,new ColorBrewerMap(zrange[0],zrange[1],mPalette),"Height",osgSim::ScalarBar::HORIZONTAL,0.1,new TrunkScalarPrinter);
                 }else if(dataout == LABEL_DATA){
                     colorbar=new osgSim::ScalarBar(((label_range[1]+1)*2) +1,((label_range[1]+1)*2) +1,
                                                   new ColorBrewerMapDiscrete(label_range[0],label_range[1]+1.0,mPalette),
@@ -511,7 +517,9 @@ namespace ews {
                     QgsColorBrewerPalette cb_pal;
 
                     int num_labels=(int)max_el;
-                    texture_color_brewer_names=cb_pal.listSchemes(num_labels);
+                    texture_color_brewer_names_SEQ=cb_pal.listSchemes(seq_colormap_colors);
+                    texture_color_brewer_names_QUAL=cb_pal.listSchemes(num_labels);
+
                     mPalette=cb_pal.listSchemeColors("Paired",num_labels);
                     //printf("Pal size %d %s\n",mPalette.size(),texture_color_brewer_names[0].toAscii().data());
                     label_range=osg::Vec2(min_el,max_el);
@@ -554,8 +562,8 @@ namespace ews {
             void MeshFile::setColorMap(int index) {
                 selColorMap=index;
                 setupPallet();
-                if(shared_uniforms.size() > UNI_COLORMAP && shared_uniforms[UNI_COLORMAP])
-                    shared_uniforms[UNI_COLORMAP]->set(index);
+                if(shared_uniforms.size() > UNI_COLORMAP_SIZE && shared_uniforms[UNI_COLORMAP_SIZE])
+                    shared_uniforms[UNI_COLORMAP_SIZE]->set(mPalette.size());
             }
             void MeshFile::setDataRange(osg::Vec2 range){
                 //cout << "Setting data range " << range <<endl;
@@ -567,13 +575,13 @@ namespace ews {
                 if(shared_uniforms.size() > UNI_DATAUSED && shared_uniforms[UNI_DATAUSED]){
                     shared_uniforms[UNI_DATAUSED]->set(index);
                     if(index == HEIGHT_DATA){
-                        colormap_names=&static_shader_colormaps;
+                        colormap_names=&texture_color_brewer_names_SEQ;
                         dataout=index;
                         emit colorMapChanged(index);
                         setDataRange(zrange);
                     }
                     else if(index == LABEL_DATA) {
-                        colormap_names=&texture_color_brewer_names;
+                        colormap_names=&texture_color_brewer_names_QUAL;
                         dataout=index;
                         emit colorMapChanged(index);
                         setDataRange(label_range);

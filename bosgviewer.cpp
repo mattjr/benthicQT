@@ -189,7 +189,7 @@ int main(int argc, char** argv)
 
     shared_uniforms.resize(NUM_UNI_ENUM);
     shared_uniforms[UNI_SHADER_OUT]= new osg::Uniform("shaderOut",1);
-    shared_uniforms[UNI_COLORMAP]=new osg::Uniform("colormap",0);
+    shared_uniforms[UNI_COLORMAP_SIZE]=new osg::Uniform("colormapSize",0);
     shared_uniforms[UNI_DATAUSED]= new osg::Uniform("dataused",0);
     shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(minel,maxel));
     shared_uniforms[UNI_TEXSCALE]= new osg::Uniform("texScale",256.0f);
