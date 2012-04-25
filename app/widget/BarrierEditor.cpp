@@ -27,7 +27,6 @@
 #include <QItemSelectionModel>
 #include "ui_BarrierEditor.h"
 #include "BQTDefine.h"
-
 namespace ews {
     namespace app {
         namespace widget {
@@ -164,9 +163,21 @@ namespace ews {
 
             void BarrierEditor::changeOverlay(int index)
             {
-             //   qDebug() << "changed to " << index;
+             // qDebug() << "changed to " << index;
                 if(_dataModel)
                     _dataModel->setShaderOut(index);
+                if(index ==0){
+                    opacitySlider->setDisabled(false);
+                }else{
+                    opacitySlider->setDisabled(true);;
+                }
+            }
+
+            void BarrierEditor::changeOpacity(int val)
+            {
+             //   qDebug() << "changed to " << index;
+                if(_dataModel)
+                    _dataModel->setOpacity(val);
             }
 
             void BarrierEditor::changeDataUsed(int index)

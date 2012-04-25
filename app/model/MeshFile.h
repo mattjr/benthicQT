@@ -42,6 +42,7 @@ enum{
     UNI_DATAUSED,
     UNI_VAL_RANGE,
     UNI_TEXSCALE,
+    UNI_OPACITY,
     NUM_UNI_ENUM
 };
 namespace ews {
@@ -187,6 +188,7 @@ namespace ews {
             void setShaderOut(int index);
             void setColorMap(int index);
             void setDataUsed(int index);
+            void setOpacity(int val);
             void setDataRange(osg::Vec2 range);
             void updateSharedAttribTex();
             void setupPallet();

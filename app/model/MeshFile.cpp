@@ -101,6 +101,8 @@ namespace ews {
                 shared_uniforms[UNI_DATAUSED]= new osg::Uniform("dataused",0);
                 shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(0.0,0.0));
                 shared_uniforms[UNI_TEXSCALE]= new osg::Uniform("texScale",0.0f);
+                shared_uniforms[UNI_OPACITY]= new osg::Uniform("opacity",1.0f);
+
 
                 shader_names.push_back("Texture");
                 shader_names.push_back("Aux");
@@ -122,8 +124,7 @@ namespace ews {
                 colormap_names= &static_shader_colormaps;
 
                 dataused_names.push_back("Height");
-                dataused_names.push_back("Labels");
-
+                label_range=osg::Vec2(0,0);
                 //_manip=
                 _stateset=NULL;
                 colorbar=NULL;
@@ -390,11 +391,12 @@ namespace ews {
                     printf("%d bla\n",texture_color_brewer_names_DIV.size());
                     mPalette=cb_pal.getDivScheme( texture_color_brewer_names_DIV[selColorMap]);
 
-                }else{
+                }else if(dataout == LABEL_DATA && label_range[1]>0){
                     num_labels=(int)label_range[1];
                     mPalette=cb_pal.getQualScheme( texture_color_brewer_names_QUAL[selColorMap],num_labels);
 
-                }
+                }else
+                    return;
                 if(!dataImage){
                     return;
                 }
@@ -458,6 +460,8 @@ namespace ews {
 
             void MeshFile::updateSharedAttribTex() {
                 GLint textureSize = osg::Texture2D::getExtensions(0,true)->maxTextureSize();
+                QgsColorBrewerPalette cb_pal;
+                float max_el,min_el;
                 QStringList list=getFileNames();
                 QStringList::Iterator it = list.begin();
                 while( it != list.end() ) {
@@ -510,8 +514,8 @@ namespace ews {
                             max_poseid=labels[i].pose_id;
                     }
                     current_attributes.resize(max_poseid,0);
-                    float max_el=-FLT_MAX;
-                    float min_el=FLT_MAX;
+                     max_el=-FLT_MAX;
+                     min_el=FLT_MAX;
                     for(int i=0; i<(int)labels.size(); i++){
                         //printf("%d %s :%d\n",labels[i].pose_id,labels[i].left_image_name.c_str(),labels[i].label);
                         if(labels[i].pose_id <  current_attributes.size()){
@@ -525,18 +529,21 @@ namespace ews {
                     if (min_el > 0.0)
                         min_el=0.0;
 
-                    QgsColorBrewerPalette cb_pal;
 
                     int num_labels=(int)max_el;
+                    if(dataused_names.size() < 2)
+                        dataused_names.push_back("Labels");
 
                    // texture_color_brewer_names_SEQ=cb_pal.listSchemesSeq();
                     texture_color_brewer_names_QUAL=cb_pal.listSchemesQual(num_labels);
 
-                    mPalette=cb_pal.getQualScheme( texture_color_brewer_names_QUAL[selColorMap],num_labels);
+                    //mPalette=cb_pal.getQualScheme( texture_color_brewer_names_QUAL[selColorMap],num_labels);
                     //printf("Pal size %d %s\n",mPalette.size(),texture_color_brewer_names[0].toAscii().data());
                     label_range=osg::Vec2(min_el,max_el);
+                    it++;
+               }
                     //printf("Min El %f Max El %f\n",min_el,max_el);
-                    int num=current_attributes.size()+mPalette.size();
+                    int num=current_attributes.size()+cb_pal.max_pal_size();
                     int dim=ceil(sqrt(num));
                     dim=osg::Image::computeNearestPowerOfTwo(dim,1.0);
                     if(dim> textureSize){
@@ -567,8 +574,7 @@ namespace ews {
                     if(shared_uniforms.size() > UNI_TEXSCALE && shared_uniforms[UNI_TEXSCALE])
                         shared_uniforms[UNI_TEXSCALE]->set((float)dim);
 
-                     it++;
-                }
+
             }
 
             void MeshFile::setColorMap(int index) {
@@ -582,7 +588,11 @@ namespace ews {
                 if(shared_uniforms.size() > UNI_VAL_RANGE && shared_uniforms[UNI_VAL_RANGE])
                     shared_uniforms[UNI_VAL_RANGE]->set(range);
             }
-
+            void MeshFile::setOpacity(int val) {
+                if(shared_uniforms.size() > UNI_OPACITY && shared_uniforms[UNI_OPACITY]){
+                    shared_uniforms[UNI_OPACITY]->set(val/255.0f);
+                }
+            }
             void MeshFile::setDataUsed(int index) {
                 if(shared_uniforms.size() > UNI_DATAUSED && shared_uniforms[UNI_DATAUSED]){
                     shared_uniforms[UNI_DATAUSED]->set(index);

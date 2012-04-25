@@ -144,6 +144,7 @@ osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
     if(stateMask & (ATTRIB_MAP)){
         frag << "uniform sampler2D attribSampler;\n";
         frag << "uniform float texScale;\n";
+        frag << "uniform float opacity;\n";
 
         stateSet->addUniform( new osg::Uniform("attribSampler", TEXUNIT_ATTRIB) );
     }
@@ -232,11 +233,6 @@ bool debug_shader=false;
                     "vec2 clampedCoord = clamp(texCoord,vec2(0.0,0.0),texSize)/texSize; \n"\
                     "return texture2D(textureMap, clampedCoord);\n"\
                     "}\n"\
-                    "vec4 getColorMapValue(sampler2D textureMap,int i, vec2 texSize)"\
-                    "{\n"\
-                    "vec2 coord = vec2((texSize.x-i-0.5),texSize.y-0.5);  \n"\
-                    "return FetchTexel(textureMap, coord,texSize);\n"\
-                    "}\n"\
                     "float unpackFloat( vec4 rgbaColor )\n"\
                     "{\n"\
                     "return (255.0f*rgbaColor[0]) / 1.0f +\n"\
@@ -250,6 +246,12 @@ bool debug_shader=false;
                     "float integer=floor(quotient); \n"\
                     "return vec2(fraction * width, integer) + 0.5;\n"\
                     " }\n";
+               frag<<   QUOTEME(
+                    vec4 getColorMapValue(sampler2D textureMap,int i, vec2 texSize)\n
+                    {\n
+                    vec2 coord = linearTo2D(((texSize.x*texSize.y)-1.0)-i,texSize.x);//vec2((texSize.x-i-0.5),texSize.y-0.5);  \n
+                    return FetchTexel(textureMap, coord,texSize);\n
+                    }\n);
                     frag <<
                            QUOTEME(
                                    vec4 doMapInterp(sampler2D colorMapTex,float val,int iMapSize, vec2 texSize){\n
@@ -284,26 +286,27 @@ bool debug_shader=false;
     {
         frag <<
             "  vec4 color;\n"\
-            "  vec4 base;\n"\
-            "  float val;\n"\
-            "  if(shaderOut == 1) {\n";
+            "  vec4 base_c;\n"\
+            "  float val;\n";
             frag << "float range= valrange.y-valrange.x;\n";
         if(stateMask & (ATTRIB_MAP)){
                 frag << "if(dataused==0){\n";
                 frag << "val = (height-valrange.x)/range;\n";
-                frag << "base = doMapInterp(attribSampler,val,colormapSize,vec2(texScale,texScale));";
+                frag << "base_c = doMapInterp(attribSampler,val,colormapSize,vec2(texScale,texScale));";
                 frag << "}\n";
                 frag << "else if(dataused==1){\n";
                 frag << "float loc=floor(gl_TexCoord[1].t+0.5);\n";
                 frag << "vec2 pixelLoc= linearTo2D(loc,texScale);\n";
-                frag << "base = FetchTexel(attribSampler,pixelLoc,vec2(texScale,texScale));\n";
-                frag << "float f=floor(((unpackFloat(base)*range)+valrange.x)+0.5);\n";
-                frag << "base =doMap(attribSampler,f,colormapSize,vec2(texScale,texScale));\n";
+                frag << "base_c = FetchTexel(attribSampler,pixelLoc,vec2(texScale,texScale));\n";
+                frag << "float f=floor(((unpackFloat(base_c)*range)+valrange.x)+0.5);\n";
+                frag << "base_c =doMap(attribSampler,f,colormapSize,vec2(texScale,texScale));\n";
                 frag << "}\n";
 
         }
         else
-            frag << "  vec4 base = gl_Color;";
+            frag << "  vec4 base_c = gl_Color;";
+
+      frag<<  "  if(shaderOut == 1) {\n";
 
         frag <<
             "   vec3 nd = normalize(normalDir);\n"\
@@ -313,11 +316,11 @@ bool debug_shader=false;
             "   color += gl_FrontLightProduct[0].ambient;\n"\
             "   float diff = max(dot(ld, nd), 0.0);\n"\
             "   color += gl_FrontLightProduct[0].diffuse * diff;\n"\
-            "   color *= base;\n"\
+            "   color *= base_c;\n"\
             "   if (diff > 0.0)\n"\
             "   {\n"\
             "        vec3 halfDir = normalize(ld+vd);\n"\
-            "        color.rgb += base.a * gl_FrontLightProduct[0].specular.rgb * \n"\
+            "        color.rgb += base_c.a * gl_FrontLightProduct[0].specular.rgb * \n"\
             "        pow(max(dot(halfDir, nd), 0.0), gl_FrontMaterial.shininess);\n"\
             "   }\n"\
             "   color.rgb *= (gl_TexCoord[1].s);\n"\
@@ -328,7 +331,7 @@ bool debug_shader=false;
     {
         frag << "{\n";
         if (stateMask & DIFFUSE_MAP)
-            frag << "  vec4 base = texture2D(diffuseMap, gl_TexCoord[0].st);\n";
+            frag << "  vec4 base = opacity*texture2D(diffuseMap, gl_TexCoord[0].st) + (1.0-opacity)*base_c;\n";
         else
             frag << "  vec4 base = vec4(1.0);\n";
         frag << "  color = base;\n";

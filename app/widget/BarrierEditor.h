@@ -25,6 +25,8 @@
 #include <osg/Vec3>
 #include "MeshFile.h"
 #include <QtGui/QComboBox>
+#include <QSlider>
+
 /** Forward declaration of UI implementation class. */
 /** @cond */
 namespace Ui {
@@ -57,6 +59,7 @@ namespace ews {
                 QComboBox *overlay;
                 QComboBox *datausedCombo;
                 QComboBox *colormapCombo;
+                QSlider *opacitySlider;
 
             public slots:
 
@@ -69,6 +72,8 @@ namespace ews {
                 void changeOverlay(int index);
                 void changeDataUsed(int index);
                 void changeColorMap(int index);
+                void changeOpacity(int val);
+
                 void updateOverlayWidget();
                 void updateDataUsedWidget(int index);
                 void displayMeasure(osg::Vec3,osg::Vec3);

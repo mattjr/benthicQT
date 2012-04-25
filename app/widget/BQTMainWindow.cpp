@@ -71,11 +71,20 @@ namespace ews {
                 osg::Vec3 weights(6.24,0.79,0.3);
                 int num_shader_out=2;
                 _ui->barrierEditor->overlay=new QComboBox;
+
+
                 _ui->mainToolBar->addWidget( _ui->barrierEditor->overlay);
                  _ui->barrierEditor->datausedCombo =new QComboBox;
                 _ui->mainToolBar->addWidget( _ui->barrierEditor->datausedCombo);
                 _ui->barrierEditor->colormapCombo=new QComboBox;
                 _ui->mainToolBar->addWidget( _ui->barrierEditor->colormapCombo);
+                _ui->barrierEditor->opacitySlider=new QSlider;
+                _ui->barrierEditor->opacitySlider->setMinimum(0);
+                _ui->barrierEditor->opacitySlider->setMaximum(255);
+                 _ui->barrierEditor->opacitySlider->setValue(255);
+                  _ui->barrierEditor->opacitySlider->setMaximumWidth(100);;
+                 _ui->barrierEditor->opacitySlider->setOrientation(Qt::Horizontal);
+                _ui->mainToolBar->addWidget(_ui->barrierEditor->opacitySlider);
                 // Setup sync between model and renderer.
                 QObject::connect(_state, SIGNAL(objectAdded(QObject&)), _sceneRoot, SLOT(addDrawableFor(QObject&)));
                 QObject::connect(_state, SIGNAL(objectRemoved(QObject&)), _sceneRoot, SLOT(removeDrawableFor(QObject&)));
@@ -89,6 +98,8 @@ namespace ews {
                 QObject::connect(_ui->actionSet_to_720x576, SIGNAL(triggered()), this, SLOT(resize720x576()));
                 QObject::connect(_ui->actionSet_to_960x540, SIGNAL(triggered()), this, SLOT(resize960x540()));
                 QObject::connect(_ui->barrierEditor->overlay, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeOverlay(int)));
+                QObject::connect(_ui->barrierEditor->opacitySlider, SIGNAL(valueChanged(int)), _ui->barrierEditor, SLOT(changeOpacity(int)));
+
                 QObject::connect(_ui->barrierEditor->datausedCombo, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeDataUsed(int)));
                 QObject::connect(_ui->barrierEditor->colormapCombo, SIGNAL(currentIndexChanged(int)), _ui->barrierEditor, SLOT(changeColorMap(int)));
 

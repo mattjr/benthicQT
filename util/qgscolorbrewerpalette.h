@@ -101,6 +101,7 @@ class QgsColorBrewerPalette
 
 
         QList<QColor> null_lst;
+        null_lst.push_back(QColor(255,0,0));
         return null_lst;
 
     }
@@ -117,6 +118,9 @@ class QgsColorBrewerPalette
     }
 
 
+    static int max_pal_size(){
+        return 12;
+    }
 
    /* static QList<QColor> listSchemeColors( QString schemeName, int colors )
     {
