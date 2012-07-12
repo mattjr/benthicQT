@@ -22,8 +22,20 @@
 #include <osg/MatrixTransform>
 #include <osg/Material>
 #include <osg/CullFace>
+#include <osg/Camera>
 #include <osgDB/ReadFile>
 #include "MyShaderGen.h"
+#include "LibVT_Internal.h"
+#include "LibVT.h"
+#include "LibVT_Config.h"
+
+#include <osg/Geode>
+#include <osg/TextureRectangle>
+#include <osgViewer/Viewer>
+#include <osgDB/ReadFile>
+#include <osgGA/StateSetManipulator>
+
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osgManipulator/Translate2DDragger>
 #include "PositionHandler.h"
@@ -34,6 +46,7 @@
 #include "SimulationState.h"
 #include "ProgressBar.h"
 #include "FindNode.h"
+
 
 namespace ews {
     namespace app {
@@ -168,21 +181,25 @@ namespace ews {
                         ss->setTextureAttribute(TEXUNIT_ATTRIB,_dataModel.getSharedTex());
                     }
                     readFileCallback->setRootStateSet(ss);
-                    osgDB::Registry::instance()->setReadFileCallback(readFileCallback);
+                   // osgDB::Registry::instance()->setReadFileCallback(readFileCallback);
 
                     if( pCoordSystem ){
                         printf("New Node type with CSN\n");
                         osg::MatrixTransform *trans =findTopMostNodeOfType<osg::MatrixTransform>(node.get());
                         transRev->setMatrix(osg::Matrix::inverse(trans->getMatrix()));
                         transRev->addChild(node.get());
-                        _meshGeom->addChild(transRev);
-
+                        std::string tex_name=osgDB::getFilePath(filename)+"/vtex";
+                        osg::Node *vt_node=_dataModel.createVTStuff(transRev,tex_name);
+                        if(vt_node)
+                        _meshGeom->addChild(vt_node);
+                        else
+                            _meshGeom->addChild(transRev);
                     }else{
                     _meshGeom->addChild(node.get());
 
                 }
                     setEnabled(true);
-                   _dataModel.setStateSet(ss);
+                   //_dataModel.setStateSet(ss);
                 }else{
                     if (rr.error()) {
                         string errmsg= "Error: could not open file `" + filename +"'" +rr.message();
@@ -198,6 +215,8 @@ namespace ews {
 
 
             }
+
+
 
 
         }

@@ -83,6 +83,11 @@ namespace ews {
                 void createScalarBar_HUD(void);
                 void createScaleBar_HUD(void);
                 std::vector<double> current_attributes;
+                osg::TextureRectangle* texture;
+                osg::Camera* pre_camera;
+                osg::Image* image;
+
+                osg::Node * createVTStuff(osg::Node *node,std::string tex_name);
 
                 /**
                  * Default constructor.
@@ -255,7 +260,6 @@ namespace ews {
             private:
                 Q_DISABLE_COPY(MeshFile)
                 QString curr_img;
-
                 //bool _enabled;
                 QStringList filenames;
                 RTree *_tree;
@@ -266,6 +270,8 @@ namespace ews {
                  QStringList  *colormap_names;
                  std::vector<string>  dataused_names;
                  osg::ref_ptr<osg::Texture2D> shared_tex;
+                 osg::Group* loadVTModel(osg::Node *vtgeode,osg::Camera *&pre_camera
+                                                                                              ,osg::TextureRectangle *&texture,osg::Image *&image);
 
                  osg::ref_ptr<osg::Image> dataImage;
                  QOSGWidget *_renderer;

@@ -26,7 +26,7 @@ set(BQT_ORGANIZATION_NAME "ACFR")
 set(APP_ICON_RC "${CMAKE_CURRENT_SOURCE_DIR}/images/benthicQT.ico")
 # Add to search path our custom scripts
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts;${CMAKE_MODULE_PATH}")
-subdirs(util/UF-3.2)
+subdirs(  util/UF-3.2 LibVT)
 add_definitions("-g")
 #----------------------------------------------------------------------
 # Macro to get the current date, from:
@@ -77,8 +77,8 @@ ENDIF(NOT WIN32)
 
 
 IF(FFMPEG_FOUND MATCHES "YES")
-INCLUDE_DIRECTORIES( ${FFMPEG_INCLUDE_DIRS} )
-LINK_DIRECTORIES(${FFMPEG_LIBRARY_DIRS})
+INCLUDE_DIRECTORIES( ${FFMPEG_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/LibVT)
+LINK_DIRECTORIES(${FFMPEG_LIBRARY_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/LibVT)
 SET(TARGET_EXTERNAL_LIBRARIES ${FFMPEG_LIBRARIES} x264)
 #message("Using FFMPEG libs ${TARGET_EXTERNAL_LIBRARIES}")
 add_definitions("-DUSE_FFMPEG")
@@ -186,6 +186,7 @@ if(CMAKE_CROSSCOMPILING)
 	  set(QT_HEADERS_DIR "/home/mattjr/.wine/drive_c/Qt/2010.05/qt/include/${module};${QT_HEADERS_DIR}")
 	endforeach()
 find_package(Qt4)
+find_package(JPEG REQUIRED)
 
 message("Cross compiling")
 else()
@@ -275,7 +276,7 @@ qt4_wrap_cpp( BQT_TEST_GEN_MOC_HDRS ${BQT_TEST_MOC_HDRS} )
 
 
 
-include_directories(${OPENSCENEGRAPH_INCLUDE_DIRS})
+include_directories(${OPENSCENEGRAPH_INCLUDE_DIRS} LibVT)
 
 find_package(OpenGL REQUIRED)
 
@@ -316,9 +317,9 @@ elseif(WIN32)
         # More MSVC specific compilation flags
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
         ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
-		ADD_DEFINITIONS(-DQWT_DLL)
+                ADD_DEFINITIONS(-DQWT_DLL)
     endif(MSVC)
-endif()    
+endif()
 
 #--------------------------------------------------------------------------------
 # we need this to be able to include headers produced by uic in our code
@@ -390,8 +391,8 @@ set(ALL_QT_OSG_LIBS
 
 ##message("libs:  ${ALL_QT_OSG_LIBS}")
 add_executable(bosgviewer bosgviewer.cpp app/drawable/MyShaderGen.cpp)
-target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions)
-target_link_libraries(bosgviewer ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions)
+target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt jpeg ${JPEG_LIBRARY} ${JPEG_LIBRARIES})
+target_link_libraries(bosgviewer ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt jpeg ${JPEG_LIBRARY} ${JPEG_LIBRARIES})
 
 #--------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
