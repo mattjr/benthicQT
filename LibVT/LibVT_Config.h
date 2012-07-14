@@ -10,21 +10,21 @@
  * @brief	The texunit to use for the page table texture, can't be used otherwise in the client app <br>
  * Note:	0 - 15, depending on the hardware
  */
-#define TEXUNIT_FOR_PAGETABLE		12
+#define TEXUNIT_FOR_PAGETABLE		5
 
 /*!
  * @def		TEXUNIT_FOR_PHYSTEX
  * @brief	The texunit to use for the physical texture, can't be used otherwise in the client app <br>
  * Note:	0 - 15, depending on the hardware
  */
-#define TEXUNIT_FOR_PHYSTEX			13
+#define TEXUNIT_FOR_PHYSTEX			6
 
 /*!
  * @def		TEXUNIT_FOR_MIPCALC
  * @brief	The texunit to use for the tile calculation texture, can't be used otherwise in the client app, only takes effect if USE_MIPCALC_TEXTURE is 1 <br>
  * Note:	0 - 15, depending on the hardware
  */
-#define TEXUNIT_FOR_MIPCALC			14
+#define TEXUNIT_FOR_MIPCALC			7
 
 
 // ********** PAGE STORE OPTIONS **********
@@ -224,7 +224,7 @@
  * Note:	When setting to a library which doesn't handle all formats, this restricts the possible image formats at runtime <br>
  * Values:	DecompressionLibPNG, DecompressionSTBIPNG, DecompressionLibJPEG, DecompressionLibJPEGTurbo, DecompressionSTBIJPEG, DecompressionMac, DecompressionDevil, DecompressionLibJPEGTurbo
  */
-#define IMAGE_DECOMPRESSION_LIBRARY	DecompressionLibJPEG//DecompressionLibJPEGTurbo
+#define IMAGE_DECOMPRESSION_LIBRARY	DecompressionLibJPEG//DecompressionMac//DecompressionLibJPEGTurbo
 
 
 

@@ -39,8 +39,12 @@ osg::Geode* createVTShapes(osg::StateSet* ss);
 osg::Geode* createNonVTShapes(osg::StateSet* ss);
 void loadShaderSource(osg::Shader* obj, const std::string& fileName, const std::string& prelude);
 
+#ifdef __APPLE__
+#define SHADER_PATH "/Users/mattjr/svn/benthicQT-VT/LibVT/"
 
+#else
 #define SHADER_PATH "/home/mattjr/svn/benthicQT/LibVT/"
+#endif
 #define clamp(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 int floorToInt(float x){
     return (int)floor(x);
@@ -357,7 +361,7 @@ namespace ews {
                             uint32_t dim;
                     bool success = vtScan(tex_name.c_str(), ext, &border, &length, &dim);
                     if(success){
-                        GLint textureSize = osg::Texture2D::getExtensions(0,true)->maxTextureSize();
+                        GLint textureSize = std::min(osg::Texture2D::getExtensions(0,true)->maxTextureSize(),4096);
 
                              vtInit(tex_name.c_str(), ext, border, length, dim,textureSize);
                             retNode= loadVTModel(node,pre_camera,texture,image);

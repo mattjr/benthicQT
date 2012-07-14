@@ -83,7 +83,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 		#define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT  0x83F3
 	#else
 		#include <OpenGL/OpenGL.h>
-		#include <Carbon/Carbon.h>
+//		#include <Carbon/Carbon.h>
 	#endif
 	#include <dirent.h>
 	#if OPENCL_BUFFERREDUCTION
