@@ -30,7 +30,7 @@ foreach(FILENAME ${SHADERS})
   add_custom_command(
     OUTPUT "${separation_inline_src}"
     COMMAND ${XXD_EXECUTABLE} -i "${FILENAME}" "${separation_inline_src}"
-    COMMAND ${SED_TOOL} -i 's/}\\;/,0x00}\\;/' '${separation_inline_src}'
+    COMMAND ${SED_TOOL} -i -e 's/}\\;/,0x00}\\;/' '${separation_inline_src}'
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/LibVT/"
     DEPENDS "${PROJECT_SOURCE_DIR}/LibVT/${FILENAME}"
     MAIN_DEPENDENCY "${PROJECT_SOURCE_DIR}/LibVT/${FILENAME}"
