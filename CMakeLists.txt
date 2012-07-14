@@ -60,7 +60,7 @@ set(BQT_MODULES app/widget app/drawable app/model physics geometry util test)
 # This is the list of source files that make up the physics engine
 #--------------------------------------------------------------------------------
 file(GLOB BQT_PHYS_SRC physics/*.cpp)
-
+find_package(JPEG REQUIRED)
 #--------------------------------------------------------------------------------
 # This is the list of source files that need to be compiled
 #--------------------------------------------------------------------------------
@@ -186,8 +186,6 @@ if(CMAKE_CROSSCOMPILING)
 	  set(QT_HEADERS_DIR "/home/mattjr/.wine/drive_c/Qt/2010.05/qt/include/${module};${QT_HEADERS_DIR}")
 	endforeach()
 find_package(Qt4)
-find_package(JPEG REQUIRED)
-
 message("Cross compiling")
 else()
 # Add OpenSceneGraph suppport
@@ -391,8 +389,8 @@ set(ALL_QT_OSG_LIBS
 
 ##message("libs:  ${ALL_QT_OSG_LIBS}")
 add_executable(bosgviewer bosgviewer.cpp app/drawable/MyShaderGen.cpp)
-target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt jpeg ${JPEG_LIBRARY} ${JPEG_LIBRARIES})
-target_link_libraries(bosgviewer ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt jpeg ${JPEG_LIBRARY} ${JPEG_LIBRARIES})
+target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt ${JPEG_LIBRARY} )
+target_link_libraries(bosgviewer ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt ${JPEG_LIBRARY} )
 
 #--------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
