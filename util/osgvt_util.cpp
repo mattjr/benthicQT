@@ -1641,7 +1641,7 @@ osg::Geode* createNonVTShapes(osg::StateSet* ss)
 
 void loadShaderSource(osg::Shader* obj, const std::string& fileName, const std::string& prelude )
 {
-	string filestr;
+        string filestr;
 	ifstream myfile (fileName.c_str());
 	
 	filestr.append(prelude);
@@ -1663,6 +1663,24 @@ void loadShaderSource(osg::Shader* obj, const std::string& fileName, const std::
 	}
 	else
 	{
-		std::cout << "File \"" << fileName << "\" not found." << std::endl;
+                std::cout << "File \"" << fileName << "\" not found." << std::endl;
 	}
 }
+
+void loadShaderSourceFromStr(osg::Shader* obj, const unsigned char  *shader, const std::string& prelude )
+{
+        string filestr;
+
+        filestr.append(prelude);
+        filestr.append("\n");
+
+
+                        filestr.append((const char *)shader);
+                        filestr.append("\n");
+
+
+                obj->setShaderSource(filestr);
+
+
+}
+

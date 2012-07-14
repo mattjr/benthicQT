@@ -296,7 +296,7 @@ void vtExtractNeededPages(const uint32_t *ext_buffer_BGRA)
 			}
 
 #if ENABLE_MT
-			vt.neededPagesAvailableCondition.notify_one(); // wake up page loading thread if it is sleeping
+                        vt.neededPagesAvailableCondition.signal(); // wake up page loading thread if it is sleeping
 #endif
 		}
 	}	// unlock

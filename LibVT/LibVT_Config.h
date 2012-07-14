@@ -200,15 +200,14 @@
  * Note:	Affects performance <br>
  * Values:	0 - 2 (0 = no asynchronous page loading, 1 = asynchronous page loading using 1 additional thread, 2 = asynchronous page loading using 2 additional threads, one for loading and decompression respectively)
  */
-/*#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 	#define ENABLE_MT				0
 #elif defined(WIN32)
 	#define ENABLE_MT				2
 #else
-	#define ENABLE_MT				2
+        #define ENABLE_MT				2
 #endif
-*/
-#define ENABLE_MT				0
+
 
 /*!
  * @def		FALLBACK_ENTRIES

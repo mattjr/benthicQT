@@ -111,11 +111,11 @@ void vtLoadNeededPages()
 #endif
 }
 #else
-void vtLoadNeededPagesDecoupled()
+void LibVTBackgroundThread::run()//vtLoadNeededPagesDecoupled()
 {
 	char buf[255];
 
-	try {
+        //try {
 		const int limit = 1;
 		while (1)
 		{
@@ -129,7 +129,7 @@ void vtLoadNeededPagesDecoupled()
 				{
 					while(vt.neededPages.empty())
 					{
-						vt.neededPagesAvailableCondition.wait(scoped_lock);
+                                                vt.neededPagesAvailableCondition.wait(&vt.neededPagesMutex);
 					}
 				}
 
@@ -166,20 +166,20 @@ void vtLoadNeededPagesDecoupled()
 						vt.compressedPages.insert(pair<uint32_t, void *>(pageInfo, file_data));
 						vt.compressedPagesSizes.insert(pair<uint32_t, uint32_t>(pageInfo, size));
 
-						vt.compressedPagesAvailableCondition.notify_one();
+                                                vt.compressedPagesAvailableCondition.signal();
 					}	// unlock
 				}
 			}
 		}
-	}
-	catch (boost::thread_interrupted const&)
+/*	}
+        catch (boost::thread_interrupted const&)
 	{
-	}
+        }*/
 }
 
-void vtDecompressNeededPagesDecoupled()
+void LibVTBackgroundThread2::run()//void vtDecompressNeededPagesDecoupled()
 {
-	try {
+        //try {
 		const int limit = 5;
 		while (1)
 		{
@@ -193,7 +193,7 @@ void vtDecompressNeededPagesDecoupled()
 				{
 					while(vt.newCompressedPages.empty())
 					{
-						vt.compressedPagesAvailableCondition.wait(scoped_lock);
+                                                vt.compressedPagesAvailableCondition.wait(&vt.compressedMutex);//scoped_lock);
 					}
 				}
 
@@ -252,10 +252,10 @@ void vtDecompressNeededPagesDecoupled()
 				}
 			}
 		}
-	}
+/*	}
 	catch (boost::thread_interrupted const&)
 	{
-	}
+        }*/
 }
 #endif
 

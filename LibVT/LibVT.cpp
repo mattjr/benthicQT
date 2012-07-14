@@ -183,8 +183,8 @@ bool vtInit(const char *_tileDir, const char *_pageExtension, const uint8_t _pag
     #if ENABLE_MT == 1
         vt.backgroundThread = boost::thread(&vtLoadNeededPages);
 	#elif ENABLE_MT == 2
-		vt.backgroundThread = boost::thread(&vtLoadNeededPagesDecoupled);
-		vt.backgroundThread2 = boost::thread(&vtDecompressNeededPagesDecoupled);
+                vt.backgroundThread.start();//vt.backgroundThread = boost::thread(&vtLoadNeededPagesDecoupled);
+                vt.backgroundThread2.start();//vt.backgroundThread2 = boost::thread(&vtDecompressNeededPagesDecoupled);
     #endif
 
 	if (c.pageDXTCompression && (c.pageBorder % 4 != 0)) printf("Warning: PAGE_BORDER should be a multiple of 4 for DXT compression\n");
@@ -445,8 +445,8 @@ void vtShutdown()
 #if ENABLE_MT == 1
 	vt.backgroundThread.interrupt();
 #elif ENABLE_MT == 2
-	vt.backgroundThread.interrupt();
-	vt.backgroundThread2.interrupt();
+        vt.backgroundThread.cancel();
+        vt.backgroundThread2.cancel();
 #endif
 
 	free(vt.pageTables[0]);

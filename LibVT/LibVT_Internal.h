@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <math.h>
 #include <sys/types.h>
 
-
+#include <OpenThreads/Thread>
 
 #ifdef WIN32
 	#define PATH_SEPERATOR "\\"
@@ -90,8 +90,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 		#include <OpenCL/opencl.h>
 	#endif
 #elif defined(linux)
-	#include "opengl_linux.h"
-	#define PATH_SEPERATOR "/"
+#ifndef __APPLE__
+        #include "opengl_linux.h"
+#endif
+        #define PATH_SEPERATOR "/"
         #include <GL/gl.h>
         #include <GL/glext.h>
 	#include <dirent.h>
@@ -120,8 +122,14 @@ static inline void vt_fatal(const char *err, ...) {va_list ap; va_start (ap, err
 
 using namespace std;
 //using namespace boost;
+class LibVTBackgroundThread : public OpenThreads::Thread {
+    virtual void run();
 
+};
+class LibVTBackgroundThread2 : public OpenThreads::Thread {
+    virtual void run();
 
+};
 enum {
 	kCustomReadback = 1,
 	kBackbufferReadPixels = 2,
@@ -186,7 +194,7 @@ enum {
 #endif
 
 #if ENABLE_MT
-    #define LOCK(x)					boost::mutex::scoped_lock scoped_lock(x);
+    #define LOCK(x)					OpenThreads::ScopedLock<OpenThreads::Mutex> scoped_lock(x);
 #else
     #define LOCK(x)
 #endif
@@ -250,20 +258,20 @@ struct vtData
 	map<uint32_t, clock_t>	cachedPagesAccessTimes;
 
 #if ENABLE_MT
-	boost::condition		neededPagesAvailableCondition;
-	boost::mutex			neededPagesMutex;
-	boost::mutex			newPagesMutex;
-	boost::mutex			cachedPagesMutex;
-	boost::thread			backgroundThread;
+        OpenThreads::Condition		neededPagesAvailableCondition;
+        OpenThreads::Mutex			neededPagesMutex;
+        OpenThreads::Mutex			newPagesMutex;
+        OpenThreads::Mutex			cachedPagesMutex;
+        LibVTBackgroundThread			backgroundThread;
 #endif
 
 #if ENABLE_MT > 1
-	boost::thread			backgroundThread2;
-	boost::mutex			compressedMutex;
+         LibVTBackgroundThread2			backgroundThread2;
+        OpenThreads::Mutex			compressedMutex;
 	queue<uint32_t>			newCompressedPages;
 	map<uint32_t, void *>	compressedPages;
 	map<uint32_t, uint32_t>	compressedPagesSizes;
-	boost::condition		compressedPagesAvailableCondition;
+         OpenThreads::Condition		compressedPagesAvailableCondition;
 #endif
 
 #if OPENCL_BUFFERREDUCTION

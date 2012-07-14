@@ -38,13 +38,17 @@ osg::StateSet* createSS();
 osg::Geode* createVTShapes(osg::StateSet* ss);
 osg::Geode* createNonVTShapes(osg::StateSet* ss);
 void loadShaderSource(osg::Shader* obj, const std::string& fileName, const std::string& prelude);
+void loadShaderSourceFromStr(osg::Shader* obj, const unsigned char * shader, const std::string& prelude );
 
-#ifdef __APPLE__
-#define SHADER_PATH "/Users/mattjr/svn/benthicQT-VT/LibVT/"
 
-#else
-#define SHADER_PATH "/home/mattjr/svn/benthicQT/LibVT/"
-#endif
+extern unsigned char readback_vert[];
+
+extern unsigned char readback_frag[];
+
+
+extern unsigned char renderVT_vert[];
+extern unsigned char renderVT_frag[];
+
 #define clamp(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 int floorToInt(float x){
     return (int)floor(x);
@@ -313,8 +317,8 @@ namespace ews {
                 vtpreState->addUniform( new osg::Uniform("mip_bias", vtGetBias()) ); // this shold be done every frame if we want dynamic LoD adjustment
 
 
-                loadShaderSource( vtpreVertexObject, SHADER_PATH "readback.vert", string(prelude));
-                loadShaderSource( vtpreFragmentObject, SHADER_PATH "readback.frag", string(prelude));
+                loadShaderSourceFromStr(vtpreVertexObject, readback_vert, string(prelude));
+                loadShaderSourceFromStr( vtpreFragmentObject, readback_frag, string(prelude));
 
                 vtpreState->setAttributeAndModes(vtpreProgramObject, osg::StateAttribute::ON);
 
@@ -329,8 +333,8 @@ namespace ews {
                 vtmainState->addUniform( new osg::Uniform("physicalTexture", TEXUNIT_FOR_PHYSTEX) );
                 vtmainState->addUniform( new osg::Uniform("mip_bias", vtGetBias()) );
 
-                loadShaderSource( vtmainVertexObject, SHADER_PATH "renderVT.vert", string(prelude));
-                loadShaderSource( vtmainFragmentObject, SHADER_PATH "renderVT.frag", string(prelude));
+                loadShaderSourceFromStr( vtmainVertexObject,  renderVT_vert, string(prelude));
+                loadShaderSourceFromStr( vtmainFragmentObject,  renderVT_frag, string(prelude));
 
                 vtmainState->setAttributeAndModes(vtmainProgramObject, osg::StateAttribute::ON); // TODO: barf on shader errors
 
