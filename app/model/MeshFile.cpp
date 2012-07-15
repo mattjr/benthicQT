@@ -390,6 +390,7 @@ namespace ews {
             }
 
             MeshFile::~MeshFile() {
+                vtShutdown();
             }
             void MeshFile::copyCurrentImageClipboard(){
                 QClipboard *clipboard = QApplication::clipboard();

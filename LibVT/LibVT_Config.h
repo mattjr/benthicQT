@@ -78,7 +78,7 @@
  * Note:	Affects RAM usage / performance <br>
  * Values:	50 - FREE_RAM_IN_SYSTEM
  */
-#define MAX_RAMCACHE_MB				50//2000
+#define MAX_RAMCACHE_MB				500//2000
 
 /*!
  * @def		PREPASS_RESOLUTION_REDUCTION_SHIFT
@@ -168,7 +168,7 @@
  * Info:	Can be off if your scene fits anyway, turn it on to provide smooth degradation instead if dropping tiles randomly. Algorithm is a bit unstable. Requires that you pass vtGetBias() as value for the uniform "mip_bias" to the shaders (both!). <br>
  * Values:	0 - 1
  */
-#define DYNAMIC_LOD_ADJUSTMENT		0
+#define DYNAMIC_LOD_ADJUSTMENT		1
 
 /*!
  * @def		OPENCL_BUFFERREDUCTION
