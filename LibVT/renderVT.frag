@@ -195,11 +195,57 @@ vec4 sampleVirtualTexture(vtexcoord coordinates)
 
 
 
-//	varying vec3 v;
-//	varying vec3 lightvec;
-//	varying vec3 normal;
-//	varying vec4 FrontColor;
-
+varying vec3 normalDir;
+varying vec3 lightDir;
+varying float height;
+varying vec3 viewDir;
+uniform sampler2D attribSampler;
+uniform float texScale;
+uniform float opacity;
+uniform int shaderOut;
+uniform int colormapSize;
+uniform vec2 valrange;
+uniform int dataused;
+vec4 FetchTexel(sampler2D textureMap,vec2 texCoord,  vec2 texSize){
+vec2 clampedCoord = clamp(texCoord,vec2(0.0,0.0),texSize)/texSize;
+return texture2D(textureMap, clampedCoord);
+}
+float unpackFloat( vec4 rgbaColor )
+{
+return (255.0*rgbaColor[0]) / 1.0 +
+(255.0*rgbaColor[1]) / 256.0 +
+ (255.0*rgbaColor[2]) / 65536.0 +
+(255.0*rgbaColor[3]) / 16777216.0;
+}
+vec2 linearTo2D(float index, float width) {
+float quotient = index / width;
+float fraction = fract(quotient);
+float integer=floor(quotient);
+return vec2(fraction * width, integer) + 0.5;
+ }
+vec4 getColorMapValue(sampler2D textureMap,int i, vec2 texSize)
+ {
+ vec2 coord = linearTo2D(((texSize.x*texSize.y)-1.0)-i,texSize.x); return FetchTexel(textureMap, coord,texSize);
+ }
+vec4 doMapInterp(sampler2D colorMapTex,float val,int iMapSize, vec2 texSize){
+ float x = clamp(val,0.0,1.0) * float(iMapSize - 1);
+ float x0 = floor(x);
+ int i = int(x0);
+ if (i == iMapSize - 1)
+ {
+ return getColorMapValue(colorMapTex,i,texSize);
+ }
+ float dx = x - x0;
+ vec4 v1=getColorMapValue(colorMapTex,i,texSize);
+ vec4 v2=getColorMapValue(colorMapTex,i+1,texSize);
+ return ( v1* (1.0 - dx) + v2 * dx);
+ }
+ vec4 doMap(sampler2D textureMap,float label,int iMapSize, vec2 texSize)
+ {
+ if(label<=0.0 || label > float(iMapSize-1)) return vec4(0.0,0.0,0.0,1.0);
+ vec2 coord = vec2((texSize.x-(label-1.0)-0.5),texSize.y-0.5);
+ return FetchTexel(textureMap, coord,texSize);
+ }
 void main(void)
 {
 	vtexcoord coord = calulateVirtualTextureCoordinates();
@@ -209,21 +255,57 @@ void main(void)
 #ifdef GL_ES
 		gl_FragColor	= vtex;
 #else
-//		vec3 Eye		= normalize(-v);
-//		vec3 Reflected	= normalize(reflect( -lightvec, normal));
-//
-//		vec4 IAmbient	= gl_LightSource[0].ambient * gl_FrontMaterial.ambient;
-//		vec4 IDiffuse	= gl_LightSource[0].diffuse * max(dot(normal, lightvec), 0.0) * gl_FrontMaterial.diffuse;
-//		vec4 ISpecular	= gl_LightSource[0].specular * pow(max(dot(Reflected, Eye), 0.0), gl_FrontMaterial.shininess) * gl_FrontMaterial.specular;
-//
-//		vec4 color		= vec4((gl_FrontLightModelProduct.sceneColor + IAmbient + IDiffuse) * vtex + ISpecular);
-//		gl_FragColor	= color;
+        if(shaderOut == 0){
 		gl_FragColor	= vtex;
+        }else{
+//                vec3 Eye		= normalize(-v);
+ //               vec3 Reflected	= normalize(reflect( -lightvec, normal));
+
+   //             vec4 IAmbient	= gl_LightSource[0].ambient * gl_FrontMaterial.ambient;
+     //           vec4 IDiffuse	= gl_LightSource[0].diffuse * max(dot(normal, lightvec), 0.0) * gl_FrontMaterial.diffuse;
+       //         vec4 ISpecular	= gl_LightSource[0].specular * pow(max(dot(Reflected, Eye), 0.0), gl_FrontMaterial.shininess) * gl_FrontMaterial.specular;
+
+         //       vec4 color		= vec4((vtex + IAmbient + IDiffuse) * vtex + ISpecular);
+               //gl_FragColor	= color;
+                  vec4 color;
+                  vec4 base_c;
+                  float val;
+                  float range= valrange.y-valrange.x;
+                  if(dataused==0){
+                  val = (height-valrange.x)/range;
+                  base_c = doMapInterp(attribSampler,val,colormapSize,vec2(texScale,texScale));
+                  }
+                  else if(dataused==1){
+                  float loc=floor(gl_TexCoord[1].t+0.5);
+                  vec2 pixelLoc= linearTo2D(loc,texScale);
+                  base_c = FetchTexel(attribSampler,pixelLoc,vec2(texScale,texScale));
+                  float f=floor(((unpackFloat(base_c)*range)+valrange.x)+0.5);
+                  base_c =doMap(attribSampler,f,colormapSize,vec2(texScale,texScale));
+                  }
+                    if(shaderOut == 1) {
+                vec3 nd = normalize(normalDir);
+                vec3 ld = normalize(lightDir);
+                vec3 vd = normalize(viewDir);
+                color = gl_FrontLightModelProduct.sceneColor;
+                color += gl_FrontLightProduct[0].ambient;
+                float diff = max(dot(ld, nd), 0.0);
+                color += gl_FrontLightProduct[0].diffuse * diff;
+                color *= base_c;
+                if (diff > 0.0)
+                {
+                     vec3 halfDir = normalize(ld+vd);
+                     color.rgb += base_c.a * gl_FrontLightProduct[0].specular.rgb *
+                     pow(max(dot(halfDir, nd), 0.0), gl_FrontMaterial.shininess);
+                }
+                //color.rgb *= (gl_TexCoord[1].s);
+                    }
+                    gl_FragColor = color;
+
 #endif
 
 
 
-
+}
 
 
 

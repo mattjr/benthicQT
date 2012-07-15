@@ -99,18 +99,24 @@ osg::StateSet *MyShaderGenCache::getOrCreateStateSet(int stateMask)
     StateSetMap::iterator it = _stateSetMap.find(stateMask);
     if (it == _stateSetMap.end())
     {
-        osg::StateSet *stateSet = createStateSet(stateMask);
+        osg::StateSet *stateSet = new osg::StateSet;
+        osg::Program *program = new osg::Program;
+        stateSet->setAttribute(program);
+
+        std::string vertstr,fragstr;
+        createStateSet(stateSet,program,vertstr,fragstr,stateMask);
+        program->addShader(new osg::Shader(osg::Shader::VERTEX, vertstr));
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragstr));
+
         _stateSetMap.insert(it, StateSetMap::value_type(stateMask, stateSet));
         return stateSet;
     }
     return it->second.get();
 }
 
-osg::StateSet *MyShaderGenCache::createStateSet(int stateMask) const
+bool MyShaderGenCache::createStateSet(osg::StateSet *stateSet,osg::Program *program,std::string &vertstr,std::string &fragstr,int stateMask) const
 {
-    osg::StateSet *stateSet = new osg::StateSet;
-    osg::Program *program = new osg::Program;
-    stateSet->setAttribute(program);
+
 
     std::ostringstream vert;
     std::ostringstream frag;
@@ -355,17 +361,16 @@ bool debug_shader=false;
     frag << "  gl_FragColor = color;\n";
     frag << "}\n";
 
-    std::string vertstr = vert.str();
-    std::string fragstr = frag.str();
+  vertstr = vert.str();
+  fragstr = frag.str();
 
     osg::notify(osg::INFO) << "MyShaderGenCache Vertex shader:\n" << vertstr << std::endl;
     osg::notify(osg::INFO) << "MyShaderGenCache Fragment shader:\n" << fragstr << std::endl;
 
-    program->addShader(new osg::Shader(osg::Shader::VERTEX, vertstr));
-    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragstr));
 
 
-    return stateSet;
+
+    return true;
 }
 
 MyShaderGenVisitor::MyShaderGenVisitor() :

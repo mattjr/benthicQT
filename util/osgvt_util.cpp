@@ -1678,7 +1678,6 @@ void loadShaderSourceFromStr(osg::Shader* obj, const unsigned char  *shader, con
                         filestr.append((const char *)shader);
                         filestr.append("\n");
 
-
                 obj->setShaderSource(filestr);
 
 

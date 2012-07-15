@@ -46,9 +46,10 @@ public:
     void setStateSet(int stateMask, osg::StateSet *program);
     osg::StateSet *getStateSet(int stateMask) const;
     osg::StateSet *getOrCreateStateSet(int stateMask);
+    bool createStateSet(osg::StateSet *stateSet,osg::Program *program,std::string &vertstr,
+                                          std::string &fragstr,int stateMask) const;
 
-protected:
-    osg::StateSet *createStateSet(int stateMask) const;
+
     mutable OpenThreads::Mutex _mutex;
     StateSetMap _stateSetMap;
 

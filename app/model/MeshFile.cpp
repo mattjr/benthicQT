@@ -333,6 +333,18 @@ namespace ews {
                 vtmainState->addUniform( new osg::Uniform("physicalTexture", TEXUNIT_FOR_PHYSTEX) );
                 vtmainState->addUniform( new osg::Uniform("mip_bias", vtGetBias()) );
 
+                int stateMask = 0;
+
+                    stateMask |= MyShaderGenCache::LIGHTING;
+                if (vtmainState->getMode(GL_FOG) & osg::StateAttribute::ON)
+                    stateMask |= MyShaderGenCache::FOG;
+                if (vtmainState->getTextureAttribute(0, osg::StateAttribute::TEXTURE))
+                    stateMask |= MyShaderGenCache::DIFFUSE_MAP;
+                stateMask |= MyShaderGenCache::ATTRIB_MAP;
+
+                std::string vertstr,fragstr;
+                MyShaderGenCache cache;
+                cache.createStateSet(vtmainState,vtmainProgramObject,vertstr,fragstr,stateMask);
                 loadShaderSourceFromStr( vtmainVertexObject,  renderVT_vert, string(prelude));
                 loadShaderSourceFromStr( vtmainFragmentObject,  renderVT_frag, string(prelude));
 
@@ -387,6 +399,7 @@ namespace ews {
                                 vtPrepare((const GLuint) 0, (const GLuint) 0);
                                 return retNode;
                 }
+                return NULL;
             }
 
             MeshFile::~MeshFile() {

@@ -20,15 +20,23 @@ void main( void )
 }
 #else
 varying vec3 v;
-varying vec3 lightvec;
-varying vec3 normal;
-varying vec4 FrontColor;
-
+varying vec3 normalDir;
+varying vec3 lightDir;
+varying float height;
+varying vec3 viewDir;
 void main(void) {
-	normal			= normalize(gl_NormalMatrix * gl_Normal);
+        normalDir = gl_NormalMatrix * gl_Normal;
+        gl_TexCoord[1] = gl_MultiTexCoord1;
+        height = gl_Vertex.z;
 	v				= vec3(gl_ModelViewMatrix * gl_Vertex);
-	lightvec		= normalize(gl_LightSource[0].position.xyz - v);
-	FrontColor		= gl_Color;
+        normalDir = gl_NormalMatrix * gl_Normal;
+        vec3 dir = -vec3(gl_ModelViewMatrix * gl_Vertex);
+        viewDir = dir;
+        vec4 lpos = gl_LightSource[0].position;
+        if (lpos.w == 0.0)
+          lightDir = lpos.xyz;
+        else
+          lightDir = lpos.xyz + dir;
 
 	gl_TexCoord[0]	= gl_MultiTexCoord0;
 	gl_Position		= gl_ModelViewProjectionMatrix *  gl_Vertex;
