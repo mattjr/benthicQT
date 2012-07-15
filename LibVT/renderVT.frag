@@ -7,7 +7,6 @@
  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
- 
 #ifdef GL_ES
 	#ifdef GL_OES_standard_derivatives
 	   #extension GL_OES_standard_derivatives: require
@@ -225,7 +224,7 @@ return vec2(fraction * width, integer) + 0.5;
  }
 vec4 getColorMapValue(sampler2D textureMap,int i, vec2 texSize)
  {
- vec2 coord = linearTo2D(((texSize.x*texSize.y)-1.0)-i,texSize.x); return FetchTexel(textureMap, coord,texSize);
+ vec2 coord = linearTo2D(((texSize.x*texSize.y)-1.0)-float(i),texSize.x); return FetchTexel(textureMap, coord,texSize);
  }
 vec4 doMapInterp(sampler2D colorMapTex,float val,int iMapSize, vec2 texSize){
  float x = clamp(val,0.0,1.0) * float(iMapSize - 1);
@@ -242,7 +241,7 @@ vec4 doMapInterp(sampler2D colorMapTex,float val,int iMapSize, vec2 texSize){
  }
  vec4 doMap(sampler2D textureMap,float label,int iMapSize, vec2 texSize)
  {
- if(label<=0.0 || label > float(iMapSize-1)) return vec4(0.0,0.0,0.0,1.0);
+ if(label<=0.0 || int(label) > (iMapSize-1)) return vec4(0.0,0.0,0.0,1.0);
  vec2 coord = vec2((texSize.x-(label-1.0)-0.5),texSize.y-0.5);
  return FetchTexel(textureMap, coord,texSize);
  }
