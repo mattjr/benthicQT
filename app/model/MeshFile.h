@@ -152,6 +152,9 @@ namespace ews {
                             fscanf(fp,"%f %f\n",&zrange[0],&zrange[1]);
                             qDebug() << "Sucessfully loaded zrange";
                             fclose(fp);
+                        }else{
+                            zrange[0]=0;
+                            zrange[1]=0;
                         }
                         it++;
                     }

@@ -519,7 +519,7 @@ namespace ews {
                 }
                 virtual osg::Vec4 getColor(float scalar) const{
 
-                    if ( mPalette.isEmpty() )
+                    if ( mPalette.isEmpty() || range == 0.0 )
                         return osg::Vec4(0,0,0,1);
 
                     float val=(scalar-minV)/(range);
@@ -634,7 +634,7 @@ namespace ews {
                 colorbar=new osgSim::ScalarBar;
                 if(dataout == HEIGHT_DATA){
                     num_labels=seq_colormap_colors;
-                    printf("%d bla\n",texture_color_brewer_names_DIV.size());
+                    //printf("%d bla\n",texture_color_brewer_names_DIV.size());
                     mPalette=cb_pal.getDivScheme( texture_color_brewer_names_DIV[selColorMap]);
 
                 }else if(dataout == LABEL_DATA && label_range[1]>0){
