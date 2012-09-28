@@ -186,7 +186,10 @@ namespace ews {
                     if( pCoordSystem ){
                         printf("New Node type with CSN\n");
                         osg::MatrixTransform *trans =findTopMostNodeOfType<osg::MatrixTransform>(node.get());
-                        transRev->setMatrix(osg::Matrix::inverse(trans->getMatrix()));
+			if(trans){
+			  transRev->setMatrix(osg::Matrix::inverse(trans->getMatrix()));
+			}
+
                         transRev->addChild(node.get());
                         std::string tex_name=osgDB::getFilePath(filename)+"/vtex";
                         osg::Node *vt_node=_dataModel.createVTStuff(transRev,tex_name);
