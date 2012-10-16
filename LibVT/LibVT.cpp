@@ -24,6 +24,15 @@ vtConfig c;
 
 bool vtInit(const char *_tileDir, const char *_pageExtension, const uint8_t _pageBorder, const uint8_t _mipChainLength, const uint16_t _pageDimension,const unsigned int phys_tex_size)
 {
+  #ifdef WIN32
+GLenum err = glewInit();
+if (GLEW_OK != err)
+{
+  /* Problem: glewInit failed, something is seriously wrong. */
+  fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+  exit(-1);
+}
+#endif
 	if (c.tileDir != "") vt_fatal("Error: calling vtInit() twice ain't good!\n");
 
 	assert((VT_MAG_FILTER == GL_NEAREST) || (VT_MAG_FILTER == GL_LINEAR));

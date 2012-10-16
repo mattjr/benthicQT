@@ -3,7 +3,6 @@
  * @brief	The Config-file for LibVT.
  */
 
-#include <osgViewer/Viewer>
 
 /*!
  * @def		TEXUNIT_FOR_PAGETABLE

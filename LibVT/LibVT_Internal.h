@@ -23,24 +23,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <math.h>
 #include <sys/types.h>
 
-#include <OpenThreads/Thread>
-
 #ifdef WIN32
+        #define GLEW_STATIC 1
+        #include <GL/glew.h>
 	#define PATH_SEPERATOR "\\"
 	#if OPENCL_BUFFERREDUCTION
 		#include <CL/opencl.h>
 	#endif
-	//#include <windows.h>
-
-	#if defined(NO_GLEE)
-		#include <gl/gl.h>
-		#include "glext.h"
-		//#include "wglext.h"
-		#include "opengl_win32.h"
-	#else
-		#include "Glee.h"
-	#endif
-	#include <stdio.h>
+        #include <stdio.h>
 	#include <string.h>
 	#include <stdarg.h>
 
@@ -108,6 +98,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <iostream>
 #include <queue>
 #include <map>
+
+#include <OpenThreads/Thread>
+#include <osgViewer/Viewer>
 
 
 #include <vector>
