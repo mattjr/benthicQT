@@ -3,3 +3,7 @@
 OSGFun*
 build
 build.*
+build*
+mingw
+/bin/benthicQT.exe
+/bin/bosgviewer.exe
