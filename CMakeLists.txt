@@ -11,7 +11,6 @@ project(benthicQT)
 cmake_minimum_required(VERSION 2.8)
 INCLUDE( ${CMAKE_ROOT}/Modules/FindPkgConfig.cmake )
 include(BuildScripts/mingwcross.cmake)
-message("PKG ${PKG_CONFIG_EXECUTABLE} ")
 set(EXE_TARGET_NAME ${CMAKE_PROJECT_NAME})
 set(BQT_APP_NAME "benthicQT")
 set(BQT_VERSION_MAJOR "0")
@@ -63,9 +62,9 @@ set(BQT_MODULES app/widget app/drawable app/model physics geometry util test)
 #--------------------------------------------------------------------------------
 file(GLOB BQT_PHYS_SRC physics/*.cpp)
 IF(NOT WIN32)
-
-
 find_package(JPEG REQUIRED)
+INCLUDE_DIRECTORIES(${JPEG_INCLUDE_DIR})
+find_package(OpenGL REQUIRED)
 ENDIF(NOT WIN32)
 
 #--------------------------------------------------------------------------------
@@ -285,7 +284,7 @@ qt4_wrap_cpp( BQT_TEST_GEN_MOC_HDRS ${BQT_TEST_MOC_HDRS} )
 
 include_directories(${OPENSCENEGRAPH_INCLUDE_DIRS} LibVT)
 
-find_package(OpenGL REQUIRED)
+
 
 #--------------------------------------------------------------------------------
 # Apply platform specific compiler options
@@ -399,8 +398,8 @@ set(ALL_QT_OSG_LIBS
     ${TARGET_EXTERNAL_LIBRARIES})
 #message(" glew ${GLEW_LIBRARIES} ")
 #message("libs:  ${ALL_QT_OSG_LIBS}")
-target_link_libraries(${EXE_TARGET_NAME} libvt ${ALL_QT_OSG_LIBS} ufGeographicConversions )
-target_link_libraries(bosgviewer  libvt ${ALL_QT_OSG_LIBS}  ufGeographicConversions  )
+target_link_libraries(${EXE_TARGET_NAME} libvt ${ALL_QT_OSG_LIBS} ufGeographicConversions ${JPEG_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(bosgviewer  libvt ${ALL_QT_OSG_LIBS}  ufGeographicConversions ${JPEG_LIBRARIES} ${OPENGL_LIBRARIES})
 
 #--------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
