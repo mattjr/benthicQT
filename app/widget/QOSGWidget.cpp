@@ -29,7 +29,13 @@
 #include <osg/MatrixTransform>
 #include <osg/GLExtensions>
 #include "BQTDebug.h"
-
+#ifdef OSG_LIBRARY_STATIC
+USE_GRAPHICSWINDOW()
+USE_OSGPLUGIN(ive)
+//USE_OSGPLUGIN(deprecated_osg)
+USE_OSGPLUGIN(png)
+USE_OSGPLUGIN(freetype)
+#endif
 namespace ews {
     namespace app {
         namespace widget {

@@ -15,7 +15,9 @@
  * Developed by Mustard Seed Software, LLC 
  * http://mseedsoft.com
  */
-
+#include "LibVT_Internal.h"
+#include "LibVT.h"
+#include "LibVT_Config.h"
 #include <osg/Drawable>
 #include <osg/ShapeDrawable>
 #include <osg/PolygonMode>
@@ -25,9 +27,7 @@
 #include <osg/Camera>
 #include <osgDB/ReadFile>
 #include "MyShaderGen.h"
-#include "LibVT_Internal.h"
-#include "LibVT.h"
-#include "LibVT_Config.h"
+
 
 #include <osg/Geode>
 #include <osg/TextureRectangle>

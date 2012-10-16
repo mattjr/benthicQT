@@ -16,7 +16,8 @@
  * http://mseedsoft.com
  */
 
-
+#include "LibVT_Internal.h"
+#include "LibVT.h"
 
 #include "MeshFile.h"
 //#include "SimulationState.h"
@@ -32,8 +33,7 @@
 #include "seabed_slam_file_io.hpp"
 #include "MyShaderGen.h"
 #include "qgscolorbrewerpalette.h"
-#include "LibVT.h"
-#include "LibVT_Internal.h"
+
 osg::StateSet* createSS();
 osg::Geode* createVTShapes(osg::StateSet* ss);
 osg::Geode* createNonVTShapes(osg::StateSet* ss);
