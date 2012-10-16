@@ -59,7 +59,7 @@ WBLD=build-win32
 win32pkg: win32cross
 	(cd ${WBLD};  make  package)
 win32cross:
-	(git clone -b stable https://github.com/mxe/mxe.git mingw;cp -u openscenegraph-1-pkg-config.patch mingw/src/; cd mingw; make ${ARGS} JOBS=${CPU_COUNT} openscenegraph qt jpeg glew;cd ..;mkdir -p ${WBLD}; cd ${WBLD}; cmake -DCMAKE_TOOLCHAIN_FILE=../mingw/usr/i686-pc-mingw32/share/cmake/mxe-conf.cmake .. -DWIN32=1; make ${ARGS} install)
+	(git clone -b stable https://github.com/mxe/mxe.git mingw;cp -u BuildScripts/openscenegraph-1-pkg-config.patch mingw/src/; cd mingw; make ${ARGS} JOBS=${CPU_COUNT} openscenegraph qt jpeg glew;cd ..;mkdir -p ${WBLD}; cd ${WBLD}; cmake -DCMAKE_TOOLCHAIN_FILE=../mingw/usr/i686-pc-mingw32/share/cmake/mxe-conf.cmake .. -DWIN32=1; make ${ARGS} install)
 
 VSBLD=build-vs
 vs:
