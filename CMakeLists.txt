@@ -9,15 +9,17 @@
 
 project(benthicQT)
 cmake_minimum_required(VERSION 2.8)
-
+INCLUDE( ${CMAKE_ROOT}/Modules/FindPkgConfig.cmake )
+include(BuildScripts/mingwcross.cmake)
+message("PKG ${PKG_CONFIG_EXECUTABLE} ")
 set(EXE_TARGET_NAME ${CMAKE_PROJECT_NAME})
 set(BQT_APP_NAME "benthicQT")
 set(BQT_VERSION_MAJOR "0")
-set(BQT_VERSION_MINOR "1")
+set(BQT_VERSION_MINOR "3")
 set(BQT_VERSION ${BQT_VERSION_MAJOR}.${BQT_VERSION_MINOR})
-set(BQT_COPYRIGHT "2010 NVIDIA Foundation")
+set(BQT_COPYRIGHT "ACFR")
 set(BQT_WEBSITE "http://www.acfr.usyd.edu.au/")
-set(BQT_EMAIL   "m.roberson@cas.edu.au")
+set(BQT_EMAIL   "mattjr@acfr.usyd.edu.au")
 set(BQT_ICON_MAC "bqt-icon.icns")
 set(BQT_ICON_ICO "bqt-icon.ico")
 set(BQT_ICON_BMP "bqt-icon.bmp")
@@ -27,7 +29,7 @@ set(APP_ICON_RC "${CMAKE_CURRENT_SOURCE_DIR}/images/benthicQT.ico")
 # Add to search path our custom scripts
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts;${CMAKE_MODULE_PATH}")
 subdirs(  util/UF-3.2 LibVT)
-add_definitions("-g")
+#add_definitions("-g")
 #----------------------------------------------------------------------
 # Macro to get the current date, from:
 # http://www.cmake.org/pipermail/cmake/2009-February/027014.html
@@ -60,7 +62,12 @@ set(BQT_MODULES app/widget app/drawable app/model physics geometry util test)
 # This is the list of source files that make up the physics engine
 #--------------------------------------------------------------------------------
 file(GLOB BQT_PHYS_SRC physics/*.cpp)
+IF(NOT WIN32)
+
+
 find_package(JPEG REQUIRED)
+ENDIF(NOT WIN32)
+
 #--------------------------------------------------------------------------------
 # This is the list of source files that need to be compiled
 #--------------------------------------------------------------------------------
@@ -180,17 +187,18 @@ endif (WIN32)
 # note that it's Qt4, not QT4 or qt4
 set(QT_COMPONENTS QtCore QtGui QtOpenGL QtSvg QtXml)
 set(OSG_COMPONENTS osg osgUtil osgViewer osgGA osgManipulator osgText osgDB osgSim)
-if(CMAKE_CROSSCOMPILING)
-	set(QT_HEADERS_DIR /home/mattjr/.wine/drive_c/Qt/2010.05/qt/include)
-	foreach(module QtCore QtGui QtSvg QtNetwork QtScript QtHelp QtWebKit QtTest QtXml QtSql QtCLucene QtOpenGL)
-	  set(QT_HEADERS_DIR "/home/mattjr/.wine/drive_c/Qt/2010.05/qt/include/${module};${QT_HEADERS_DIR}")
-	endforeach()
-find_package(Qt4)
-message("Cross compiling")
+if(WIN32)
+    pkg_check_modules( OPENSCENEGRAPH "openscenegraph-osgViewer openscenegraph-osgGA openscenegraph-osgDB openscenegraph-osgManipulator openscenegraph-osgText openscenegraph-osgPlugins"  )
+pkg_check_modules(GLEW "glew")
+    LINK_DIRECTORIES(${OPENSCENEGRAPH_LIBRARY_DIRS})
+    ADD_DEFINITIONS(${OPENSCENEGRAPH_CFLAGS})
+    SET(QT_IS_STATIC 1)
+    eros_prepare_qt4(${QT_COMPONENTS})
+    message("Cross compiling")
 else()
 # Add OpenSceneGraph suppport
-find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
-find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
+    find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
+    find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
 endif()
 #-------------------------------------------------------------------------------
 # QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to
@@ -201,9 +209,10 @@ include( ${QT_USE_FILE} )
 #-------------------------------------------------------------------------------
 
 if(WIN32)
-  include(lin-mingw)
-  include_directories(${QT_INCLUDES})
-  add_definitions("-Wno-attributes")
+
+#  include(lin-mingw)
+#  include_directories(${QT_INCLUDES})
+#  add_definitions("-Wno-attributes")
 endif(WIN32)
 
 #-------------------------------------------------------------------------------
@@ -366,7 +375,9 @@ source_group("Source (Generated)" FILES ${BQT_GEN_MOC_HDRS} ${BQT_GEN_UIS} ${BQT
 source_group("Shaders" FILES ${BQT_SHADERS})
 
 #--------------------------------------------------------------------------------
-#  CMake's way of creating an executable
+#  CMake's way of creating an executabler
+add_executable(bosgviewer bosgviewer.cpp app/drawable/MyShaderGen.cpp)
+
 add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE} 
   ${BQT_SRCS}
   ${BQT_GEN_MOC_HDRS} 
@@ -383,14 +394,13 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
 # Tell CMake which libraries we need to link our executable against.
 set(ALL_QT_OSG_LIBS     
     ${QT_LIBRARIES}
-    ${OPENSCENEGRAPH_LIBRARIES} 
-    ${TARGET_EXTERNAL_LIBRARIES}
-)
-
-##message("libs:  ${ALL_QT_OSG_LIBS}")
-add_executable(bosgviewer bosgviewer.cpp app/drawable/MyShaderGen.cpp)
-target_link_libraries(${EXE_TARGET_NAME} ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt ${JPEG_LIBRARY} )
-target_link_libraries(bosgviewer ${OPENGL_LIBRARIES} ${ALL_QT_OSG_LIBS} ufGeographicConversions libvt ${JPEG_LIBRARY} )
+    ${OPENSCENEGRAPH_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${TARGET_EXTERNAL_LIBRARIES})
+#message(" glew ${GLEW_LIBRARIES} ")
+#message("libs:  ${ALL_QT_OSG_LIBS}")
+target_link_libraries(${EXE_TARGET_NAME} libvt ${ALL_QT_OSG_LIBS} ufGeographicConversions )
+target_link_libraries(bosgviewer  libvt ${ALL_QT_OSG_LIBS}  ufGeographicConversions  )
 
 #--------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
@@ -432,7 +442,7 @@ install(TARGETS ${EXE_TARGET_NAME}
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE' 
 # NB: this is important because icon loading, etc. need image plugins.
-
+if(NOT WIN32)
 message(STATUS "Qt plugins dir = ${QT_PLUGINS_DIR}, extension = ${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" 
@@ -440,6 +450,7 @@ install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats"
 	COMPONENT Runtime
 	FILES_MATCHING PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}"
 )
+endif()
 
 
 #--------------------------------------------------------------------------------
