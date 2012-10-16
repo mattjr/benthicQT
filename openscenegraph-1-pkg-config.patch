@@ -1,0 +1,33 @@
+This file is part of mingw-cross-env.
+See doc/index.html for further information.
+
+diff -uNr OpenSceneGraph-3.0.1.orig/CMakeLists.txt OpenSceneGraph-3.0.1/CMakeLists.txt
+--- OpenSceneGraph-3.0.1.orig/CMakeLists.txt	2011-06-27 10:45:36.000000000 +0000
++++ OpenSceneGraph-3.0.1/CMakeLists.txt	2011-07-07 08:01:42.661346947 +0000
+@@ -961,6 +961,7 @@
+   openscenegraph-osgShadow
+   openscenegraph-osgAnimation
+   openscenegraph-osgVolume
++  openscenegraph-osgPlugins
+ )
+ 
+ IF(QT4_FOUND)
+diff -uNr OpenSceneGraph-3.0.1.orig/packaging/pkgconfig/openscenegraph-osgPlugins.pc.in OpenSceneGraph-3.0.1/packaging/pkgconfig/openscenegraph-osgPlugins.pc.in
+--- OpenSceneGraph-3.0.1.orig/packaging/pkgconfig/openscenegraph-osgPlugins.pc.in	1970-01-01 01:00:00.000000000 +0100
++++ OpenSceneGraph-3.0.1/packaging/pkgconfig/openscenegraph-osgPlugins.pc.in	2010-01-17 18:59:13.000000000 +0100
+@@ -0,0 +1,15 @@
++# pkg-config source file
++
++prefix=@CMAKE_INSTALL_PREFIX@
++exec_prefix=${prefix}
++libdir=${exec_prefix}/lib@LIB_POSTFIX@
++includedir=${prefix}/include
++
++Name: openscenegraph-osgPlugins
++Description: Plugins for Openscenegraph
++Version: @OPENSCENEGRAPH_VERSION@
++Requires: openscenegraph-osgParticle openscenegraph-osgWidget openscenegraph-osgVolume openscenegraph-osgShadow openscenegraph-osgTerrain openscenegraph-osgFX openscenegraph-osgSim openscenegraph-osgText openscenegraph-osgAnimation openscenegraph-osgViewer openscenegraph-osgDB openscenegraph-osgUtil openscenegraph-osg openthreads
++Conflicts:
++Libs:
++Libs.private: -L${libdir}/osgPlugins-3.0.1 -losgdb_3dc -losgdb_3ds -losgdb_ac -losgdb_bmp -losgdb_bsp -losgdb_bvh -losgdb_cfg -losgdb_curl -losgdb_dds -losgdb_dot -losgdb_dw -losgdb_dxf -losgdb_exr -losgdb_freetype -losgdb_geo -losgdb_gif -losgdb_glsl -losgdb_gz -losgdb_hdr -losgdb_ive -losgdb_jp2 -losgdb_jpeg -losgdb_logo -losgdb_lwo -losgdb_lws -losgdb_md2 -losgdb_mdl -losgdb_normals -losgdb_obj -losgdb_ogr -losgdb_openflight -losgdb_deprecated_osg -losgdb_osga -losgdb_deprecated_osganimation -losgdb_deprecated_osgfx -losgdb_deprecated_osgparticle -losgdb_deprecated_osgshadow -losgdb_deprecated_osgsim -losgdb_deprecated_osgterrain -losgdb_deprecated_osgtext -losgdb_osgtgz -losgdb_deprecated_osgviewer -losgdb_deprecated_osgvolume -losgdb_deprecated_osgwidget -losgdb_pic -losgdb_png -losgdb_pnm -losgdb_rgb -losgdb_rot -losgdb_scale -losgdb_shp -losgdb_stl -losgdb_tga -losgdb_tgz -losgdb_tiff -losgdb_trans -losgdb_txf -losgdb_txp -losgdb_vtf -losgdb_x -losgdb_zip -lcurl -lgnutls -lgcrypt -lgpg-error -lidn -lIlmImf -lHalf -lImath -lIlmThread -lIex -lfreetype -lgif -ljasper -ljpeg -lpng -liconv -lbz2 -lz -lws2_32 -lwinmm -lwldap32 -lopengl32
++Cflags: -I${includedir} -DOSG_LIBRARY_STATIC
