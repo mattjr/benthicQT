@@ -80,9 +80,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 		#include <OpenCL/opencl.h>
 	#endif
 #elif defined(linux)
-#ifndef __APPLE__
-        #include "opengl_linux.h"
-#endif
+
         #define PATH_SEPERATOR "/"
         #include <GL/gl.h>
         #include <GL/glext.h>
@@ -91,6 +89,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 	#include <string.h>
 	#include <stdarg.h>
 	#include <stdlib.h>
+#ifndef __APPLE__
+        #include "opengl_linux.h"
+#endif
 #else
 	#error COULD_NOT_GUESS_TARGET_SYSTEM
 #endif
