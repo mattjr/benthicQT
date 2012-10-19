@@ -7,3 +7,4 @@ build*
 mingw
 /bin/benthicQT.exe
 /bin/bosgviewer.exe
+/bin
