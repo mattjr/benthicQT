@@ -377,8 +377,13 @@ namespace ews {
                             uint32_t dim;
                     bool success = vtScan(tex_name.c_str(), ext, &border, &length, &dim);
                     if(success){
+#if defined(__APPLE__)
                         GLint textureSize = std::min(osg::Texture2D::getExtensions(0,true)->maxTextureSize(),4096);
+#else
 
+                        GLint textureSize = osg::Texture2D::getExtensions(0,true)->maxTextureSize();
+#endif
+                        printf("Physical texture size %dx%d\n",textureSize,textureSize);
                              vtInit(tex_name.c_str(), ext, border, length, dim,textureSize);
                             retNode= loadVTModel(node,pre_camera,texture,image);
                     }
