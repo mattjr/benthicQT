@@ -388,11 +388,14 @@ double width =150;
 double offset =15.0;
         double fovy,aspectratio,znear,zfar;
         cam->getProjectionMatrixAsPerspective(fovy,aspectratio,znear,zfar);
+       // printf("f %f a %f zn %f zf %f",fovy,aspectratio,znear,zfar);
         //osg::Vec3f eye; osg::Vec3f center; osg::Vec3f up;
        // cam->getViewMatrixAsLookAt(eye,center,up);
         //cout << "eye "<<eye<<endl;
         //cout <<center <<endl;
         //printf("fov %f %f %f %f\n",fovy,aspectratio,znear,zfar);
+        double fovx = atan(tan(osg::DegreesToRadians(fovy*0.5)) * aspectratio) * 2.0;
+
         const osg::Viewport* viewport    = cam->getViewport();
         double vpwidth  = viewport->width();
 
@@ -511,7 +514,7 @@ void addMapSqaure(osg::Group *mapGroup,WorldWindManipulatorNew *om,osg::Camera *
   transgeode ->addChild( geode);
   mapGroup->addChild(transgeode);
 }
-osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, WorldWindManipulatorNew *om,int screen_width,int screen_height){
+osg::Camera* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, WorldWindManipulatorNew *om,int screen_width,int screen_height,int hud_width,int hud_height,int hud_margin){
   osg::Texture* texture = 0;
   unsigned int samples = 0;
   unsigned int colorSamples = 0;  
@@ -577,13 +580,11 @@ osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, Wo
 		 0, 0, false,
 		 samples, colorSamples);
 // now create the camera to do the multiple render to texture
-  int hud_width=200;
-  int hud_height=200;
-  int margin=20;
-  osg::Camera* quad_cam = createBox(screen_width -margin-hud_width,
-				    screen_height -margin-hud_height,
-				    hud_width,hud_height);
 
+  osg::Camera* quad_cam = createBox(screen_width -hud_margin-hud_width,
+                    screen_height -hud_margin-hud_height,
+				    hud_width,hud_height);
+  quad_cam->setDataVariance(osg::Object::DYNAMIC);
   addMapSqaure(quad_cam,om, camera,tex_width,tex_height);
 
   osg::Node *map_quad=createRTTQuad(texture);
@@ -596,7 +597,7 @@ osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, Wo
  double computePixelSizeAtDistance(double distance, double fieldOfView, double viewportWidth)
 
 {
-
+    // printf("%f %f %f\n",distance,fieldOfView,viewportWidth);
   double  TanHalfAngle = tan(osg::DegreesToRadians(fieldOfView)*0.5);
 
 

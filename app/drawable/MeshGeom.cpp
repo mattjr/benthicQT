@@ -82,8 +82,12 @@ namespace ews {
               _switch->addChild(_dataModel.colorbar_hud);
               _switch->addChild(_dataModel.scalebar_hud);
 
-             _dataModel._mapSwitch->addChild(createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
-                                                  _dataModel.getRenderer()->width(),_dataModel.getRenderer()->height()));
+              _dataModel._mapCam=createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
+                                                 _dataModel.getRenderer()->width(),_dataModel.getRenderer()->height(),_dataModel.hud_width,_dataModel.hud_height,_dataModel.hud_margin);
+              _dataModel.getRenderer()->addEventHandler(new MapCamResizeHandler(_dataModel._mapCam,_dataModel.hud_width,
+                                                                                _dataModel.hud_height,_dataModel.hud_margin));
+
+             _dataModel._mapSwitch->addChild( _dataModel._mapCam);
              _dataModel._mapSwitch->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF );
               _switch->addChild(_dataModel._mapSwitch);
 //                qDebug() << "In contstrt mesh gerom";
@@ -186,9 +190,9 @@ namespace ews {
                     if( pCoordSystem ){
                         printf("New Node type with CSN\n");
                         osg::MatrixTransform *trans =findTopMostNodeOfType<osg::MatrixTransform>(node.get());
-			if(trans){
-			  transRev->setMatrix(osg::Matrix::inverse(trans->getMatrix()));
-			}
+            if(trans){
+                transRev->setMatrix(osg::Matrix::inverse(trans->getMatrix())*osg::Matrix::rotate(osg::DegreesToRadians(-90.0f),0,0,1.0));
+            }
 
                         transRev->addChild(node.get());
                         std::string tex_name=osgDB::getFilePath(filename)+"/vtex";

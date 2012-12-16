@@ -371,8 +371,7 @@ protected:
 };
 
 
-
-osg::Node* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, WorldWindManipulatorNew *om,int screen_width,int screen_height);
+osg::Camera* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, WorldWindManipulatorNew *om,int screen_width,int screen_height,int hud_width,int hud_height,int hud_margin);
 osg::Group* createRTTQuad(osg::Texture *texture);
 double computePixelSizeAtDistance(double distance, double fieldOfView, double viewportWidth);
 osg::Node *createScaleBar(osgText::Text *textNode,WorldWindManipulatorNew *om,osg::Camera *cam);
