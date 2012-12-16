@@ -4,6 +4,7 @@ OSGFun*
 build
 build.*
 build*
+qtcreator-build
 mingw
 /bin/benthicQT.exe
 /bin/bosgviewer.exe

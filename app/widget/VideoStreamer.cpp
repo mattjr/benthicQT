@@ -2,6 +2,12 @@
 #include <iostream>
 #include <fstream>
 
+/* Support older versions of ffmpeg and libav */
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(52, 64, 0)
+  #define AVMEDIA_TYPE_AUDIO CODEC_TYPE_AUDIO
+  #define AVMEDIA_TYPE_VIDEO CODEC_TYPE_VIDEO
+  #define AV_PKT_FLAG_KEY PKT_FLAG_KEY
+#endif
 
 #undef AV_NOPTS_VALUE
 #define AV_NOPTS_VALUE int64_t(0x8000000000000000)
@@ -270,7 +276,7 @@ int VideoStreamer::Write(AVFrame *ai_picture)
 		// Raw video case. The API will change slightly in the near	future for that
 		packet.size = sizeof(AVPicture);
 		packet.data = (uint8_t *)ai_picture;
-		packet.flags |= PKT_FLAG_KEY;
+        packet.flags |= AV_PKT_FLAG_KEY;
 	} 
 	else 
 	{
@@ -286,7 +292,7 @@ int VideoStreamer::Write(AVFrame *ai_picture)
 				packet.pts = av_rescale_q(codedFrame->pts, m_vStream->codec->time_base, m_vStream->time_base);
 
 			if (codedFrame->key_frame)
-				packet.flags |= PKT_FLAG_KEY;
+                packet.flags |= AV_PKT_FLAG_KEY;
 		}
 		else return 0;
 	}
@@ -418,7 +424,7 @@ AVStream *CreateVideoStream(
         // Initialize the codec context
         AVCodecContext *c = st->codec;
         c->codec_id		  = ai_formatContext->oformat->video_codec;
-        c->codec_type	  = CODEC_TYPE_VIDEO;
+        c->codec_type	  = AVMEDIA_TYPE_VIDEO;
         c->bit_rate		  = ai_bitRate;
         c->width		  = width;
         c->height		  = height;
