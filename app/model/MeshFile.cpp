@@ -109,6 +109,7 @@ namespace ews {
                     //            : QObject(parent)
             {
                 //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));
+                _mapCam=NULL;
                 progress = new QProgressDialog();
                 progress->setWindowModality(Qt::WindowModal);
                 progress->setCancelButtonText(0);
@@ -215,11 +216,11 @@ namespace ews {
 
                             vtReshape(w, h, 0.0, 0.0, 0.0);
 
-                            _texture->setTextureSize(w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT);
+                      /*      _texture->setTextureSize(w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT);
                             _image->allocateImage(w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT, 1, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV);
                         //	image->setInternalTextureFormat(GL_RGBA);
                             _pre_camera->setViewport(0, 0, w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT);
-
+*/
 
                             break;
                         }
@@ -230,11 +231,12 @@ namespace ews {
                 }
 
 
-                osg::TextureRectangle* _texture;
+               osg::TextureRectangle* _texture;
                 osg::Camera* _pre_camera;
                 osg::Image* _image;
 
             };
+
 
 
             struct PreDrawCallback : public osg::Camera::DrawCallback

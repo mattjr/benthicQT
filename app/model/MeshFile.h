@@ -50,7 +50,61 @@ namespace ews {
         namespace model {
             using osg::Vec2;
             using namespace ews::app::widget;
-                        
+        class MapCamResizeHandler : public osgViewer::WindowSizeHandler
+        {
+        public:
+            bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&aa)
+            {
+
+                switch(ea.getEventType())
+                {
+                    case(osgGA::GUIEventAdapter::RESIZE):
+                    {
+                        int w = (uint16_t)ea.getWindowWidth(), h = (uint16_t)ea.getWindowHeight();
+                        if(w < 1.5*_hud_width ||h < 1.5*_hud_height){
+                            _mod=0.5;
+                        }else{
+                            _mod=1.0;
+                           }
+
+                        if(w < _hud_width*_mod ||h < _hud_height*_mod){
+                            _mapCam->setNodeMask(0);
+                        }else{
+                            _mapCam->setNodeMask(0xffffffff);
+
+                        }
+                            int hw=_hud_width*_mod;
+                            int hh=_hud_height*_mod;
+
+                        _mapCam->setViewport(w -_hud_margin-hw,
+                                             h -_hud_margin-hh,
+                                             hw,hh);
+                    //    _mapCam->setNodeMask(0);
+                   //    _mapCam->setViewport(w -_hud_margin-_hud_width, h -_hud_margin-_hud_height,w,h);
+                      // printf("Resizing %d %d %d %d\n",w -_hud_margin-_hud_width, h -_hud_margin-_hud_height,w,h);
+                  /*      _texture->setTextureSize(w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT);
+                        _image->allocateImage(w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT, 1, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV);
+                    //	image->setInternalTextureFormat(GL_RGBA);
+                        _pre_camera->setViewport(0, 0, w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT);
+*/
+
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                return WindowSizeHandler::handle(ea, aa);
+            }
+
+            MapCamResizeHandler(osg::Camera *cam,int hud_width,int hud_height,int hud_margin) :_mapCam(cam),_hud_width(hud_width),_hud_height(hud_height),_hud_margin(hud_margin),
+                _mod(1.0){}
+            osg::Camera* _mapCam;
+            int _hud_width,_hud_height,_hud_margin;
+            float _mod;
+
+
+        };
+
             
             /**
              * Contains the business logic for barrier objects to be drawn on the screen, as well as
@@ -86,7 +140,10 @@ namespace ews {
                 osg::TextureRectangle* texture;
                 osg::Camera* pre_camera;
                 osg::Image* image;
-
+                osg::Camera *_mapCam;
+                static const int hud_width=200;
+                static const int hud_height=200;
+                static const int hud_margin=20;
                 osg::Node * createVTStuff(osg::Node *node,std::string tex_name);
 
                 /**
@@ -242,6 +299,7 @@ namespace ews {
                     emit measureResults(v,v2);
 
                 }
+
 
             signals:
                // void dataChanged();
