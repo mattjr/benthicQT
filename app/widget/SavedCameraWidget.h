@@ -18,10 +18,10 @@ class SavedCameraWidget : public QDockWidget {
 public:
     SavedCameraWidget(ews::app::widget::QOSGWidget *qosgWidget,QWidget *parent = 0);
     ~SavedCameraWidget();
+    void updateList();
 
 protected:
     void changeEvent(QEvent *e);
-    void updateList();
 
 private:
     Ui::SavedCameraWidget *ui;
@@ -48,7 +48,7 @@ class SpinBoxDelegate : public QItemDelegate
      Q_OBJECT
 
  public:
-     SpinBoxDelegate( MyAnimationPath::TimeControlPointMap &tcpm,QObject *parent = 0);
+     SpinBoxDelegate( MyAnimationPath::TimeControlPointMap &tcpm,SavedCameraWidget *scw,QObject *parent = 0);
 
      QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index) const;
@@ -61,5 +61,6 @@ class SpinBoxDelegate : public QItemDelegate
          const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
      MyAnimationPath::TimeControlPointMap &_tcpm;
+     SavedCameraWidget *_scw;
  };
 #endif // SAVEDCAMERAWIDGET_H

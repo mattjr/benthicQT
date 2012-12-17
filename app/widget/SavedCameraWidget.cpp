@@ -7,8 +7,8 @@
 #include <QTableWidget>
 #include "AnimationPathPlayer.hpp"
 #include <QFileDialog>
-SpinBoxDelegate::SpinBoxDelegate(MyAnimationPath::TimeControlPointMap &tcpm,QObject *parent)
-    :_tcpm(tcpm), QItemDelegate(parent)
+SpinBoxDelegate::SpinBoxDelegate(MyAnimationPath::TimeControlPointMap &tcpm,SavedCameraWidget *scw,QObject *parent)
+    :_tcpm(tcpm), _scw(scw),QItemDelegate(parent)
 {
 }
 
@@ -64,6 +64,8 @@ void SpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
         row++;
     }
     _tcpm=newMap;
+    _scw->updateList();
+
 
 }
 
@@ -78,6 +80,10 @@ SavedCameraWidget::SavedCameraWidget(ews::app::widget::QOSGWidget *qosgWidget,QW
 {
     ui->setupUi(this);
     _ap = _qosgWidget->_ap;
+    MyAnimationPath::TimeControlPointMap &tcpm=_ap->getTimeControlPointMap();
+
+    SpinBoxDelegate* delegate = new SpinBoxDelegate(tcpm,this,ui->tableWidget);
+    ui->tableWidget->setItemDelegate(delegate);
 }
 
 SavedCameraWidget::~SavedCameraWidget()
@@ -122,8 +128,7 @@ void SavedCameraWidget::updateList(){
     MyAnimationPath::TimeControlPointMap &tcpm=_ap->getTimeControlPointMap();
     MyAnimationPath::TimeControlPointMap::iterator iter;
     //ui->tableWidget->clear();
-    SpinBoxDelegate* delegate = new SpinBoxDelegate(tcpm,ui->tableWidget);
-    ui->tableWidget->setItemDelegate(delegate);
+
     ui->tableWidget->setColumnCount(4);
     ui->tableWidget->setRowCount(tcpm.size());
 
