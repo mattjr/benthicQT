@@ -140,17 +140,21 @@ public:
     bool _isAnimating;
     void togglePaused();
     bool getPaused(){return _isPaused;}
-protected:
-    bool _doRecomp;
-    virtual ~WorldWindManipulatorNew();
-    /** Anim variables */
-    osg::ref_ptr<MyAnimationPath> _animationPath;
-    bool _printOutTimingInfo;
-
+    void setTimeScale(double scale) {_timeScale =scale;}
     double  _timeOffset;
     double  _timeScale;
     double  _pauseTime;
     bool    _isPaused;
+    double _lastFrame;
+    osg::ref_ptr<MyAnimationPath> _animationPath;
+
+protected:
+    bool _doRecomp;
+    virtual ~WorldWindManipulatorNew();
+    /** Anim variables */
+    bool _printOutTimingInfo;
+
+
     bool _pausedChanged;
 
     double  _realStartOfTimedPeriod;

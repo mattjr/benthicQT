@@ -27,7 +27,7 @@ class  MyAnimationPath : public virtual osg::Object
 {
     public:
 
-        MyAnimationPath():_loopMode(LOOP) {}
+        MyAnimationPath():_loopMode(NO_LOOPING) {}
 
         MyAnimationPath(const MyAnimationPath& ap, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             Object(ap,copyop),

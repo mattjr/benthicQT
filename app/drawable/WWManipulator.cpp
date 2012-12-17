@@ -177,8 +177,9 @@ void WorldWindManipulatorNew::getUsage(osg::ApplicationUsage& usage) const
 void WorldWindManipulatorNew::handleFrameAnim( double time )
 {
     MyAnimationPath::ControlPoint cp;
-
+    _lastFrame=time;
     double animTime = (time+_timeOffset)*_timeScale;
+    //printf("anim %f offset %f time %f scale %f\n",animTime,_timeOffset,time,_timeScale);
     _animationPath->getInterpolatedControlPoint( animTime, cp );
 
     if (_numOfFramesSinceStartOfTimedPeriod==-1)
@@ -224,6 +225,7 @@ bool WorldWindManipulatorNew::handle(const GUIEventAdapter& ea,GUIActionAdapter&
     switch(ea.getEventType())
     {
     case(GUIEventAdapter::FRAME):
+
         if( _pausedChanged )
         {
             _pausedChanged=false;

@@ -193,7 +193,18 @@ void SavedCameraWidget::on_deleteButton_clicked()
 void SavedCameraWidget::on_cameraPlayButton_clicked()
 {
     _qosgWidget->switchToFromAniManip(ews::app::widget::QOSGWidget::ANIM_MANIP);
+    WorldWindManipulatorNew *ctrl;
 
+    if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+        if(ctrl->getPaused()){
+            _qosgWidget->pauseAnim();
+
+        }else{
+            double currentTime=    _qosgWidget->getFrameStamp()->getReferenceTime();
+
+        ctrl->_timeOffset = ctrl->_animationPath->getFirstTime()-currentTime;
+        }
+    }
 }
 
 void SavedCameraWidget::on_cameraPauseButton_clicked()
@@ -250,4 +261,37 @@ void SavedCameraWidget::on_saveButton_clicked()
          std::cerr<<"can't open file " <<"\n";
     }
         //->setText(fileName);
+}
+
+void SavedCameraWidget::on_horizontalSlider_valueChanged(int value)
+{
+    float scale=value/(float)100;
+
+
+    WorldWindManipulatorNew *ctrl;
+    if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+        double animTime = (ctrl->_lastFrame+ctrl->_timeOffset)*ctrl->_timeScale;
+        ctrl->_timeOffset = (animTime / scale)-ctrl->_lastFrame;
+        ctrl->setTimeScale(scale);
+    }
+
+
+}
+
+void SavedCameraWidget::on_comboBox_currentIndexChanged(int index)
+{
+    switch(index){
+    case 0:
+        _ap->setLoopMode(MyAnimationPath::NO_LOOPING);
+        break;
+    case 1:
+        _ap->setLoopMode(MyAnimationPath::LOOP);
+        break;
+    case 2:
+        _ap->setLoopMode(MyAnimationPath::SWING);
+        break;
+    default:
+        fprintf(stderr,"No loop mode selected\n");
+        _ap->setLoopMode(MyAnimationPath::NO_LOOPING);
+    }
 }
