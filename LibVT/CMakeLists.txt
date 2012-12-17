@@ -40,6 +40,6 @@ foreach(FILENAME ${SHADERS})
      list(APPEND kernel_srcs ${separation_inline_src} )
 endforeach(FILENAME)
 
-ADD_LIBRARY(libvt ${SOURCES}  ${kernel_srcs})
+ADD_LIBRARY(libvt STATIC ${SOURCES}  ${kernel_srcs})
 
 

@@ -52,9 +52,12 @@ curr_date(BQT_BUILD_DATE)
 option(TESTING "build unit tests and include 'test' target" ON)
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/../bin CACHE PATH
   "Single output directory for building all executables.")
-set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
-
-
+if(NOT UNIX)
+  set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
+else()
+  set(CMAKE_INSTALL_PREFIX /usr/local/)
+endif()
+install(DIRECTORY "fonts" DESTINATION bin) 
 set(BQT_MODULES app/widget app/drawable app/model physics geometry util test)
 
 #--------------------------------------------------------------------------------
@@ -441,7 +444,7 @@ install(TARGETS ${EXE_TARGET_NAME}
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE' 
 # NB: this is important because icon loading, etc. need image plugins.
-if(NOT WIN32)
+if(NOT WIN32 AND NOT UNIX)
 message(STATUS "Qt plugins dir = ${QT_PLUGINS_DIR}, extension = ${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats" 
@@ -456,11 +459,12 @@ endif()
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file
 # This is needed so Qt can find search path for plugins.
+if(NOT UNIX)
 INSTALL(CODE "
     message(STATUS \"Creating: \${CMAKE_INSTALL_PREFIX}/${QT_CONF_DEST}/qt.conf\")
     file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${QT_CONF_DEST}/qt.conf\" \"\") "
     COMPONENT Runtime)
-    
+endif()
 # Platform specific tweaks to get the library dependencies installed.
 if(APPLE)
     include(InstallSupportLibraries)

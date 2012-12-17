@@ -362,5 +362,5 @@ include(CTest)
 # The commands in this directory are intended to be executed as
 # the end of the whole configuration process, as a "last step".
 # This directory is typically the last SUBDIRS in the main CMakeLists.txt.
-add_subdirectory(LastConfigureStep)
+#add_subdirectory(LastConfigureStep)
 
