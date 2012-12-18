@@ -296,7 +296,7 @@ void main(void)
                      color.rgb += base_c.a * gl_FrontLightProduct[0].specular.rgb *
                      pow(max(dot(halfDir, nd), 0.0), gl_FrontMaterial.shininess);
                 }
-                //color.rgb *= (gl_TexCoord[1].s);
+                color.rgb *= (gl_TexCoord[1].s);
                     }
                     gl_FragColor = color;
 
