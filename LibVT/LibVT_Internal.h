@@ -224,6 +224,7 @@ struct vtConfig // TODO: constify?
     // derived values:
     uint32_t		pageMemsize, maxCachedPages, physTexDimensionPages, virtTexDimensionPages, residentPages,phys_tex_size;
     GLenum			pageDataFormat, pageDataType, pageDXTCompression;
+    bool longMipChain;
 };
 
 struct vtData

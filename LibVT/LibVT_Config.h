@@ -34,8 +34,8 @@
  * Note:	Set to zero for mipChainLength <= 9, 1 for mipChainLength > 9 <br>
  * Values:	0, 1
  */
-#define	LONG_MIP_CHAIN				0
-
+//#define	LONG_MIP_CHAIN				0
+//Now global var
 /*!
  * @def		ANISOTROPY
  * @brief	Controls the max. anisotropy to use (for filtering the virtual texture) <br>

@@ -386,7 +386,10 @@ namespace ews {
                         GLint textureSize = osg::Texture2D::getExtensions(0,true)->maxTextureSize();
 #endif
                         printf("Physical texture size %dx%d\n",textureSize,textureSize);
-                             vtInit(tex_name.c_str(), ext, border, length, dim,textureSize);
+                             if(!vtInit(tex_name.c_str(), ext, border, length, dim,textureSize)){
+                                 fprintf(stderr,"Failed to load vtInit  border: %d length: %d dim: %d textureSize: %d \n",border,length,dim,textureSize);
+                                 return NULL;
+                             }
                             retNode= loadVTModel(node,pre_camera,texture,image);
                     }
                              else{

@@ -38,13 +38,25 @@ if (GLEW_OK != err)
 	assert((VT_MAG_FILTER == GL_NEAREST) || (VT_MAG_FILTER == GL_LINEAR));
 	assert((VT_MIN_FILTER == GL_NEAREST) || (VT_MIN_FILTER == GL_LINEAR) || (VT_MIN_FILTER == GL_NEAREST_MIPMAP_NEAREST) || (VT_MIN_FILTER == GL_LINEAR_MIPMAP_NEAREST) || (VT_MIN_FILTER == GL_NEAREST_MIPMAP_LINEAR) || (VT_MIN_FILTER == GL_LINEAR_MIPMAP_LINEAR));
 	assert(TEXUNIT_FOR_PHYSTEX !=  TEXUNIT_FOR_PAGETABLE);
-	#if LONG_MIP_CHAIN
+    /*#if LONG_MIP_CHAIN
 		if (!((_mipChainLength >= 10) && (_mipChainLength <= 11)))
             return false;
 	#else
 		if(!((_mipChainLength >= 2) && (_mipChainLength <= 9)))
             return false;
-	#endif
+    #endif*/
+    if (((_mipChainLength >= 10) && (_mipChainLength <= 11))){
+        c.longMipChain=true;
+        printf("Long Mip Chain mode enabled\n");
+    }else if(((_mipChainLength >= 2) && (_mipChainLength <= 9))){
+        c.longMipChain=false;
+        printf("Long Mip Chain mode disabled\n");
+    }else{
+        fprintf(stderr,"MipChain length incorrect %d Must be _mipChainLength >= 10) && (_mipChainLength <= 11) for long chain or\n((_mipChainLength >= 2) && (_mipChainLength <= 9) for short chain\n",
+                _mipChainLength);
+        return false;
+    }
+
 	assert((_pageDimension == 64) || (_pageDimension == 128) || (_pageDimension == 256) || (_pageDimension == 512));
 	assert((PREPASS_RESOLUTION_REDUCTION_SHIFT >= 0) && (PREPASS_RESOLUTION_REDUCTION_SHIFT <= 4));
 	assert((MAX_RAMCACHE_MB >= 50));
@@ -61,7 +73,7 @@ if (GLEW_OK != err)
 	assert(USE_PBO_PHYSTEX == 0);
 	assert(FALLBACK_ENTRIES == 1);
 #endif
-	if (LONG_MIP_CHAIN && !USE_MIPCALC_TEXTURE) printf("Warning: expect artifacts when using LONG_MIP_CHAIN && !USE_MIPCALC_TEXTURE\n");
+    if (c.longMipChain && !USE_MIPCALC_TEXTURE) printf("Warning: expect artifacts when using LONG_MIP_CHAIN && !USE_MIPCALC_TEXTURE\n");
 
 	// initialize and calculate configuration
 	c.tileDir = string(_tileDir);
@@ -368,7 +380,7 @@ void vtPrepare(const GLuint readbackShader, const GLuint renderVTShader)
 			{
 				for (uint16_t y = 0; y < (c.virtTexDimensionPages >> i); y++)
 				{
-					if (LONG_MIP_CHAIN)
+                    if (c.longMipChain)
 						(mipcalcTables[i][y * (c.virtTexDimensionPages >> i) + x]) = (0xFF << 24) + ((i + ((x & 0xFF00) >> 4) + ((y & 0xFF00) >> 2)) << 16) + (((uint8_t) y) << 8) + ((uint8_t) x); // format: ABGR
 					else
 						(mipcalcTables[i][y * (c.virtTexDimensionPages >> i) + x]) = (0xFF << 24) + (i << 16) + (y << 8) + x; // format: ABGR
@@ -444,7 +456,7 @@ char * vtGetShaderPrelude()
 
 						(float)c.physTexDimensionPages, (float)c.pageDimension, log2f(c.pageDimension), (float)PREPASS_RESOLUTION_REDUCTION_SHIFT,
 						(float)c.virtTexDimensionPages, (float)(c.virtTexDimensionPages * c.pageDimension), (float)c.pageBorder, float(ANISOTROPY),
-						USE_MIPCALC_TEXTURE, c.pageBorder, MIPPED_PHYSTEX, FALLBACK_ENTRIES, ANISOTROPY, LONG_MIP_CHAIN, TEXUNIT_FOR_MIPCALC, TEXUNIT_FOR_PHYSTEX, TEXUNIT_FOR_PAGETABLE);
+                        USE_MIPCALC_TEXTURE, c.pageBorder, MIPPED_PHYSTEX, FALLBACK_ENTRIES, ANISOTROPY, c.longMipChain, TEXUNIT_FOR_MIPCALC, TEXUNIT_FOR_PHYSTEX, TEXUNIT_FOR_PAGETABLE);
 	return buf;
 }
 

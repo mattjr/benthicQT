@@ -180,10 +180,10 @@ void vtExtractNeededPages(const uint32_t *ext_buffer_BGRA)
 			//const uint32_t tmp = *(buffer + rows + x);	// format: BGRA		mip, x, y, STATUS
             //const uint32_t pixel =  ((tmp >> 16) & 0xFF) | (tmp & 0xFF00FF00) | ((tmp & 0xFF) << 16);
             const uint32_t pixel =*(buffer + rows + x);
-			const uint8_t mip = (LONG_MIP_CHAIN) ? BYTE1(pixel) & 0x0F : BYTE1(pixel);
+            const uint8_t mip = (c.longMipChain) ? BYTE1(pixel) & 0x0F : BYTE1(pixel);
 			const uint8_t shift = (USE_MIPCALC_TEXTURE ? 0 : mip);
-			const uint16_t y_coord = (LONG_MIP_CHAIN) ? ((BYTE2(pixel) | ((BYTE1(pixel) & 0xC0)) << 2) >> shift) : (BYTE2(pixel) >> shift);
-			const uint16_t x_coord = (LONG_MIP_CHAIN) ? ((BYTE3(pixel) | ((BYTE1(pixel) & 0x30)) << 4) >> shift) : (BYTE3(pixel) >> shift);
+            const uint16_t y_coord = (c.longMipChain) ? ((BYTE2(pixel) | ((BYTE1(pixel) & 0xC0)) << 2) >> shift) : (BYTE2(pixel) >> shift);
+            const uint16_t x_coord = (c.longMipChain) ? ((BYTE3(pixel) | ((BYTE1(pixel) & 0x30)) << 4) >> shift) : (BYTE3(pixel) >> shift);
           
             if ((BYTE4(pixel) == 255) && (mip < c.mipChainLength) && (y_coord < (c.virtTexDimensionPages >> mip)) && (x_coord < (c.virtTexDimensionPages >> mip)))
 			{
