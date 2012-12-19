@@ -70,8 +70,8 @@ namespace ews {
                                                        mat,_ap);
                 setCameraManipulator(_wwManip);//new ws::app::drawable::CameraController);
                 //      _animationManip=new AnimationPathPlayer(_ap);
-                
-#if defined(QT_DEBUG)                      
+#if 1
+		//#if defined(QT_DEBUG)                      
                 addEventHandler(new osgViewer::StatsHandler);
                 
                 // add the help handler

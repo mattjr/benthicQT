@@ -166,7 +166,7 @@ enum {
 #define BYTE2(v)					((uint8_t) (((uint32_t) (v)) >> 8))
 #define BYTE3(v)					((uint8_t) (((uint32_t) (v)) >> 16))
 #define BYTE4(v)					((uint8_t) (((uint32_t) (v)) >> 24))
-
+/*
 #if LONG_MIP_CHAIN
 	#define MAKE_PAGE_INFO(m, x, y) ((x << 20) + (y << 8) + m)
 	#define EXTRACT_Y(page)			((uint16_t) ((((uint32_t) (page)) >> 8) & 0xFFF))
@@ -176,17 +176,27 @@ enum {
 	#define EXTRACT_Y(page)			(BYTE2(page))
 	#define EXTRACT_X(page)			(BYTE3(page))
 #endif
+*/
+
+
+#define MAKE_PAGE_INFO(m, x, y) ((c.longMipChain) ? ((x << 20) + (y << 8) + m) : ((x << 16) + (y << 8) + m))
+#define EXTRACT_Y(page)		((c.longMipChain) ? ((uint16_t) ((((uint32_t) (page)) >> 8) & 0xFFF)) : (BYTE2(page)))
+#define EXTRACT_X(page)	((c.longMipChain) ? ((uint16_t) ((((uint32_t) (page)) >> 20) & 0xFFF)) : (BYTE3(page)))
+
 
 
 #define PAGE_TABLE(m, x, y)			(vt.pageTables[(m)][(y) * (c.virtTexDimensionPages >> (m)) + (x)])
 #define EXTRACT_MIP(page)			(BYTE1(page))
 
+#define MIP_INFO(mip)		((c.longMipChain) ? (c.mipChainLength - 1 - mip) :(vt.mipTranslation[mip]))
+
+/*
 #if LONG_MIP_CHAIN
 	#define MIP_INFO(mip)			(c.mipChainLength - 1 - mip)
 #else
 	#define MIP_INFO(mip)			(vt.mipTranslation[mip])
 #endif
-
+*/
 #if ENABLE_MT
     #define LOCK(x)					OpenThreads::ScopedLock<OpenThreads::Mutex> scoped_lock(x);
 #else

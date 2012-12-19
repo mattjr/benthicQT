@@ -52,12 +52,13 @@ curr_date(BQT_BUILD_DATE)
 option(TESTING "build unit tests and include 'test' target" ON)
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/../bin CACHE PATH
   "Single output directory for building all executables.")
-if(NOT UNIX)
+if(APPLE OR WIN32)
   set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
+  install(DIRECTORY "fonts" DESTINATION bin)
 else()
   set(CMAKE_INSTALL_PREFIX /usr/local/)
 endif()
-install(DIRECTORY "fonts" DESTINATION bin) 
+
 set(BQT_MODULES app/widget app/drawable app/model physics geometry util test)
 
 #--------------------------------------------------------------------------------
