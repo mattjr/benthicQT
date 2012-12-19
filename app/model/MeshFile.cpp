@@ -97,6 +97,43 @@ osg::Vec2f addrTranslation_1Dto2D( float address1D, osg::Vec2f  texSize )
   return address2D;
 
 }
+extern vtData vt;
+extern vtConfig c;
+void clearVTState(void){
+  printf("Shutting down libvt\n");
+  vtShutdown();
+        
+  c.tileDir = "";
+  c.pageDimension=0;
+        
+  c.tileDir="";
+  c.pageCodec="";
+        
+  c.pageBorder=0; 
+  c.mipChainLength=0;
+        
+  // derived values:
+  c.pageMemsize=c.maxCachedPages=c.physTexDimensionPages=c.virtTexDimensionPages=c.residentPages=0;
+  c.pageDataFormat=c.pageDataType=c.pageDXTCompression=0;
+  long int sizeofzero= ((long int)&(vt.fovInDegrees)-(long int)&(vt.mipTranslation));
+  bzero(&vt,sizeofzero);
+  vt.neededPages.clear();
+  std::queue<uint32_t> empty;
+  std::swap(             vt.newPages, empty );
+  map<uint32_t, void *>::iterator cachedIter;
+        
+            
+  for(cachedIter = vt.cachedPages.begin(); cachedIter != vt.cachedPages.end(); ++cachedIter)
+    {
+      free(cachedIter->second);
+    }
+                
+
+  vt.cachedPages.clear();
+  vt.cachedPagesAccessTimes.clear();
+  vt.memValid=false;
+
+}
 namespace ews {
     namespace app {
         /**
@@ -186,14 +223,14 @@ namespace ews {
                         {
                             if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Escape)
                             {
-                                vtShutdown();
+                                clearVTState();
                             }
                             return false;
                         }
                         case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
                         case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
                         {
-                            vtShutdown();
+                            clearVTState();
                         }
                         default: break;
                     }
@@ -386,11 +423,13 @@ namespace ews {
                         GLint textureSize = osg::Texture2D::getExtensions(0,true)->maxTextureSize();
 #endif
                         printf("Physical texture size %dx%d\n",textureSize,textureSize);
-                             if(!vtInit(tex_name.c_str(), ext, border, length, dim,textureSize)){
-                                 fprintf(stderr,"Failed to load vtInit  border: %d length: %d dim: %d textureSize: %d \n",border,length,dim,textureSize);
-                                 return NULL;
-                             }
-                            retNode= loadVTModel(node,pre_camera,texture,image);
+			if (c.tileDir != "")
+			  clearVTState();
+			if(!vtInit(tex_name.c_str(), ext, border, length, dim,textureSize)){
+			  fprintf(stderr,"Failed to load vtInit  border: %d length: %d dim: %d textureSize: %d \n",border,length,dim,textureSize);
+			  return NULL;
+			}
+			retNode= loadVTModel(node,pre_camera,texture,image);
                     }
                              else{
                                  fprintf(stderr,"can't open %s\n",tex_name.c_str());
@@ -413,7 +452,7 @@ namespace ews {
             }
 
             MeshFile::~MeshFile() {
-                vtShutdown();
+                clearVTState();
             }
             void MeshFile::copyCurrentImageClipboard(){
                 QClipboard *clipboard = QApplication::clipboard();
