@@ -30,10 +30,13 @@ if(APPLE)
         ##include(InstallRequiredSystemLibraries)
         file(GLOB_RECURSE QTPLUGINS
             \"\${CMAKE_INSTALL_PREFIX}/${QT_PLUGIN_DEST}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-        set(QTPLUGINS \${QTPLUGINS};${OSG_INSTALLED_PLUGINS})
+        set(QTPLUGINS \${QTPLUGINS};${OSG_INSTALLED_PLUGINS};${QT_ADDITIONAL_PLUGINS})
         message(STATUS \"Qt plugins: \${QTPLUGINS}\")
         message(STATUS \"Grel ${OSG_INSTALLED_PLUGINS}\")
 	set(FIXUP_EXTRA_LIBS \"\${OSG_INSTALLED_PLUGINS};\${QTPLUGINS}\")
+        ## the qt.conf is mandatory too
+        file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app/Contents/Resources/qt.conf\" \"[Paths]
+Plugins = plugins\")
 	 include(BundleUtilities)
         message(STATUS \"About to apply bundle fixup to: \${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app\")
         fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${EXE_TARGET_NAME}.app\" \"\${FIXUP_EXTRA_LIBS}\" \"${FIXUP_LIBRARY_SEARCH_PATH}\")

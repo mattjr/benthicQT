@@ -106,7 +106,7 @@ void SavedCameraWidget::changeEvent(QEvent *e)
 void SavedCameraWidget::on_addSaved_clicked()
 {
     WorldWindManipulatorNew *ctrl;
-    if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+    if((ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator()))) {
 
         osg::Vec3 pos=ctrl->getTargetCenter();
         MyAnimationPath::ControlPoint cp(ctrl->getTargetCenter(),ctrl->getTargetOrientation(),
@@ -179,7 +179,7 @@ void SavedCameraWidget::on_listWidget_currentRowChanged(int currentRow)
 
         _ap->getMatrix(timeProxy,mat);
         WorldWindManipulatorNew *ctrl;
-        if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+        if((ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator()))) {
             ctrl->moveTo(cp.getCenter(),cp.getOrientation(),cp.getDistance(),cp.getTilt());
             /*              ctrl->setCenter(cp.getCenter());
             ctrl->setTargetOrientation(cp.getOrientation());
@@ -200,7 +200,7 @@ void SavedCameraWidget::on_cameraPlayButton_clicked()
     _qosgWidget->switchToFromAniManip(ews::app::widget::QOSGWidget::ANIM_MANIP);
     WorldWindManipulatorNew *ctrl;
 
-    if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+    if((ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator()))) {
         if(ctrl->getPaused()){
             _qosgWidget->pauseAnim();
 
@@ -274,7 +274,7 @@ void SavedCameraWidget::on_horizontalSlider_valueChanged(int value)
 
 
     WorldWindManipulatorNew *ctrl;
-    if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator())) {
+    if((ctrl = dynamic_cast<WorldWindManipulatorNew*> (_qosgWidget->getCameraManipulator()))) {
         double animTime = (ctrl->_lastFrame+ctrl->_timeOffset)*ctrl->_timeScale;
         ctrl->_timeOffset = (animTime / scale)-ctrl->_lastFrame;
         ctrl->setTimeScale(scale);

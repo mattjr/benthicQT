@@ -201,13 +201,45 @@ pkg_check_modules(GLEW "glew")
 else()
 # Add OpenSceneGraph suppport
     find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
-    find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
-    find_package(Qt5Widgets)
+    #find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
+    #find_package(Qt5Widgets)
+   # SET(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Widgets_LIBRARIES} )
+    set(QT_MIN_VERSION "4.7.0")
+
+    # try Qt5 first, and prefer that if found
+    find_package(Qt5Core QUIET)
+    if (Qt5Core_FOUND)
+      find_package(Qt5Gui REQUIRED)
+      find_package(Qt5Widgets REQUIRED)
+      find_package(Qt5OpenGL REQUIRED)
+
+      find_package(Qt5Svg)
+
+
+      set(QT5_BUILD TRUE)
+      include("BuildScripts/ECMQt4To5Porting.cmake")
+      include_directories(${QT_INCLUDES}) # TODO: Port away from this.
+      IF (APPLE)
+         set(QT_PLUGINS_DIR ${_qt5Gui_install_prefix}/plugins)
+        SET(QTPLUGINS "${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/platforms/libqcocoa.dylib")
+        set(QT_ADDITIONAL_PLUGINS ${QTPLUGINS})
+
+        INSTALL(FILES "${QT_PLUGINS_DIR}/platforms/libqcocoa.dylib"
+        DESTINATION
+        "${EXE_TARGET_NAME}.app/Contents/PlugIns/platforms/")
+      ENDIF()
+    # Qt4
+    else()
+      find_package(Qt4 ${QT_MIN_VERSION} REQUIRED QtCore QtGui QtOpenGL QtSvg)
+      include_directories(${QT_INCLUDES})
+    endif()
 endif()
+
 #-------------------------------------------------------------------------------
 # QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to
 # a CMake script that sets up this directory for building with Qt4
-include( ${QT_USE_FILE} )
+#include( ${QT_USE_FILE} )
+
 #message("FFF ${QT_INCLUDE_DIR} ${QT_QTGUI_INCLUDE_DIR}/../QtWidgets/")
 include_directories(${QT_INCLUDE_DIR}
    ${QT_QTCORE_INCLUDE_DIR}
@@ -401,11 +433,13 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
   ${apple_bundle_sources}
   ${qt_menu_nib_sources}
 )
-SET(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Widgets_LIBRARIES} )
+
 #--------------------------------------------------------------------------------
 # Tell CMake which libraries we need to link our executable against.
 set(ALL_QT_OSG_LIBS     
-    ${QT_LIBRARIES}
+    ${QT_QTCORE_LIBRARIES}
+    ${QT_QTGUI_LIBRARIES}
+    ${QT_QTOPENGL_LIBRARIES}
     ${OPENSCENEGRAPH_LIBRARIES}
     ${GLEW_LIBRARIES}
     ${TARGET_EXTERNAL_LIBRARIES})
@@ -462,6 +496,7 @@ install(DIRECTORY "${QT_PLUGINS_DIR}/imageformats"
 	COMPONENT Runtime
 	FILES_MATCHING PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}"
 )
+
 endif()
 
 
@@ -469,7 +504,7 @@ endif()
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file
 # This is needed so Qt can find search path for plugins.
-if(NOT UNIX)
+if(WIN32)
 INSTALL(CODE "
     message(STATUS \"Creating: \${CMAKE_INSTALL_PREFIX}/${QT_CONF_DEST}/qt.conf\")
     file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${QT_CONF_DEST}/qt.conf\" \"\") "

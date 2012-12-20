@@ -180,7 +180,7 @@ namespace ews {
                     ctrl->computeHomePosition();
                 }*/
                 WorldWindManipulatorNew *ctrl;
-                if(ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat)) {
+                if((ctrl = dynamic_cast<WorldWindManipulatorNew*> (mat))) {
                     //qDebug() << "Actual ww manip";
                     ctrl->setNode(this->getSceneData());
                     ctrl->computeHomePosition();
