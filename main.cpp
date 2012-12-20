@@ -42,10 +42,51 @@ inline void logMessage(const char* typeStr, const char* msg) {
 #endif
 }
 
+#if QT_VERSION < 0x050000
+static QtMsgHandler defMsgHandler = NULL;
+#else
 static QtMessageHandler defMsgHandler = NULL;
+#endif
 
 /** Message handler for Qt logging system. */
+#if QT_VERSION < 0x050000
+void messageHandler(QtMsgType type, const char *msg) {
+     switch (type) {
+         case QtDebugMsg:
+            logMessage("Debug", msg);
+             break;
+         case QtWarningMsg:
+            logMessage("Warning", msg);
+             break;
+         case QtCriticalMsg:
+            logMessage("Critical", msg);
+             break;
+         case QtFatalMsg:
+            logMessage("Fatal", msg);
+             break;
+     }
+
+     if(type != QtDebugMsg && defMsgHandler) {
+         QWidget* win = QApplication::activeWindow();
+         QMainWindow* main = qobject_cast<QMainWindow*>(win);
+         if(main) {
+             main->lower();
+         }
+
+         defMsgHandler(type, msg);
+     }
+}
+
+#else
 static void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message){
+#if (QT_VERSION == 0x050000) && defined (__APPLE__)
+#warning "hack for QTVER 5.0 on mac"
+    string buggedFunc="-[QNSView mouseDragged:]";
+    if(buggedFunc == context.function){
+       // printf("Supressed error\n");
+    return;
+    }
+#endif
     switch (type) {
         case QtDebugMsg:
             logMessage("Debug", qPrintable(message));
@@ -60,7 +101,7 @@ static void messageHandler(QtMsgType type, const QMessageLogContext& context, co
             logMessage("Fatal", qPrintable(message));
             break;
     }
-    
+
     if(type != QtDebugMsg && defMsgHandler) {
         QWidget* win = QApplication::activeWindow();
         QMainWindow* main = qobject_cast<QMainWindow*>(win);
@@ -70,7 +111,7 @@ static void messageHandler(QtMsgType type, const QMessageLogContext& context, co
         defMsgHandler(type,context, message);
     }
 }
-
+#endif
 /** Application launch functionn. */
 int main(int argc, char *argv[]) {
     //using namespace ews::app::model;
@@ -94,9 +135,13 @@ int main(int argc, char *argv[]) {
     // get the function pointer to it by passing zero to the handler installer
     // then install our own.
     QErrorMessage::qtHandler();
+#if QT_VERSION < 0x050000
+    defMsgHandler = qInstallMsgHandler(0);
+    qInstallMsgHandler(messageHandler);
+#else
     defMsgHandler = qInstallMessageHandler(0);
     qInstallMessageHandler(messageHandler);
-    
+ #endif
  /*   QSplashScreen splash;
     QPixmap img(":/images/splash");
     
