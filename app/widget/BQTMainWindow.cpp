@@ -36,6 +36,7 @@
 #include "SavedCameraWidget.h"
 #include "RecordDialog.h"
 #include "ScreenTools.h"
+#include <Qt/qerrormessage.h>
 namespace ews {
     namespace app {
         namespace widget {

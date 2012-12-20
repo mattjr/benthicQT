@@ -19,7 +19,7 @@
 #ifndef __PREFERENCES_H
 #define __PREFERENCES_H
 
-#include <QtWidgets>
+//#include <QtWidgets>
 #include "ui_Preferences.h"
 
 namespace ews {
