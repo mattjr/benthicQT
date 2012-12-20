@@ -15,11 +15,13 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
 
     case(osgGA::GUIEventAdapter::DOUBLECLICK):
     {
-      // if(ea.getButtonMask() ==GUIEventAdapter::MIDDLE_MOUSE_BUTTON){
-	osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
-	if (viewer) pick(viewer,ea);
-	//      }
-      return false;
+        if(measuring_tool_on){
+            // if(ea.getButtonMask() ==GUIEventAdapter::MIDDLE_MOUSE_BUTTON){
+            osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+            if (viewer) pick(viewer,ea);
+            //      }
+        }
+        return false;
     }    
     case(osgGA::GUIEventAdapter::MOVE):
       {

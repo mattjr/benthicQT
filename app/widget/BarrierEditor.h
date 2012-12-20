@@ -19,12 +19,12 @@
 #ifndef __BARRIEREDITOR_H
 #define __BARRIEREDITOR_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <QDataWidgetMapper>
 #include "BarrierSet.h"
 #include <osg/Vec3>
 #include "MeshFile.h"
-#include <QtGui/QComboBox>
+#include <QComboBox>
 #include <QSlider>
 
 /** Forward declaration of UI implementation class. */

@@ -202,11 +202,19 @@ else()
 # Add OpenSceneGraph suppport
     find_package(OpenSceneGraph REQUIRED COMPONENTS ${OSG_COMPONENTS})
     find_package(Qt4 4.5 REQUIRED COMPONENTS ${QT_COMPONENTS})
+    find_package(Qt5Widgets)
 endif()
 #-------------------------------------------------------------------------------
 # QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to
 # a CMake script that sets up this directory for building with Qt4
 include( ${QT_USE_FILE} )
+#message("FFF ${QT_INCLUDE_DIR} ${QT_QTGUI_INCLUDE_DIR}/../QtWidgets/")
+include_directories(${QT_INCLUDE_DIR}
+   ${QT_QTCORE_INCLUDE_DIR}
+${QT_QTGUI_INCLUDE_DIR}/../QtWidgets/
+   ${QT_QTWIDGETS_INCLUDE_DIR}
+${QT_QTGUI_INCLUDE_DIR})
+
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -393,6 +401,7 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
   ${apple_bundle_sources}
   ${qt_menu_nib_sources}
 )
+SET(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Widgets_LIBRARIES} )
 #--------------------------------------------------------------------------------
 # Tell CMake which libraries we need to link our executable against.
 set(ALL_QT_OSG_LIBS     

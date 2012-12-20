@@ -219,6 +219,10 @@ void WorldWindManipulatorNew::handleFrameAnim( double time )
 void WorldWindManipulatorNew::togglePaused(){
     _pausedChanged=true;
 }
+bool WorldWindManipulatorNew::isDoneMoving(){
+    double eps = 0.001;
+        return (fabs(_center[0]-_targetCenter[0])<eps &&fabs(_center[1]-_targetCenter[1])<eps &&fabs(_center[2]-_targetCenter[2])<eps &&fabs(_targetTilt-_tilt) < eps && fabs(_targetDistance- _distance)<eps);
+}
 
 bool WorldWindManipulatorNew::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {

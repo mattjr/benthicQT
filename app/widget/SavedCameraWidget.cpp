@@ -1,6 +1,6 @@
 #include "SavedCameraWidget.h"
 #include "ui_SavedCameraWidget.h"
-#include <QtCore/QDebug>
+#include <QDebug>
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 #include <stdio.h>
@@ -241,7 +241,7 @@ void SavedCameraWidget::on_loadButton_clicked()
                                      &selectedFilter,
                                      options);
          if (!fileName.isEmpty()){
-             std::ifstream fin(fileName.toAscii());
+             std::ifstream fin(fileName.toLatin1());
             _ap->read(fin);
             updateList();
          }
@@ -259,7 +259,7 @@ void SavedCameraWidget::on_saveButton_clicked()
                                                     &selectedFilter,
                                                     options);
     if (!fileName.isEmpty()){
-     std::ofstream fout(fileName.toAscii());
+     std::ofstream fout(fileName.toLatin1());
      if(fout)
          _ap->write(fout);
      else

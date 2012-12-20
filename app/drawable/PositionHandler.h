@@ -45,13 +45,18 @@ namespace ews {
                 
             public:
                 
-                PositionHandler(MeshFile *mf,double latOrigin,double longOrigin) : GUIEventHandler(), activeDragger(NULL),_mf(mf) {
+                PositionHandler(MeshFile *mf,double latOrigin,double longOrigin) : GUIEventHandler(), activeDragger(NULL),
+                    _mf(mf),_lastServicedEvent(0),_intervalTime(0.2) {
                     projWGS84 =new Local_WGS84_TM_Projection(latOrigin,longOrigin);
                 }
                 
                 /** Handle GUI event. */
                 virtual bool handle(const GUIEventAdapter& ea,
                                     GUIActionAdapter& aa, osg::Object* obj, NodeVisitor* nv) { 
+                    if(ea.getTime()-_lastServicedEvent < _intervalTime){
+                           return false;
+                    }
+                    _lastServicedEvent=ea.getTime();
 
                     osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
                     if (view) {
@@ -60,6 +65,8 @@ namespace ews {
                                 
                             case GUIEventAdapter::MOVE:
                             {
+                                if(!_mf->getRenderer()->getWWManip()->isDoneMoving())
+                                    return false;
                                 LineSegmentIntersector::Intersections intersections;
                                 pointerInfo.reset();
                                 
@@ -122,6 +129,8 @@ namespace ews {
                 Dragger* activeDragger;
                 MeshFile *_mf;
                 Local_WGS84_TM_Projection *projWGS84;
+                double _lastServicedEvent;
+                double _intervalTime;
 
             };
             

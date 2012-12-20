@@ -1,7 +1,7 @@
 #ifndef RECORDDIALOG_H
 #define RECORDDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include "IVideoStreamer.h"
 
 namespace Ui {

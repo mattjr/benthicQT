@@ -20,9 +20,9 @@
  *  THE SOFTWARE.
  */
 #include "BQTDefine.h"
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <QtOpenGL/QGLWidget>
-#include <QtCore/QTimer>
+#include <QTimer>
 #include <QtGui/QInputEvent>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>

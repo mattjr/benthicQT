@@ -125,6 +125,7 @@ public:
     void setTargetTilt(double tilt){_targetTilt=tilt;}
 
     double getTargetDistance() { return _targetDistance; }
+    bool isDoneMoving();
 
     osg::Vec3d getTargetCenter() { return  _targetCenter; }
     bool notMoving(void);

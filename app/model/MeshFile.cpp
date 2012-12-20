@@ -25,10 +25,10 @@
 #include <osg/ref_ptr>
 #include <QDesktopServices>
 #include "BQTDebug.h"
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "BQTMainWindow.h"
 #include <QtGui/QClipboard>
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 #include "ScreenTools.h"
 #include "seabed_slam_file_io.hpp"
 #include "MyShaderGen.h"

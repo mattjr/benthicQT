@@ -255,11 +255,11 @@ namespace ews {
             }
             
             void QOSGWidget::keyPressEvent( QKeyEvent* event ) {
-                _gw->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) *(event->text().toAscii().data() ) );
+                _gw->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) *(event->text().toLatin1().data() ) );
             }
             
             void QOSGWidget::keyReleaseEvent( QKeyEvent* event ) {
-                _gw->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) *(event->text().toAscii().data() ) );
+                _gw->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) *(event->text().toLatin1().data() ) );
             }
             
             void QOSGWidget::mousePressEvent( QMouseEvent* event ) {

@@ -56,7 +56,7 @@ namespace ews {
             //    osg::ref_ptr<osg::Node> Cow = osgDB::readNodeFile("/home/mattjr/11_elephant_rock/final.ive");
              //  addChild(Cow.get());
                 osg::ref_ptr<osg::Geode> geode = new osg::Geode();
-                addEventCallback(new PickHandler);
+                //addEventCallback(new PickHandler);
                 osg::ref_ptr<osg::Box> box = new osg::Box(osg::Vec3(0,0,0), 0.1f, 0.1f, 0.1f);
                 osg::ref_ptr<osg::ShapeDrawable> drawable = new osg::ShapeDrawable(box.get());
                 geode->addDrawable(drawable.get());

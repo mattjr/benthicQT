@@ -16,8 +16,8 @@
  * http://mseedsoft.com
  */
 
-#include <QtGui/QApplication>
-#include <QtGui/QSplashScreen>
+#include <QApplication>
+#include <QSplashScreen>
 #include <QString>
 #include <QErrorMessage>
 #include <osg/Notify>
@@ -42,22 +42,22 @@ inline void logMessage(const char* typeStr, const char* msg) {
 #endif
 }
 
-static QtMsgHandler defMsgHandler = NULL;
+static QtMessageHandler defMsgHandler = NULL;
 
 /** Message handler for Qt logging system. */
-void messageHandler(QtMsgType type, const char *msg) {
+static void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message){
     switch (type) {
         case QtDebugMsg:
-            logMessage("Debug", msg);
+            logMessage("Debug", qPrintable(message));
             break;
         case QtWarningMsg:
-            logMessage("Warning", msg);
+            logMessage("Warning", qPrintable(message));
             break;
         case QtCriticalMsg:
-            logMessage("Critical", msg);
+            logMessage("Critical", qPrintable(message));
             break;
         case QtFatalMsg:
-            logMessage("Fatal", msg);
+            logMessage("Fatal", qPrintable(message));
             break;
     }
     
@@ -67,7 +67,7 @@ void messageHandler(QtMsgType type, const char *msg) {
         if(main) {
             main->lower();
         }
-        defMsgHandler(type, msg);
+        defMsgHandler(type,context, message);
     }
 }
 
@@ -94,10 +94,10 @@ int main(int argc, char *argv[]) {
     // get the function pointer to it by passing zero to the handler installer
     // then install our own.
     QErrorMessage::qtHandler();
-    defMsgHandler = qInstallMsgHandler(0);
-    qInstallMsgHandler(messageHandler);
+    defMsgHandler = qInstallMessageHandler(0);
+    qInstallMessageHandler(messageHandler);
     
-    QSplashScreen splash;
+ /*   QSplashScreen splash;
     QPixmap img(":/images/splash");
     
     if(img.isNull()) {
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     splash.setPixmap(img);
     splash.showMessage(QObject::tr("Starting up...."));
     splash.show();
-
+*/
     
     a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );
     SimulationState state;
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
 
     w.show();
     
-    splash.finish(&w);
+    //splash.finish(&w);
     if (QApplication::arguments().size() > 1)
             w.loadFile(QApplication::arguments().mid(1,-1));
 

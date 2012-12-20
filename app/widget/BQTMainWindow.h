@@ -19,8 +19,8 @@
 #ifndef EWSMAINWINDOW_H
 #define EWSMAINWINDOW_H
 
-#include <QtGui/QMainWindow>
-#include <QtCore/QMap>
+#include <QMainWindow>
+#include <QMap>
 #include <osg/Node>
 #include <osg/ref_ptr>
 #include "BQTDefine.h"

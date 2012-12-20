@@ -1,7 +1,7 @@
 #include "RecordDialog.h"
 #include "ui_RecordDialog.h"
-#include <QtCore/QDir>
-#include <QtGui/QFileDialog>
+#include <QDir>
+#include <QFileDialog>
 RecordDialog::RecordDialog(OSGVideoStreamer *iv,QWidget *parent) :
     QDialog(parent),m_iv(iv),
     m_ui(new Ui::RecordDialog)
