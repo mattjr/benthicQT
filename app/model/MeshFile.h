@@ -36,6 +36,7 @@ using osg::ref_ptr;
 #include <osg/Uniform>
 #include <QProgressDialog>
 #include "QOSGWidget.h"
+#include "QtOsgScalarBar.h"
 enum{
     UNI_SHADER_OUT,
     UNI_COLORMAP_SIZE,
@@ -130,10 +131,10 @@ namespace ews {
                 void updateImage(osg::Vec3 v);
                 osg::ref_ptr<osg::Switch> _mapSwitch;
                 osg::ref_ptr<osg::Camera > colorbar_hud;
-                osg::ref_ptr<osgSim::ScalarBar > colorbar;
+                osg::ref_ptr<myOSG::QtOsgScalarBar> colorbar;
                 osg::ref_ptr<osg::Camera > scalebar_hud;
                 osg::ref_ptr<osgText::Text > textNode;
-                std::string font_name;
+               // std::string font_name;
                 void createScalarBar_HUD(void);
                 void createScaleBar_HUD(void);
                 std::vector<double> current_attributes;
@@ -154,18 +155,18 @@ namespace ews {
                 
                 virtual ~MeshFile();
 
-                class  DiscretLabelPrinter: public osgSim::ScalarBar::ScalarPrinter
+                class  DiscretLabelPrinter: public myOSG::QtOsgScalarBar::ScalarPrinter
                 {
                     virtual std::string printScalar(float scalar){
                         double  fractpart, intpart;
                         fractpart = modf (scalar , &intpart);
                         if(fractpart != 0.0)
-                            return osgSim::ScalarBar::ScalarPrinter::printScalar(floor(scalar));
+                            return myOSG::QtOsgScalarBar::ScalarPrinter::printScalar(floor(scalar));
                         else
                             return "";
                     }
                 };
-                class  TrunkScalarPrinter: public osgSim::ScalarBar::ScalarPrinter
+                class  TrunkScalarPrinter: public myOSG::QtOsgScalarBar::ScalarPrinter
                 {
                     virtual std::string printScalar(float scalar){
                        char tmp[1024];

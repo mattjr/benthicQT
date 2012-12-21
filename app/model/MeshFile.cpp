@@ -33,7 +33,10 @@
 #include "seabed_slam_file_io.hpp"
 #include "MyShaderGen.h"
 #include "qgscolorbrewerpalette.h"
+#include "QFontImplementation.h"
+#include "QtOsgScalarBar.h"
 
+#define FONT_NAME "arial"
 osg::StateSet* createSS();
 osg::Geode* createVTShapes(osg::StateSet* ss);
 osg::Geode* createNonVTShapes(osg::StateSet* ss);
@@ -194,7 +197,7 @@ namespace ews {
                 shared_tex->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
                 shared_tex->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
                 shared_tex->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP);
-                font_name="fonts/VeraMono.ttf";
+                //font_name="fonts/VeraMono.ttf";
                 selColorMap=0;
                 dataout=0;
                 seq_colormap_colors=7.0;
@@ -598,7 +601,9 @@ namespace ews {
             {
                 if(colorbar)
                     return;
-                colorbar = new osgSim::ScalarBar;
+                osgText::Font* font = new osgText::Font(new myOSG::QFontImplementation(QFont(FONT_NAME)));//osgText::readFontFile(font_name.c_str());
+
+                colorbar = new myOSG::QtOsgScalarBar(font);
 
                 /*
                 osg::MatrixTransform * modelview = new osg::MatrixTransform;
@@ -632,7 +637,7 @@ namespace ews {
                  if(textNode)
                      return;
                  textNode = new osgText::Text;
-                osgText::Font* font = osgText::readFontFile(font_name.c_str());
+                osgText::Font* font = new osgText::Font(new myOSG::QFontImplementation(QFont(FONT_NAME)));//osgText::readFontFile(font_name.c_str());
                 float margin = 50.0f;
 
                 osg::Vec4 layoutColor(1.0f,1.0f,1.0f,1.0f);
@@ -680,7 +685,12 @@ namespace ews {
                 int num_labels;
                 if(colorbar_hud->getNumChildren() !=0)
                     colorbar_hud->removeChild(0,1);
-                colorbar=new osgSim::ScalarBar;
+                osgText::Font* font = new osgText::Font(new myOSG::QFontImplementation(QFont(FONT_NAME)));//osgText::readFontFile(font_name.c_str());
+                if(!font){
+                    fprintf(stderr,"font null\n");
+                    exit(-1);
+                }
+                colorbar=new myOSG::QtOsgScalarBar(NULL);
                 if(dataout == HEIGHT_DATA){
                     num_labels=seq_colormap_colors;
                     //printf("%d bla\n",texture_color_brewer_names_DIV.size());
@@ -712,11 +722,11 @@ namespace ews {
                     colorbar->setNumLabels(5);
                     colorbar->setTitle(std::string("Height"));
                     colorbar->setScalarPrinter(sp);*/
-                    colorbar=new osgSim::ScalarBar(256,5,new ColorBrewerMap(zrange[0],zrange[1],mPalette),"Height",osgSim::ScalarBar::HORIZONTAL,0.1,new TrunkScalarPrinter);
+                    colorbar=new myOSG::QtOsgScalarBar(NULL,256,5,new ColorBrewerMap(zrange[0],zrange[1],mPalette),"Height",myOSG::QtOsgScalarBar::HORIZONTAL,0.1,new TrunkScalarPrinter);
                 }else if(dataout == LABEL_DATA){
-                    colorbar=new osgSim::ScalarBar(((label_range[1]+1)*2) +1,((label_range[1]+1)*2) +1,
+                    colorbar=new myOSG::QtOsgScalarBar(NULL,((label_range[1]+1)*2) +1,((label_range[1]+1)*2) +1,
                                                   new ColorBrewerMapDiscrete(label_range[0],label_range[1]+1.0,mPalette),
-                                                  "Labels",osgSim::ScalarBar::HORIZONTAL,0.1,new DiscretLabelPrinter);
+                                                  "Labels",myOSG::QtOsgScalarBar::HORIZONTAL,0.1,new DiscretLabelPrinter);
 
 
                 }
@@ -725,10 +735,11 @@ namespace ews {
                 colorbar->setWidth(width);
                 colorbar->setPosition(osg::Vec3(_renderer->width()-width-margin,margin,0));
                 colorbar->setDataVariance(osg::Object::DYNAMIC);
+                colorbar->setFont(font);
                 osgSim::ScalarBar::TextProperties tp;
-                tp._fontFile = font_name.c_str();
+                //tp._fontFile = font_name.c_str();
                 tp._characterSize=12.0f;
-                colorbar->setTextProperties(tp);
+                //colorbar->setTextProperties(tp);
                // colorbar->setOrientation(osgSim::ScalarBar::VERTICAL);
                 osg::StateSet * stateset = colorbar->getOrCreateStateSet();
                 stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);

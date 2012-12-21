@@ -21,7 +21,6 @@
 #include <stdio.h>
 #include <osgSim/ScalarsToColors>
 #include <osgSim/ColorRange>
-#include <osgSim/ScalarBar>
 using namespace std;
 extern osg::Geode* measure_geode;
 extern bool measuring_tool_on;
