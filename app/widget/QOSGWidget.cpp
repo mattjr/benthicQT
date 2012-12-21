@@ -29,6 +29,9 @@
 #include <osg/MatrixTransform>
 #include <osg/GLExtensions>
 #include "BQTDebug.h"
+#if QT_VERSION >= 0x050000
+#include <QWindow>
+#endif
 #ifdef OSG_LIBRARY_STATIC
 USE_GRAPHICSWINDOW()
 USE_OSGPLUGIN(ive)
