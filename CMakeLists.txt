@@ -220,13 +220,19 @@ else()
       include("BuildScripts/ECMQt4To5Porting.cmake")
       include_directories(${QT_INCLUDES}) # TODO: Port away from this.
       IF (APPLE)
-         set(QT_PLUGINS_DIR ${_qt5Gui_install_prefix}/plugins)
-        SET(QTPLUGINS "${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/platforms/libqcocoa.dylib")
-        set(QT_ADDITIONAL_PLUGINS ${QTPLUGINS})
+        if (Qt5Core_FOUND)
 
-        INSTALL(FILES "${QT_PLUGINS_DIR}/platforms/libqcocoa.dylib"
-        DESTINATION
-        "${EXE_TARGET_NAME}.app/Contents/PlugIns/platforms/")
+             set(QT_PLUGINS_DIR ${_qt5Gui_install_prefix}/plugins)
+            SET(QTPLUGINS "${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/platforms/libqcocoa.dylib;${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/accessible/libqtaccessiblewidgets.dylib;${CMAKE_CURRENT_BINARY_DIR}/${EXE_TARGET_NAME}.app/Contents/PlugIns/accessible/libqtaccessiblequick.dylib")
+            set(QT_ADDITIONAL_PLUGINS ${QTPLUGINS})
+
+            INSTALL(FILES "${QT_PLUGINS_DIR}/platforms/libqcocoa.dylib"
+            DESTINATION
+            "${EXE_TARGET_NAME}.app/Contents/PlugIns/platforms/")
+            INSTALL(DIRECTORY "${QT_PLUGINS_DIR}/accessible"
+            DESTINATION
+            "${EXE_TARGET_NAME}.app/Contents/PlugIns/")
+         endif()
       ENDIF()
     # Qt4
     else()
