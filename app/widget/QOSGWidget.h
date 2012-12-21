@@ -110,6 +110,7 @@ namespace ews {
                 AnimationPathPlayer *_animationManip;
             public:
                 osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
+                double pix_ratio;
 
             private:                
                 Q_DISABLE_COPY(QOSGWidget)

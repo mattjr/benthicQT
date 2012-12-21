@@ -387,6 +387,8 @@ include_directories (
 #--------------------------------------------------------------------------------
 # For Apple set the icns file containing icons
 if(APPLE)
+
+
   set(ICON_NAME bqt-icon.icns)
   # Set the executable wrapper type
   set(EXE_TYPE MACOSX_BUNDLE)
@@ -402,7 +404,7 @@ if(APPLE)
   set(MACOSX_BUNDLE_INFO_STRING "${BQT_APP_NAME} - Version ${BQT_VERSION}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${BQT_VERSION})
   set(MACOSX_BUNDLE_BUNDLE_VERSION ${BQT_VERSION})
-  set(MACOSX_BUNDLE_COPYRIGHT ${BQT_COPYRIGHT})  
+  set(MACOSX_BUNDLE_COPYRIGHT ${BQT_COPYRIGHT})
 elseif(WIN32)
   # Set the executable wrapper type
   set(EXE_TYPE WIN32)
@@ -463,6 +465,8 @@ set(QT_PLUGIN_DEST "bin/plugins")
 SET(OSGPLUGINS osgdb_ive osgdb_serializers_osg osgdb_osg osgdb_freetype)
 
 if(APPLE)
+set_target_properties(${EXE_TARGET_NAME} PROPERTIES
+               MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts/MacOSXBundleInfo.plist.in)
     set(QT_PLUGIN_DEST "${EXE_TARGET_NAME}.app/Contents/MacOS/plugins")  
     set(QT_CONF_DEST "${EXE_TARGET_NAME}.app/Contents/Resources")  
     get_filename_component(OSG_LIBRARY_DIR ${OSG_LIBRARY} PATH)

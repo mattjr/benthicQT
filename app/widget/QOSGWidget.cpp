@@ -28,6 +28,7 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/MatrixTransform>
 #include <osg/GLExtensions>
+#include <QWindow>
 #include "BQTDebug.h"
 #ifdef OSG_LIBRARY_STATIC
 USE_GRAPHICSWINDOW()
@@ -41,8 +42,12 @@ namespace ews {
         namespace widget {
             QOSGWidget::QOSGWidget(QWidget* parent)
                 : QGLWidget(parent), osgViewer::Viewer(), _gw(0), _timer() {
-
-                _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
+                pix_ratio=1.0;
+#if QT_VERSION >= 0x050000
+                pix_ratio= parent->window()->windowHandle()->devicePixelRatio();
+                printf("pixel ratio %f\n",pix_ratio);
+#endif
+                _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width()/pix_ratio,height()/pix_ratio);
                 
                 setFocusPolicy(Qt::StrongFocus);
                 setMouseTracking(true);
@@ -55,8 +60,8 @@ namespace ews {
 #endif // GL_MULTISAMPLE_ARB
   */
                 osg::Camera* c = getCamera();
-                c->setViewport(new osg::Viewport(0,0,width(),height()));
-                c->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width())/static_cast<double>(height()), 1.0f, 10000.0f);
+                c->setViewport(new osg::Viewport(0,0,width()/pix_ratio,height()/pix_ratio));
+                c->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width()/pix_ratio)/static_cast<double>(height()/pix_ratio), 1.0f, 10000.0f);
                 c->setGraphicsContext(_gw.get());
                 c->setClearColor(osg::Vec4(0.7f, 0.7f, 0.7f, 1.0f));
                 setThreadingModel(osgViewer::Viewer::SingleThreaded);
@@ -250,8 +255,8 @@ namespace ews {
             
             void QOSGWidget::resizeGL( int width, int height ) {
                 
-                _gw->getEventQueue()->windowResize(0, 0, width, height );
-                _gw->resized(0,0,width,height);
+                _gw->getEventQueue()->windowResize(0, 0, width/pix_ratio, height/pix_ratio );
+                _gw->resized(0,0,width/pix_ratio,height/pix_ratio);
             }
             
             void QOSGWidget::keyPressEvent( QKeyEvent* event ) {
