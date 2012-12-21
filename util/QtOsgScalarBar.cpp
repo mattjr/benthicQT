@@ -2,7 +2,7 @@
 #include <osgText/Text>
 #include <osg/Geometry>
 #include <sstream>
-
+#include <stdio.h>
 using namespace myOSG;
 using namespace osgSim;
 

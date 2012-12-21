@@ -28,7 +28,6 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/MatrixTransform>
 #include <osg/GLExtensions>
-#include <QWindow>
 #include "BQTDebug.h"
 #ifdef OSG_LIBRARY_STATIC
 USE_GRAPHICSWINDOW()
