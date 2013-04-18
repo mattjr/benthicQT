@@ -74,6 +74,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 	#else
 		#include <OpenGL/OpenGL.h>
 //		#include <Carbon/Carbon.h>
+        #include <ImageIO/ImageIO.h>
 	#endif
 	#include <dirent.h>
 	#if OPENCL_BUFFERREDUCTION

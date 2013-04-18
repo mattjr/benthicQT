@@ -441,7 +441,10 @@ add_executable( ${EXE_TARGET_NAME} ${EXE_TYPE}
   ${apple_bundle_sources}
   ${qt_menu_nib_sources}
 )
-
+IF(APPLE)
+find_library(APP_SERVICES ApplicationServices)
+find_library(QUARTZ_CORE QuartzCore)
+ENDIF()
 #--------------------------------------------------------------------------------
 # Tell CMake which libraries we need to link our executable against.
 set(ALL_QT_OSG_LIBS     
@@ -450,10 +453,12 @@ set(ALL_QT_OSG_LIBS
     ${QT_QTOPENGL_LIBRARIES}
     ${OPENSCENEGRAPH_LIBRARIES}
     ${GLEW_LIBRARIES}
+    ${APP_SERVICES}
+    ${QUARTZ_CORE}
     ${TARGET_EXTERNAL_LIBRARIES})
 #message(" glew ${GLEW_LIBRARIES} ")
 #message("libs:  ${ALL_QT_OSG_LIBS}")
-target_link_libraries(${EXE_TARGET_NAME} libvt ${ALL_QT_OSG_LIBS} ufGeographicConversions ${JPEG_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(${EXE_TARGET_NAME} ${JPEG_LIBRARIES} libvt ${ALL_QT_OSG_LIBS} ufGeographicConversions ${JPEG_LIBRARIES} ${OPENGL_LIBRARIES})
 target_link_libraries(bosgviewer  libvt ${ALL_QT_OSG_LIBS}  ufGeographicConversions ${JPEG_LIBRARIES} ${OPENGL_LIBRARIES})
 
 #--------------------------------------------------------------------------------
@@ -471,6 +476,7 @@ set(QT_PLUGIN_DEST "bin/plugins")
 SET(OSGPLUGINS osgdb_ive osgdb_serializers_osg osgdb_osg osgdb_freetype)
 
 if(APPLE)
+
 set_target_properties(${EXE_TARGET_NAME} PROPERTIES
                MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts/MacOSXBundleInfo.plist.in)
     set(QT_PLUGIN_DEST "${EXE_TARGET_NAME}.app/Contents/MacOS/plugins")  
