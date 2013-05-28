@@ -14,6 +14,10 @@
  *
  * Developed by Mustard Seed Software, LLC 
  * http://mseedsoft.com
+ * Modified by Matthew Johnson-Roberson 
+ * from original source: Visualize Physics - Wave 
+ * Copyright (C) 2012 Matthew Johnson-Roberson
+ * See COPYING for license details
  */
 
 #ifndef __BARRIER_H
