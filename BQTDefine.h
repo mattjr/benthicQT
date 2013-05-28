@@ -12,8 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Developed by Mustard Seed Software, LLC 
+ * Developed by Mustard Seed Software, LLC
  * http://mseedsoft.com
+ * Modified by Matthew Johnson-Roberson
+ * from original source: Visualize Physics - Wave
+ * Copyright (C) 2012 Matthew Johnson-Roberson
+ * See COPYING for license details
  */
 
 #ifndef __EWSDEFINE_H
