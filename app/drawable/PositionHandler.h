@@ -21,7 +21,7 @@
  */
 
 #ifndef __POSTITIONHANDLER_H
-#define __POSITIONHANDLER_H
+#define __POSTITIONHANDLER_H
 
 #include <osgGA/GUIEventHandler>
 #include <osgGA/GUIEventAdapter>

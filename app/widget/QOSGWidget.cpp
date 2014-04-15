@@ -45,10 +45,11 @@ namespace ews {
             QOSGWidget::QOSGWidget(QWidget* parent)
                 : QGLWidget(parent), osgViewer::Viewer(), _gw(0), _timer() {
                 pix_ratio=1.0;
-#if QT_VERSION >= 0x050000
+#if QT_VERSION == 0x050000
+//fixed in future verions after 5.0
                 pix_ratio= parent->window()->windowHandle()->devicePixelRatio();
                 printf("pixel ratio %f\n",pix_ratio);
-#endif
+ #endif
                 _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width()/pix_ratio,height()/pix_ratio);
                 
                 setFocusPolicy(Qt::StrongFocus);
@@ -336,7 +337,6 @@ namespace ews {
             void QOSGWidget::mouseMoveEvent( QMouseEvent* event ) {
                 _gw->getEventQueue()->mouseMotion(event->x(), event->y());
             }
-            
         }
     }
 }

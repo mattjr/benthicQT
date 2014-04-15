@@ -83,7 +83,7 @@ void messageHandler(QtMsgType type, const char *msg) {
 
 #else
 static void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message){
-#if (QT_VERSION == 0x050000) && defined (__APPLE__)
+#if (QT_VERSION >= 0x050000) && defined (__APPLE__)
 #warning "hack for QTVER 5.0 on mac"
     string buggedFunc="-[QNSView mouseDragged:]";
     if(buggedFunc == context.function){

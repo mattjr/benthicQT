@@ -34,6 +34,13 @@
 namespace ews {
     namespace app {
         namespace widget {
+	  long myround(double x) {
+	    assert(x >= LONG_MIN-0.5);
+	    assert(x <= LONG_MAX+0.5);
+	    if (x >= 0)
+	      return (long) (x+0.5);
+	    return (long) (x-0.5);
+	  }
             using ews::app::model::BarrierSet;
             using ews::app::model::Barrier;
             
@@ -143,7 +150,7 @@ namespace ews {
                 QObject* sender = QObject::sender();
                 if(sender) {
                     char tmp[1024];
-                    int labelId=(int)round(pos[3]);
+                    int labelId=(int)myround(pos[3]);
                     double label=0.0;
                     if(labelId > 0 &&  labelId  <_dataModel->current_attributes.size()){
                        label= _dataModel->current_attributes[labelId];

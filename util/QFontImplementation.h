@@ -14,7 +14,7 @@
 #define QFontImplementation_H
 
 #include <osgText/Font>
-#include <osgQt/Export>
+//#include <osgQt/Export>
 
 #include <QtGui/QFont>
 

@@ -220,6 +220,7 @@ else()
       include("BuildScripts/ECMQt4To5Porting.cmake")
       include_directories(${QT_INCLUDES}) # TODO: Port away from this.
       IF (APPLE)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -stdlib=libstdc++")
         if (Qt5Core_FOUND)
 
              set(QT_PLUGINS_DIR ${_qt5Gui_install_prefix}/plugins)

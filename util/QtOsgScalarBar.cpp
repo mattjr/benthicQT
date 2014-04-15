@@ -1,6 +1,7 @@
 #include "QtOsgScalarBar.h"
 #include <osgText/Text>
 #include <osg/Geometry>
+#include <osg/Version>
 #include <sstream>
 #include <stdio.h>
 using namespace myOSG;
@@ -177,7 +178,14 @@ void QtOsgScalarBar::createDrawables()
         cs->push_back(_stc->getColor(_stc->getMin() + (i*incr)  + halfIncr));
     }
     bar->setColorArray(cs.get());
+
+#if OPENSCENEGRAPH_MAJOR_VERSION < 3 || (OPENSCENEGRAPH_MAJOR_VERSION == 3 && OPENSCENEGRAPH_MINOR_VERSION <= 1)
     bar->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+ #else
+    bar->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+
+ #endif
+
 
     // Normal
     osg::ref_ptr<osg::Vec3Array> ns(new osg::Vec3Array);

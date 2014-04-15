@@ -222,8 +222,11 @@
  * Note:	When setting to a library which doesn't handle all formats, this restricts the possible image formats at runtime <br>
  * Values:	DecompressionLibPNG, DecompressionSTBIPNG, DecompressionLibJPEG, DecompressionLibJPEGTurbo, DecompressionSTBIJPEG, DecompressionMac, DecompressionDevil, DecompressionLibJPEGTurbo
  */
-#define IMAGE_DECOMPRESSION_LIBRARY	DecompressionLibJPEG//DecompressionMac//DecompressionLibJPEGTurbo
-
+#ifdef __APPLE__
+#define IMAGE_DECOMPRESSION_LIBRARY	DecompressionMac//DecompressionLibJPEG//DecompressionMac//DecompressionLibJPEGTurbo
+#else 
+#define IMAGE_DECOMPRESSION_LIBRARY DecompressionLibJPEG
+#endif
 
 
 #if (FALLBACK_ENTRIES == 1) && (HIGHEST_MIP_LEVELS_TO_KEEP == 0)
