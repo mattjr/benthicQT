@@ -19,7 +19,7 @@
 #include "LibVT.h"
 
 extern vtConfig c;
-
+#define RENDER_INFO_TO_PAGES
 #if IMAGE_DECOMPRESSION_LIBRARY == DecompressionMac
 
 
