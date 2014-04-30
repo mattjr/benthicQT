@@ -510,6 +510,7 @@ void vtReshape(const uint16_t _w, const uint16_t _h, const float fovInDegrees, c
 	vt.h = _h >> PREPASS_RESOLUTION_REDUCTION_SHIFT;
 	vt.fovInDegrees = fovInDegrees;
 
+    printf("Fake %d %d -- Real %d %d\n",vt.w, vt.h, vt.real_w, vt.real_h);
 
 #if !GL_ES_VERSION_2_0
 	if (READBACK_MODE_FBO || READBACK_MODE == kBackbufferGetTexImage)

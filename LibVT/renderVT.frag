@@ -113,7 +113,8 @@ vtexcoord calulateCoordinatesFromSample(vec4 pageTableEntry)
 #endif
 	vec2 pageCoord = pageTableEntry.bg;
 #if MAC_GL_DRIVER_HACK
-        vec2 withinPageCoord = fract((texcoord.xy+vec2(0.000015,0.000015)) * mipExp);
+           vec2 withinPageCoord = fract((texcoord.xy+vec2(0.000015,0.000015)) * mipExp); // Retina macbook pro
+	   //2560 x1440 imac no retina  vec2 withinPageCoord = fract((texcoord.xy+vec2(0.0000005,0.0000005)) * mipExp);
 #else
         vec2 withinPageCoord = fract(texcoord.xy * mipExp);
 #endif
