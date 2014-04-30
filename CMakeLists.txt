@@ -27,6 +27,7 @@ set(BQT_ORGANIZATION_NAME "ACFR")
 set(APP_ICON_RC "${CMAKE_CURRENT_SOURCE_DIR}/images/benthicQT.ico")
 # Add to search path our custom scripts
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/BuildScripts;${CMAKE_MODULE_PATH}")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 subdirs(  util/UF-3.2 LibVT)
 #add_definitions("-g")
 #----------------------------------------------------------------------
