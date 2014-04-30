@@ -447,16 +447,17 @@ char * vtGetShaderPrelude()
 						"#define USE_MIPCALC_TEXTURE %i\n"
 						"#define PAGE_BORDER %i\n"
 						"#define MIPPED_PHYSTEX %i\n"
-						"#define FALLBACK_ENTRIES %i\n"
+                        			"#define FALLBACK_ENTRIES %i\n"
 						"#define ANISOTROPY %i\n"
 						"#define LONG_MIP_CHAIN %i\n"
 						"#define TEXUNIT_MIPCALC TEXUNIT%i\n"
 						"#define TEXUNIT_PHYSICAL TEXUNIT%i\n"
-						"#define TEXUNIT_PAGETABLE TEXUNIT%i\n\n",
+                        "#define TEXUNIT_PAGETABLE TEXUNIT%i\n"
+                        "#define MAC_GL_DRIVER_HACK %i\n\n",
 
 						(float)c.physTexDimensionPages, (float)c.pageDimension, log2f(c.pageDimension), (float)PREPASS_RESOLUTION_REDUCTION_SHIFT,
 						(float)c.virtTexDimensionPages, (float)(c.virtTexDimensionPages * c.pageDimension), (float)c.pageBorder, float(ANISOTROPY),
-                        USE_MIPCALC_TEXTURE, c.pageBorder, MIPPED_PHYSTEX, FALLBACK_ENTRIES, ANISOTROPY, c.longMipChain, TEXUNIT_FOR_MIPCALC, TEXUNIT_FOR_PHYSTEX, TEXUNIT_FOR_PAGETABLE);
+                        USE_MIPCALC_TEXTURE, c.pageBorder, MIPPED_PHYSTEX, FALLBACK_ENTRIES, ANISOTROPY, c.longMipChain, TEXUNIT_FOR_MIPCALC, TEXUNIT_FOR_PHYSTEX, TEXUNIT_FOR_PAGETABLE,MAC_GL_DRIVER_HACK);
 	return buf;
 }
 

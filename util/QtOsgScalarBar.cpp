@@ -175,7 +175,13 @@ void QtOsgScalarBar::createDrawables()
     {
         // We add half an increment to the color look-up to get the color
         // square in the middle of the 'block'.
+#if OPENSCENEGRAPH_MAJOR_VERSION < 3 || (OPENSCENEGRAPH_MAJOR_VERSION == 3 && OPENSCENEGRAPH_MINOR_VERSION <= 1)
+
         cs->push_back(_stc->getColor(_stc->getMin() + (i*incr)  + halfIncr));
+      #else
+        for(int j=0; j< 4; j++)
+            cs->push_back(_stc->getColor(_stc->getMin() + (i*incr)  + halfIncr));
+#endif
     }
     bar->setColorArray(cs.get());
 

@@ -582,10 +582,26 @@ osg::Camera* createOrthoView(osg::Node* subgraph, const osg::Vec4& clearColour, 
 		 0, 0, false,
 		 samples, colorSamples);
 // now create the camera to do the multiple render to texture
+  int w = screen_width, h = screen_height;
+ double _mod;
+  if(w < 1.5*hud_width ||h < 1.5*hud_height){
+      _mod=0.5;
+  }else{
+      _mod=1.0;
+     }
 
-  osg::Camera* quad_cam = createBox(screen_width -hud_margin-hud_width,
+
+      int hw=hud_width*_mod;
+      int hh=hud_height*_mod;
+
+ // _mapCam->setViewport(w -_hud_margin-hw,
+   ///                    h -_hud_margin-hh,
+      //                 hw,hh);
+  osg::Camera* quad_cam = createBox(w -hud_margin-hw,
+                           h -hud_margin-hh,
+                           hw,hh);/*createBox(screen_width -hud_margin-hud_width,
                     screen_height -hud_margin-hud_height,
-				    hud_width,hud_height);
+                    hud_width,hud_height);*/
   quad_cam->setDataVariance(osg::Object::DYNAMIC);
   addMapSqaure(quad_cam,om, camera,tex_width,tex_height);
 

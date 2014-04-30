@@ -112,8 +112,11 @@ vtexcoord calulateCoordinatesFromSample(vec4 pageTableEntry)
 	float mipExp = pageTableEntry.a + 1.0;
 #endif
 	vec2 pageCoord = pageTableEntry.bg;
-	vec2 withinPageCoord = fract(texcoord.xy * mipExp);
-
+#if MAC_GL_DRIVER_HACK
+        vec2 withinPageCoord = fract((texcoord.xy+vec2(0.000015,0.000015)) * mipExp);
+#else
+        vec2 withinPageCoord = fract(texcoord.xy * mipExp);
+#endif
 #if PAGE_BORDER
 	withinPageCoord = withinPageCoord * (page_dimension - border_width * 2.0)/page_dimension + border_width/page_dimension;
 //	withinPageCoord = withinPageCoord * (page_dimension - border_width)/page_dimension + 0.5/page_dimension; // one side border test code

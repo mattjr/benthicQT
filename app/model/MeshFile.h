@@ -149,6 +149,7 @@ namespace ews {
                 static const int hud_width=200;
                 static const int hud_height=200;
                 static const int hud_margin=20;
+                float _pix_ratio;
                 osg::Node * createVTStuff(osg::Node *node,std::string tex_name);
 
                 /**

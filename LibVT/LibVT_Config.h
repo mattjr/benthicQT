@@ -224,8 +224,11 @@
  */
 #ifdef __APPLE__
 #define IMAGE_DECOMPRESSION_LIBRARY	DecompressionMac//DecompressionLibJPEG//DecompressionMac//DecompressionLibJPEGTurbo
+/* Horrible hack to make seams dissapear on Macs driver issue????? */
+#define MAC_GL_DRIVER_HACK 1
 #else 
 #define IMAGE_DECOMPRESSION_LIBRARY DecompressionLibJPEG
+#define MAC_GL_DRIVER_HACK 0
 #endif
 
 

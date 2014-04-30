@@ -39,7 +39,9 @@
 #include "qgscolorbrewerpalette.h"
 #include "QFontImplementation.h"
 #include "QtOsgScalarBar.h"
-
+#if QT_VERSION >= 0x050000
+#include <QWindow>
+#endif
 #define FONT_NAME "arial"
 osg::StateSet* createSS();
 osg::Geode* createVTShapes(osg::StateSet* ss);
@@ -149,7 +151,7 @@ namespace ews {
         namespace model {
 
 
-            MeshFile::MeshFile(QOSGWidget *renderer): _renderer(renderer)
+            MeshFile::MeshFile(QOSGWidget *renderer): _renderer(renderer),_pix_ratio(1.0)
                     //            : QObject(parent)
             {
                 //    QObject::connect(this, SIGNAL(dataChanged()), this, SLOT(generatePotential()));
@@ -164,7 +166,6 @@ namespace ews {
                 shared_uniforms[UNI_VAL_RANGE]= new osg::Uniform("valrange",osg::Vec2(0.0,0.0));
                 shared_uniforms[UNI_TEXSCALE]= new osg::Uniform("texScale",0.0f);
                 shared_uniforms[UNI_OPACITY]= new osg::Uniform("opacity",1.0f);
-
 
                 shader_names.push_back("Texture");
                 shader_names.push_back("Aux");
@@ -249,6 +250,7 @@ namespace ews {
             class VTWindowResizeHandler : public osgViewer::WindowSizeHandler
             {
             public:
+                VTWindowResizeHandler(float pix_ratio) :_pix_ratio(pix_ratio){}
                 bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&aa)
                 {
 
@@ -256,10 +258,13 @@ namespace ews {
                     {
                         case(osgGA::GUIEventAdapter::RESIZE):
                         {
+
                             int w = (uint16_t)ea.getWindowWidth(), h = (uint16_t)ea.getWindowHeight();
-
+#if QT_VERSION >= 0x050000
+#warning "Another hack for width not being properly calculated in osg"
+                            w=w/(_pix_ratio*2);
+#endif
                             vtReshape(w, h, 0.0, 0.0, 0.0);
-
                       /*      _texture->setTextureSize(w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT);
                             _image->allocateImage(w >> PREPASS_RESOLUTION_REDUCTION_SHIFT, h >> PREPASS_RESOLUTION_REDUCTION_SHIFT, 1, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV);
                         //	image->setInternalTextureFormat(GL_RGBA);
@@ -274,7 +279,7 @@ namespace ews {
                     return WindowSizeHandler::handle(ea, aa);
                 }
 
-
+                float _pix_ratio;
                osg::TextureRectangle* _texture;
                 osg::Camera* _pre_camera;
                 osg::Image* _image;
@@ -327,7 +332,11 @@ namespace ews {
                 osg::Group* vtgroup_prerender = new osg::Group;
                 osg::Group* vtgroup_mainpass = new osg::Group;
 
-
+#if QT_VERSION >= 0x050000
+                _pix_ratio=_renderer->window()->windowHandle()->devicePixelRatio();
+#else
+_pix_ratio=1.0;
+#endif
                 texture = new osg::TextureRectangle;
                 texture->setTextureSize(_renderer->width() >> PREPASS_RESOLUTION_REDUCTION_SHIFT, _renderer->height() >> PREPASS_RESOLUTION_REDUCTION_SHIFT);
                 texture->setInternalFormat(GL_BGRA);
@@ -444,7 +453,7 @@ namespace ews {
                     }
 
 
-                _renderer->addEventHandler(new VTWindowResizeHandler());
+                _renderer->addEventHandler(new VTWindowResizeHandler(_pix_ratio));
                          _renderer->addEventHandler(new osgViewer::StatsHandler());
 
                   _renderer->addEventHandler(new VTExitHandler());
@@ -452,6 +461,7 @@ namespace ews {
 
 
                               vtReshape(_renderer->width(), _renderer->height(), 0.0, 0.0, 0.0);
+                              //printf("Current %d %d\n",_renderer->width(), _renderer->height());
                                 vtPrepare((const GLuint) 0, (const GLuint) 0);
                                 return retNode;
                 }

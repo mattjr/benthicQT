@@ -87,7 +87,7 @@ namespace ews {
               _switch->addChild(_dataModel.scalebar_hud);
 
               _dataModel._mapCam=createOrthoView(_meshGeom.get(),color,_dataModel.getRenderer()->getWWManip(),
-                                                 _dataModel.getRenderer()->width(),_dataModel.getRenderer()->height(),_dataModel.hud_width,_dataModel.hud_height,_dataModel.hud_margin);
+                                                 _dataModel.getRenderer()->width()*_dataModel._pix_ratio,_dataModel.getRenderer()->height()*_dataModel._pix_ratio,_dataModel.hud_width,_dataModel.hud_height,_dataModel.hud_margin);
               _dataModel.getRenderer()->addEventHandler(new MapCamResizeHandler(_dataModel._mapCam,_dataModel.hud_width,
                                                                                 _dataModel.hud_height,_dataModel.hud_margin));
 
