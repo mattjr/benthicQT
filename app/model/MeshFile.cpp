@@ -506,8 +506,12 @@ _pix_ratio=1.0;
             void MeshFile::updateImage(osg::Vec3 v)
             {
                 bbox_map_info info;
-             //   cout << v << endl;
+              //  cout << v << endl;
               //  cout <<_tree<<endl;
+               // Quick hack to fix option to "open images"
+               double aux = v[0];
+               v[0] = -v[1];
+               v[1] = aux;
                 if(find_closet_img_idx(_tree,v,info)){
                     curr_img=(info.leftname).c_str();
                     emit imgLabelChanged(curr_img);
