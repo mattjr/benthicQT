@@ -58,7 +58,7 @@ AVFormatContext* CreateFormatContext(
         const char *ai_shortName,
         const char *ai_fileExtension,
         const char *ai_mimeType,
-        CodecID codec_id);
+        AVCodecID codec_id);
 
 AVStream* CreateVideoStream(
         AVFormatContext* ai_formatContext,
@@ -104,7 +104,7 @@ public:
 	virtual void CloseVideo(void);
         static const bool enabled = true;
         std::vector<std::string> encoderNames;
-        int checkAddEncoder(CodecID id,const char *ext,std::string displayname);
+        int checkAddEncoder(AVCodecID id,const char *ext,std::string displayname);
         virtual std::vector<std::string> getEncoderNames(){return encoderNames;}
         void SetupVideo(
                 std::string dir="/tmp",
@@ -123,12 +123,12 @@ private:
 	int Write(AVFrame *ai_picture);
 	void Run(void);
         const char *getFormat(unsigned int codec_num);
-        CodecID getFFMPEGCodecId(unsigned int codec_num);
+        AVCodecID getFFMPEGCodecId(unsigned int codec_num);
 
 	// Video format context and stream
 	AVFormatContext *m_formatContext;
 	AVStream *m_vStream;
-        std::vector<std::pair<CodecID, const char *> > codecs;
+        std::vector<std::pair<AVCodecID, const char *> > codecs;
 	// Video buffers
 	AVFrame *m_frame[2];
 	uint8_t *m_vOutBuf;
@@ -140,7 +140,7 @@ private:
         int ai_width;
         int ai_height;
         const char *ai_format;
-        CodecID ai_codec_id;
+        AVCodecID ai_codec_id;
         std::string ai_baseName,ai_dir;
 	// Threading variables
 	bool m_stoprequested;

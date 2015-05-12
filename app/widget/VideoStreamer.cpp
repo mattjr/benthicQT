@@ -26,7 +26,7 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
 	m_frame[1] = NULL;
 
 	// Initialize libavcodec, and register all codecs and formats
-	avcodec_init();
+    //avcodec_init();
 	avcodec_register_all();
 	av_register_all();
 
@@ -52,10 +52,10 @@ VideoStreamer::VideoStreamer(int ai_bufferSize)
 
 }
 
-int VideoStreamer::checkAddEncoder(CodecID id,const char *ext,std::string displayname){
+int VideoStreamer::checkAddEncoder(AVCodecID id,const char *ext,std::string displayname){
     if(avcodec_find_encoder(id)){
         encoderNames.push_back(displayname);
-        codecs.push_back(std::pair<CodecID,const char *> (id,ext));
+        codecs.push_back(std::pair<AVCodecID,const char *> (id,ext));
         return codecs.size()-1;
     }
     fprintf(stderr,"Cant find %d\n",id);
@@ -116,10 +116,10 @@ const char *VideoStreamer::getFormat(unsigned int codec_id){
     return NULL;
 }
 
-CodecID VideoStreamer::getFFMPEGCodecId(unsigned int codec_id){
+AVCodecID VideoStreamer::getFFMPEGCodecId(unsigned int codec_id){
    if(codec_id < codecs.size())
        return codecs[codec_id].first;
-    return (CodecID)NULL;
+    return (AVCodecID)NULL;
 }
 
 int VideoStreamer::OpenVideo(void)
@@ -151,10 +151,10 @@ int VideoStreamer::OpenVideo(void)
                 PIX_FMT_YUV420P);
 
     // Set the output parameters (must be done even if no parameters)
-    av_set_parameters(m_formatContext, NULL );
+ //   av_set_parameters(m_formatContext, NULL );
 
     // Write out the format to the console
-    dump_format(m_formatContext, 0, ai_fileName, 1);
+    av_dump_format(m_formatContext, 0, ai_fileName, 1);
 
 
     // Find the video encoder
@@ -167,7 +167,7 @@ int VideoStreamer::OpenVideo(void)
     }
 
     // Open the codec
-    if (avcodec_open(c, codec) < 0)
+    if (avcodec_open2(c, codec,NULL) < 0)
     {
         std::cerr << "Error # VideoStreamer::OpenVideo: Could not open codec" << std::endl;
         return -2;
@@ -194,7 +194,7 @@ int VideoStreamer::OpenVideo(void)
 
 	// Open the output file, if needed
 	if (!(m_formatContext->oformat->flags & AVFMT_NOFILE) && 
-		 (url_fopen(&m_formatContext->pb, m_formatContext->filename, URL_WRONLY) < 0)) 
+         (avio_open(&m_formatContext->pb, m_formatContext->filename, AVIO_FLAG_WRITE) < 0))
 	{
 		std::cerr << "Error # VideoStreamer::OpenVideo: Could not open '" << m_formatContext->filename << "'" << std::endl;
 		return -4;
@@ -311,7 +311,7 @@ void VideoStreamer::Run(void)
 
 	// Wait for the first frame update and send the format context
         m_firstFrame.wait(&m_mutex,100000000);
-	av_write_header(m_formatContext);
+    avformat_write_header(m_formatContext,NULL);
         m_mutex.unlock();
 
         osg::Timer_t _startTick =  osg::Timer::instance()->tick();
@@ -357,7 +357,7 @@ void VideoStreamer::CloseVideo(void)
 
 	// Close the output file
 	if (m_formatContext->pb && !(m_formatContext->oformat->flags & AVFMT_NOFILE))
-        url_fclose(m_formatContext->pb); 
+        avio_close(m_formatContext->pb);
 
         ReleaseFrame(m_frame[0], false);
         ReleaseFrame(m_frame[1], false);
@@ -373,7 +373,7 @@ AVFormatContext* CreateFormatContext(
         const char *ai_shortName,
         const char *ai_fileExtension,
         const char *ai_mimeType,
-        CodecID codec_id)
+        AVCodecID codec_id)
 {
         AVFormatContext* formatContext =  avformat_alloc_context();
         if (!formatContext)
@@ -414,7 +414,7 @@ AVStream *CreateVideoStream(
         const PixelFormat& ai_pixFmt)
 {
         // Create the new video stream
-        AVStream *st = av_new_stream(ai_formatContext, 0);
+        AVStream *st = avformat_new_stream(ai_formatContext, 0);
         if (!st)
         {
                 std::cerr << "ERROR: Could not allocate the video stream at ::CreateVideoStream()." << std::endl;
@@ -497,7 +497,7 @@ void set_libx264Opt(AVCodecContext *videoContext){
 
     // Set the libx264-specific options
     videoContext->me_cmp |= FF_CMP_CHROMA;                                                         // cmp=+chroma
-    videoContext->partitions = X264_PART_I8X8 | X264_PART_I4X4 | X264_PART_P8X8 | X264_PART_B8X8;  // partitions=+parti8x8+parti4x4+partp8x8+partb8x8
+    //videoContext->partitions = X264_PART_I8X8 | X264_PART_I4X4 | X264_PART_P8X8 | X264_PART_B8X8;  // partitions=+parti8x8+parti4x4+partp8x8+partb8x8
     videoContext->me_method = 8;                                                                   // me_method=umh
     videoContext->me_subpel_quality = 8;                                                           // subq=8
     videoContext->me_range = 16;                                                                   // me_range=16
@@ -511,10 +511,10 @@ void set_libx264Opt(AVCodecContext *videoContext){
     videoContext->qmax = 51;                                                                       //qmax = 51
     videoContext->max_qdiff = 4;                                                                   // qdiff=4
     videoContext->refs = 4;                                                                        //refs=4
-    videoContext->directpred = 3;                                                                  //directpred=3
+    //videoContext->directpred = 3;                                                                  //directpred=3
     videoContext->trellis = 1;                                                                     //trellis=1
-    videoContext->flags2 |= CODEC_FLAG2_WPRED | CODEC_FLAG2_MIXED_REFS | CODEC_FLAG2_8X8DCT        // flags2=+wpred+mixed_refs+dct8x8+fastpskip
-                            | CODEC_FLAG2_FASTPSKIP;
+    //videoContext->flags2 |= CODEC_FLAG2_WPRED | CODEC_FLAG2_MIXED_REFS | CODEC_FLAG2_8X8DCT        // flags2=+wpred+mixed_refs+dct8x8+fastpskip
+      //                      | CODEC_FLAG2_FASTPSKIP;
 
     videoContext->thread_count = 0; // let x264 decide the number of threads
     videoContext->bit_rate =      videoContext->bit_rate*100;
